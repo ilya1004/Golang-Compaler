@@ -1,0 +1,21 @@
+ID    Лексема                
+==================================
+0     main                          
+1     WelcomeMessage                
+2     ErrorMessage                  
+3     calculate                     
+4     a                             
+5     b                             
+6     operation                     
+7     fmt                           
+8     Println                       
+9     num1                          
+10    num2                          
+11    flag                          
+12    false                         
+13    flag1                         
+14    true                          
+15    Print                         
+16    Scan                          
+17    result                        
+18    Printf                        
