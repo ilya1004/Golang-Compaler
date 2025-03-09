@@ -1,8 +1,7 @@
 Лексема                      Токен               Строка    Столбец       ID        
 =================================================================================
-qwe                            id-0            1          1               
-*                              multiply        1          5          operator:0
-num                            id-1            1          7               
-+                              plus            1          11         operator:1
-zxc                            id-2            1          13              
+package                        package         1          1          keyword:0
+main                           id-0            1          9               
+
+                              newline         1          13         punctuation:0
                                EOF             0          0               

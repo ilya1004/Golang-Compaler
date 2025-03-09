@@ -1,1 +1,1 @@
-qwe * num + zxc
+package main

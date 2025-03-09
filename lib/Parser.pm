@@ -45,96 +45,117 @@ sub parse {
     my %action_table = (
 
         0 => {
-            'id'      => [ 'shift', 5 ], 
-            'l_paren' => [ 'shift', 4 ]
+            'package' => [ 'shift', 1 ],
+            'import'  => [ 'shift', -1 ],
+            'func'    => [ 'shift', -1 ],
         },
 
         1 => {
-            'plus'     => [ 'shift',  6 ],
-            'new_line' => [ 'accept', 0 ],
-            'EOF'      => [ 'accept', 0 ],  # add
+            'id'      => [ 'shift', 2 ],
         },
 
         2 => {
-            'plus'     => [ 'reduce', 2 ],
-            'minus'    => [ 'reduce', 2 ],  # add
-            'multiply' => [ 'shift', 7 ],
-            'divide'   => [ 'shift', 7 ],   # add
-            'r_paren'  => [ 'reduce', 2 ],
-            'new_line' => [ 'reduce', 2 ],
+            'newline'   => [ 'reduce', 1 ],
+            'semicolon' => [ 'reduce', 1 ],
         },
 
         3 => {
+            'EOF'       => [ 'accept', 0 ], 
+            'newline'   => [ 'accept', 1 ],
+            'semicolon' => [ 'reduce', 1 ],
+        },
+
+        1_0 => {
+            'id'       => [ 'shift', 1_5 ], 
+            'l_paren'  => [ 'shift', 1_4 ],
+        },
+
+        1_1 => {
+            'plus'     => [ 'shift',  1_6 ],
+            # 'newline' => [ 'accept', 0 ],
+            'EOF'      => [ 'accept', 0 ],  # add
+        },
+
+        1_2 => {
+            'plus'     => [ 'reduce', 1_2 ],
+            'minus'    => [ 'reduce', 1_2 ],  # add
+            'multiply' => [ 'shift',  1_7 ],
+            'divide'   => [ 'shift',  1_7 ],   # add
+            'r_paren'  => [ 'reduce', 1_2 ],
+            'newline' => [ 'reduce', 1_2 ],
+        },
+
+        1_3 => {
             'plus'     => [ 'reduce', 4 ],
             'minus'    => [ 'reduce', 4 ],  # add
             'multiply' => [ 'reduce', 4 ],
             'divide'   => [ 'reduce', 4 ],  # add
             'r_paren'  => [ 'reduce', 4 ],
-            'new_line' => [ 'reduce', 4 ],
+            'newline' => [ 'reduce', 4 ],
             'EOF'      => [ 'reduce', 4 ],  # add
         },
 
-        4 => {
-            'id'      => [ 'shift', 5 ],
-            'l_paren' => [ 'shift', 4 ],
+        1_4 => {
+            'id'      => [ 'shift', 15 ],
+            'l_paren' => [ 'shift', 14 ],
         },
 
-        5 => {
+        1_5 => {
             'plus'     => [ 'reduce', 6 ],
             'minus'    => [ 'reduce', 6 ],  # add
             'multiply' => [ 'reduce', 6 ],
             'divide'   => [ 'reduce', 6 ],  # add
             'r_paren'  => [ 'reduce', 6 ],
-            'new_line' => [ 'reduce', 6 ],
+            'newline' => [ 'reduce', 6 ],
             'EOF'      => [ 'reduce', 6 ],  # add
         },
 
-        6 => {
-            'id'       => [ 'shift', 5 ],
-            'l_paren'  => [ 'shift', 4 ],
+        1_6 => {
+            'id'       => [ 'shift', 15 ],
+            'l_paren'  => [ 'shift', 14 ],
         },
 
-        7 => {
-            'id'       => [ 'shift', 5 ],
-            'l_paren'  => [ 'shift', 4 ],
+        1_7 => {
+            'id'       => [ 'shift', 1_5 ],
+            'l_paren'  => [ 'shift', 1_4 ],
         },
 
-        8 => {
-            'plus'     => [ 'shift', 6  ],
-            'minus'    => [ 'shift', 6  ],   # add
-            'r_paren'  => [ 'shift', 11 ],
+        1_8 => {
+            'plus'     => [ 'shift', 1_6  ],
+            'minus'    => [ 'shift', 1_6  ],   # add
+            'r_paren'  => [ 'shift', 1_11 ],
         },
 
-        9 => {
-            'plus'     => [ 'reduce', 1 ],
-            'minus'    => [ 'reduce', 1 ],  # add
-            'multiply' => [ 'shift',  7 ],
-            'divide'   => [ 'shift',  7 ],  # add
-            'r_paren'  => [ 'reduce', 1 ],
-            'new_line' => [ 'reduce', 1 ],
-            'EOF'      => [ 'reduce', 1 ],  # add
+        1_9 => {
+            'plus'     => [ 'reduce', 1_1 ],
+            'minus'    => [ 'reduce', 1_1 ],  # add
+            'multiply' => [ 'shift',  1_7 ],
+            'divide'   => [ 'shift',  1_7 ],  # add
+            'r_paren'  => [ 'reduce', 1_1 ],
+            'newline' => [ 'reduce', 1_1 ],
+            'EOF'      => [ 'reduce', 1_1 ],  # add
         },
 
-        10 => {
-            'plus'     => [ 'reduce', 3 ],
-            'minus'    => [ 'reduce', 3 ],  # add
-            'multiply' => [ 'shift',  3 ],
-            'divide'   => [ 'shift',  3 ],  # add
-            'r_paren'  => [ 'reduce', 3 ],
-            'new_line' => [ 'reduce', 3 ],
-            'EOF'      => [ 'reduce', 3 ],  # add
+        1_10 => {
+            'plus'     => [ 'reduce', 1_3 ],
+            'minus'    => [ 'reduce', 1_3 ],  # add
+            'multiply' => [ 'shift',  1_3 ],
+            'divide'   => [ 'shift',  1_3 ],  # add
+            'r_paren'  => [ 'reduce', 1_3 ],
+            'newline' => [ 'reduce', 1_3 ],
+            'EOF'      => [ 'reduce', 1_3 ],  # add
         },
 
-        11 => {
-            'plus'     => [ 'reduce', 5 ],
-            'minus'    => [ 'reduce', 5 ],  # add
-            'multiply' => [ 'shift',  5 ],
-            'divide'   => [ 'shift',  5 ],  # add
-            'r_paren'  => [ 'reduce', 5 ],
-            'new_line' => [ 'reduce', 5 ],
-            'EOF'      => [ 'reduce', 5 ],  # add
+        1_11 => {
+            'plus'     => [ 'reduce', 1_5 ],
+            'minus'    => [ 'reduce', 1_5 ],  # add
+            'multiply' => [ 'shift',  1_5 ],
+            'divide'   => [ 'shift',  1_5 ],  # add
+            'r_paren'  => [ 'reduce', 1_5 ],
+            'newline'  => [ 'reduce', 1_5 ],
+            'EOF'      => [ 'reduce', 1_5 ],  # add
         },
-        
+
     );
 
     # Выбран reduce
@@ -144,13 +165,15 @@ sub parse {
     # lhs — нетерминал, который получается после свертки.
     # rhs_count — сколько элементов убрать из value_stack.
     my %rules = (
-        1 => [ 'EXPR', 3 ],    # EXPR → EXPR + TERM
-        2 => [ 'EXPR', 1 ],    # EXPR → TERM 
-        3 => [ 'TERM', 3 ],    # TERM → TERM * FACTOR
-        4 => [ 'TERM', 1 ],    # TERM → FACTOR
-        5 => [ 'FACTOR', 3 ],  # FACTOR → ( EXPR )
-        6 => [ 'FACTOR', 1 ],  # FACTOR → id
-        
+        1   => [ 'PACKAGE', 2 ], # PACKAGE → package id newline
+
+        1_1 => [ 'EXPR', 3 ],    # EXPR → EXPR +/- TERM
+        1_2 => [ 'EXPR', 1 ],    # EXPR → TERM 
+        1_3 => [ 'TERM', 3 ],    # TERM → TERM *|/ FACTOR
+        1_4 => [ 'TERM', 1 ],    # TERM → FACTOR
+        1_5 => [ 'FACTOR', 3 ],  # FACTOR → ( EXPR )
+        1_6 => [ 'FACTOR', 1 ],  # FACTOR → id
+
     );
 
     # $goto_table{state}{nonterminal} = new_state;
@@ -159,27 +182,35 @@ sub parse {
     # new_state — состояние, в которое нужно перейти.
     my %goto_table = (
         0 => {
-            'EXPR'   => 1,
-            'TERM'   => 2,
-            'FACTOR' => 3,
+            'PACKAGE' => 3,
         },
 
-        2 => {
-            'TERM'   => 2,
+        # 1 => {
+        #     'STMT' => 1,
+        # },
+
+        1_0 => {
+            'EXPR'   => 1_1,
+            'TERM'   => 1_2,
+            'FACTOR' => 1_3,
         },
 
-        4 => { 
-            'EXPR'   => 8,
-            'TERM'   => 2,
-            'FACTOR' => 3, 
+        1_2 => {
+            'TERM'   => 1_2,
         },
 
-        6 => { 
-            'TERM'   => 9,
-            'FACTOR' => 3,
+        1_4 => { 
+            'EXPR'   => 1_8,
+            'TERM'   => 1_2,
+            'FACTOR' => 1_3, 
         },
-        7 => { 
-            'FACTOR' => 10,
+
+        1_6 => { 
+            'TERM'   => 1_9,
+            'FACTOR' => 1_3,
+        },
+        1_7 => { 
+            'FACTOR' => 1_10,
         },
     );
 
@@ -203,7 +234,7 @@ sub parse {
             return;
         } 
         
-        print Dumper(@$action), "\n\n";
+        print "Selected action:\n", Dumper(@$action);
 
         if ($action) {
             my ( $action_type, $action_state ) = @$action;
@@ -222,7 +253,7 @@ sub parse {
                 my @children;
 
                 # print "\nvalue_stack: ", Dumper( \@value_stack ), "\n";
-                # print "rhs_count: ", "$rhs_count\n";
+                print "Deleted from stack count: ", "$rhs_count\n";
 
                 for ( 1 .. $rhs_count ) {
                     pop @state_stack;
@@ -248,6 +279,7 @@ sub parse {
         else {
             die "Ошибка парсинга: неожиданный токен '$current_token->{Text}' на строке $current_token->{Line}, колонке $current_token->{Column}\n";
         }
+        print "\n\n";
     }
 }
 
@@ -266,7 +298,7 @@ sub parse {
 
     #     # Состояние 1: Завершенное выражение, ждем конец строки или файла
     #     1 => {
-    #         'new_line' => [ 'reduce', 0 ],  # Конец строки - сворачиваем выражение
+    #         'newline' => [ 'reduce', 0 ],  # Конец строки - сворачиваем выражение
     #         'EOF'      => [ 'accept', 0 ]   # Конец файла - успешное завершение парсинга
     #     },
 
@@ -282,7 +314,7 @@ sub parse {
     #         'multiply' => [ 'shift', 7 ],
     #         'divide'   => [ 'shift', 7 ],
     #         'r_paren'  => [ 'reduce', 2 ],
-    #         'new_line' => [ 'reduce', 2 ],
+    #         'newline' => [ 'reduce', 2 ],
     #     },
 
     #     # Состояние 3: После `(`, ждем новое выражение (вложенность)
@@ -296,7 +328,7 @@ sub parse {
     #         'divide'   => [ 'reduce', 2 ],
     #         'multiply' => [ 'reduce', 2 ],
     #         # 'r_paren' => [ 'reduce', 4 ],
-    #         # 'new_line' => [ 'reduce', 4 ],
+    #         # 'newline' => [ 'reduce', 4 ],
     #     },
 
     #     # Состояние 4: После `*` или `/`, ждем следующий идентификатор
