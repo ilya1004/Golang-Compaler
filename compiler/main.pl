@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Data::Dumper;
+use JSON;
 
 use lib '../lib';
 use Lexer;
@@ -9,7 +10,7 @@ use Parser;
 our $index = 0;
 our %ids;
 
-my $filename = '../test-code/test-1/main.go';
+my $filename = '../test-code/test-1/test.go';
 
 open(my $fh, '<', $filename) or die "Не удалось открыть файл '$filename': $!";
 my $code = do { local $/; <$fh> };
@@ -19,6 +20,7 @@ my $lexer = Lexer->new($code);
 my $tokens = $lexer->lex_analyze();
 
 print "Tokens: ", Dumper($tokens);
+print "\n-----------------------------------------\n";
 
 # $tokens получены из лексера
 my $parser = Parser->new($tokens);
@@ -34,7 +36,23 @@ foreach my $token (@$tokens) {
 
 print "Сгенерированное AST:\n", Dumper($ast);
 
+# Преобразуем структуру в JSON с отступами
+my $json = to_json($ast, { 
+    pretty => 1,
+    canonical => 1,
+});
 
+# Открываем файл для записи
+my $filename1 = 'ast.json';
+open(my $fh1, '>', $filename1) or die "Не удалось открыть файл '$filename1' для записи: $!";
+
+# Записываем JSON в файл
+print $fh1 $json;
+
+# Закрываем файл
+close($fh1);
+
+print "Данные успешно записаны в файл '$filename1'.\n";
 
 
 

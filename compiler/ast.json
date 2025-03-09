@@ -1,0 +1,82 @@
+[
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "Class": "identifier",
+                        "Column": "1",
+                        "Line": "1",
+                        "Name": "id-0",
+                        "Pos": 0,
+                        "Text": "qwe"
+                      }
+                    ],
+                    "type": "FACTOR"
+                  }
+                ],
+                "type": "TERM"
+              },
+              {
+                "Class": "operator",
+                "Column": "5",
+                "Line": "1",
+                "Name": "multiply",
+                "Pos": 4,
+                "Text": "*"
+              },
+              {
+                "children": [
+                  {
+                    "Class": "identifier",
+                    "Column": "7",
+                    "Line": "1",
+                    "Name": "id-1",
+                    "Pos": 6,
+                    "Text": "num"
+                  }
+                ],
+                "type": "FACTOR"
+              }
+            ],
+            "type": "TERM"
+          }
+        ],
+        "type": "EXPR"
+      },
+      {
+        "Class": "operator",
+        "Column": "11",
+        "Line": "1",
+        "Name": "plus",
+        "Pos": 10,
+        "Text": "+"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "Class": "identifier",
+                "Column": "13",
+                "Line": "1",
+                "Name": "id-2",
+                "Pos": 12,
+                "Text": "zxc"
+              }
+            ],
+            "type": "FACTOR"
+          }
+        ],
+        "type": "TERM"
+      }
+    ],
+    "type": "EXPR"
+  }
+]
