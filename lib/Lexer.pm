@@ -1,6 +1,7 @@
 package Lexer;
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Patterns;
 
@@ -24,6 +25,7 @@ sub new {
 
 sub lex_analyze {
     my ($self) = @_;
+    my $prev_token;
     while (1) {
         my ($res, $err) = $self->next_token();
         if (defined $err && $err ne "") {
@@ -31,13 +33,39 @@ sub lex_analyze {
             last;
         }
         last unless $res; 
+
+        # Вставка `;` если необходимо
+        if (defined $prev_token) {
+            if (should_insert_semicolon($prev_token)) {
+                push @{ $self->{TokenList} }, { Name => 'semicolon', Text => ';', Line => 0, Column => 0, Pos => 0, Class => 'punctuation' };
+            }
+        }
+
+        $prev_token = $self->{TokenList}[-1] if @{ $self->{TokenList} };
+    }
+
+    # Вставка `;` в конце если необходимо
+    if (should_insert_semicolon($self->{TokenList}[-1])) {
+        push @{ $self->{TokenList} }, { Name => 'semicolon', Text => ';', Line => 0, Column => 0, Pos => 0, Class => 'punctuation' };
     }
     
     # Если EOF не добавлен лексером, добавляем его здесь
     if ($self->{TokenList}[-1]->{Name} ne 'EOF') {
-        push @{ $self->{TokenList} }, { Name => 'EOF', Text => '', Line => 0, Column => 0, Pos => 0, Class => 'EOF' };
+        push @{ $self->{TokenList} }, { Name => 'EOF', Text => 'EOF', Line => 0, Column => 0, Pos => 0, Class => 'EOF' };
     }
     return $self->{TokenList};
+}
+
+sub should_insert_semicolon {
+    my ($token) = @_;
+    return ($token->{Class} eq 'identifier' ||
+            $token->{Class} eq 'constant' ||
+            $token->{Name} eq 'break' ||
+            $token->{Name} eq 'continue' ||
+            $token->{Name} eq 'return' ||
+            $token->{Name} eq 'fallthrough' ||
+            $token->{Name} eq 'r_paren' ||
+            $token->{Name} eq 'r_bracket');
 }
 
 sub next_token {
@@ -68,6 +96,10 @@ sub next_token {
             if ($tokenType->{Class} eq "identifier") {
                 $name .= $suffix; 
             }
+
+            # if ($name eq "newline") {
+            #     $firstMatch = '\n';
+            # }
           
             my %token = (
                 Name   => $name,

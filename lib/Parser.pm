@@ -25,6 +25,13 @@ sub get_table_value {
       : undef;
 }
 
+sub should_skip_punctuation {
+    my ( $self, $token_name ) = @_;
+    return  $token_name eq "semicolon";
+            # $token_name eq "l_paren" ||
+            # $token_name eq "r_paren";
+}
+
 # Основной метод парсинга
 sub parse {
     my ($self) = @_;
@@ -43,11 +50,18 @@ sub parse {
 
   
     my %action_table = (
+        
+        -1 => {     # EOF
+            'EOF'       => [ 'accept', 0 ], 
+            'semicolon' => [ 'accept', 0 ],
+        },
 
+        # package 
         0 => {
             'package' => [ 'shift', 1 ],
-            'import'  => [ 'shift', -1 ],
+            # 'import'  => [ 'shift', 4 ],
             'func'    => [ 'shift', -1 ],
+            # 'semicolon' => [ 'shift', -1 ],
         },
 
         1 => {
@@ -55,15 +69,47 @@ sub parse {
         },
 
         2 => {
-            'newline'   => [ 'reduce', 1 ],
             'semicolon' => [ 'reduce', 1 ],
         },
 
         3 => {
-            'EOF'       => [ 'accept', 0 ], 
-            'newline'   => [ 'accept', 1 ],
-            'semicolon' => [ 'reduce', 1 ],
+            'semicolon' => [ 'shift', 2_0 ],
         },
+
+
+        # import 
+        2_0 => {
+            'semicolon' => [ 'shift', 20 ],
+            'import'    => [ 'shift',  2_1 ],
+        },
+
+        2_1 => {
+            'l_paren' => [ 'shift', 2_2 ],
+        },
+
+        2_2 => {
+            'string'  => [ 'shift', 2_3 ],
+            'r_paren' => [ 'shift', 2_5 ],
+        },
+
+        2_3 => {
+            'semicolon' => [ 'reduce', 4],
+            'r_paren'   => [ 'reduce', 4],
+        },
+
+        2_4 => {
+            'string'  => [ 'shift', 2_3],
+            'r_paren' => [ 'reduce', 3]
+        },
+
+        2_5 => {
+            'semicolon' => [ 'reduce', 2],
+        },
+
+
+        # 4 => {
+        #     'string'  => [ '' ] 
+        # }
 
         1_0 => {
             'id'       => [ 'shift', 1_5 ], 
@@ -165,7 +211,12 @@ sub parse {
     # lhs — нетерминал, который получается после свертки.
     # rhs_count — сколько элементов убрать из value_stack.
     my %rules = (
-        1   => [ 'PACKAGE', 2 ], # PACKAGE → package id newline
+        1   => [ 'PACKAGE', 2 ], # PACKAGE → package id
+        # 2   => [ 'IMPORT_DECL', 2 ], # IMPORT_DECL -> 'import' string_lit
+        
+        2   => [ 'IMPORT_DECL',  4 ],  # import_decl → import ( import_specs )
+        3   => [ 'IMPORT_SPECS', 3 ],  # import_specs → import_specs semicolon import_str
+        4   => [ 'IMPORT_SPECS', 1 ],  # import_specs → import_str
 
         1_1 => [ 'EXPR', 3 ],    # EXPR → EXPR +/- TERM
         1_2 => [ 'EXPR', 1 ],    # EXPR → TERM 
@@ -182,12 +233,25 @@ sub parse {
     # new_state — состояние, в которое нужно перейти.
     my %goto_table = (
         0 => {
-            'PACKAGE' => 3,
+            'PACKAGE' => 2_0,
         },
 
-        # 1 => {
-        #     'STMT' => 1,
+        # 3 => {
+        #     'IMPORT' => ,
         # },
+
+        2_0 => {
+            'IMPORT_DECL' => -1,
+        },
+
+        # 2_1 => {
+        #     'IMPORT_SPECS' => 
+        # },
+
+        2_2 => {
+            "IMPORT_SPECS" => 2_2,
+        },
+
 
         1_0 => {
             'EXPR'   => 1_1,
@@ -220,6 +284,7 @@ sub parse {
         my $current_token = $self->{tokens}->[$pos];
         my $token_name    = $current_token->{Name};
         
+
         print "$current_state | $token_name \n";
 
         # if state_stack[-1] eq 'STMT' break
@@ -232,16 +297,18 @@ sub parse {
         if ( !$action ) {
             die "This action by ($current_state, $token_name) is not exists!";
             return;
-        } 
+        }
         
         print "Selected action:\n", Dumper(@$action);
 
         if ($action) {
             my ( $action_type, $action_state ) = @$action;
             
-            if ( $action_type eq 'shift' ) {
+            if ( $action_type eq 'shift' ) {  
                 push @state_stack, $action_state;
-                push @value_stack, $current_token;
+                if ( ! $self->should_skip_punctuation($token_name)) {
+                    push @value_stack, $current_token;
+                }
                 $pos++;
             }
 
@@ -261,18 +328,33 @@ sub parse {
                 }
 
                 if ( !exists $goto_table{ $state_stack[-1] }{$lhs} ) {
-                    die "Ошибка: отсутствует переход в GOTO в состоянии $state_stack[-1] для $lhs";
+                    die "Ошибка: отсутствует переход GOTO ( $state_stack[-1] | $lhs )";
                     return;
                 }
 
+                print "GOTO ( $state_stack[-1] | $lhs )\n";
+                
                 my $next_state = $goto_table{ $state_stack[-1] }{$lhs};
                 push @state_stack, $next_state;
 
+                print "Next state: $next_state \n";
+
+                # Фильтруем children, удаляя ненужные токены
+                my %exclude_names = (
+                    'l_paren' => 1,
+                    'r_paren' => 1,
+                );
+                @children = @{ filter_children(\@children, \%exclude_names) };
+
                 my $node = { type => $lhs, children => \@children };
+                
                 push @value_stack, $node;
+                if ($current_token->{Name} eq "semicolon") {
+                    $pos++;
+                }
             }
             elsif ( $action_type eq 'accept' ) {
-                print Dumper( \@value_stack );
+                # print Dumper( \@value_stack );
                 return \@value_stack;
             }
         }
@@ -281,6 +363,11 @@ sub parse {
         }
         print "\n\n";
     }
+}
+
+sub filter_children {
+    my ($children, $exclude_names) = @_;
+    return [ grep { !exists $exclude_names->{$_->{Name}} } @$children ];
 }
 
 1;

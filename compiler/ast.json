@@ -1,23 +1,49 @@
 [
-   {
-      "children" : [
-         {
-            "Class" : "keyword",
-            "Column" : "1",
-            "Line" : "1",
-            "Name" : "package",
-            "Pos" : 0,
-            "Text" : "package"
-         },
-         {
-            "Class" : "identifier",
-            "Column" : "9",
-            "Line" : "1",
-            "Name" : "id-0",
-            "Pos" : 8,
-            "Text" : "main"
-         }
-      ],
-      "type" : "PACKAGE"
-   }
+  {
+    "children": [
+      {
+        "Class": "keyword",
+        "Column": "1",
+        "Line": "1",
+        "Name": "package",
+        "Pos": 0,
+        "Text": "package"
+      },
+      {
+        "Class": "identifier",
+        "Column": "9",
+        "Line": "1",
+        "Name": "id-0",
+        "Pos": 8,
+        "Text": "main"
+      }
+    ],
+    "type": "PACKAGE"
+  },
+  {
+    "children": [
+      {
+        "Class": "keyword",
+        "Column": "1",
+        "Line": "3",
+        "Name": "import",
+        "Pos": 14,
+        "Text": "import"
+      },
+      {
+        "children": [
+          {
+            "Class": "constant",
+            "Column": "2",
+            "Line": "4",
+            "Name": "string",
+            "Pos": 24,
+            "Text": "\"qweqwe\""
+          }
+        ],
+        "type": "IMPORT_SPECS"
+      }
+    ],
+    "type": "IMPORT_DECL"
+  }
 ]

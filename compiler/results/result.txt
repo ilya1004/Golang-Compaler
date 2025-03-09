@@ -2,6 +2,11 @@
 =================================================================================
 package                        package         1          1          keyword:0
 main                           id-0            1          9               
-
-                              newline         1          13         punctuation:0
-                               EOF             0          0               
+;                              semicolon       0          0               
+import                         import          3          1          keyword:1
+(                              l_paren         3          8          punctuation:0
+"qweqwe"                       string          4          2          constant:0
+;                              semicolon       0          0               
+)                              r_paren         5          1          punctuation:1
+;                              semicolon       0          0               
+EOF                            EOF             0          0               

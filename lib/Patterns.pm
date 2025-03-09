@@ -114,7 +114,7 @@ sub getTokenTypesList {
         { Name => "comma",     Regex => ",",  Class => "punctuation" },
         { Name => "semicolon", Regex => ";",  Class => "punctuation" },
         { Name => "colon",     Regex => ":",  Class => "punctuation" },
-        { Name => "newline", Regex => "\\n+", Class => "punctuation" },
+        # { Name => "newline", Regex => "\\n+", Class => "punctuation" },
     );
     
     # Пропускаемые токены: пробельные символы и комментарии
