@@ -89,7 +89,7 @@ sub should_remove_newline {
     $index++ while $index < @$token_list && $token_list->[$index] != $token;
     return $token->{Name} eq 'newline' && (
         $index == 0 ||
-        $token_list->[$index - 1]->{Name} =~ /^(l_paren|l_brace|comma|operator)$/
+        $token_list->[$index - 1]->{Name} =~ /^(l_paren|l_brace|comma|operator|semicolon|newline)$/
     );
 }
 

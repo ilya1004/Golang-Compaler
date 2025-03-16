@@ -1,8 +1,6 @@
+package main
 
-type Sequence struct {
-	Start int
-	End   int
-	Step  int
+func add(a int, b int) int {
+	// c := a + b
+	return a + b
 }
-
-seq := Sequence{Start: 1, End: 10, Step: 2}

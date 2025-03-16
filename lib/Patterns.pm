@@ -3,6 +3,11 @@ use strict;
 use warnings;
 
 sub getTokenTypesList {
+
+    my @comments = (
+        { Name => "comment",    Regex => "\\/\\/.*", Class => "skip" },
+    );
+
     # Ключевые слова
     my @keywords = (
         { Name => "package",     Regex => "package",     Class => "keyword" },
@@ -117,10 +122,9 @@ sub getTokenTypesList {
     # Пропускаемые токены: пробельные символы и комментарии
     my @skip = (
         { Name => "whitespace", Regex => "\\s+", Class => "skip" },
-        { Name => "comment",    Regex => "//.*", Class => "skip" },
     );
     
-    my @tokenTypesList = (@keywords, @constants, @operators, @identifiers, @punctuations, @skip);
+    my @tokenTypesList = (@comments, @keywords, @constants, @operators, @identifiers, @punctuations, @skip);
     return @tokenTypesList;
 }
 

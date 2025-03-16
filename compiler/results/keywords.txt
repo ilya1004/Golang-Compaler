@@ -1,5 +1,6 @@
 ID    Лексема                
 ==================================
-0     type                          
-1     struct                        
+0     package                       
+1     func                          
 2     int                           
+3     return                        

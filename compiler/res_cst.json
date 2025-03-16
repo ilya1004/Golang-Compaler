@@ -1,192 +1,127 @@
 {
   "children": [
     {
-      "fields": [
-        {
-          "field_name": {
-            "Name": "id-1",
-            "Pos": 6,
-            "Text": "Start"
-          },
-          "field_type": {
-            "Name": "int",
-            "Pos": 6,
-            "Text": "int"
-          },
-          "semicolon": {
-            "Name": "semicolon",
-            "Pos": 6,
-            "Text": ";"
-          }
-        },
-        {
-          "field_name": {
-            "Name": "id-2",
-            "Pos": 9,
-            "Text": "End"
-          },
-          "field_type": {
-            "Name": "int",
-            "Pos": 9,
-            "Text": "int"
-          },
-          "semicolon": {
-            "Name": "semicolon",
-            "Pos": 9,
-            "Text": ";"
-          }
-        },
-        {
-          "field_name": {
-            "Name": "id-3",
-            "Pos": 12,
-            "Text": "Step"
-          },
-          "field_type": {
-            "Name": "int",
-            "Pos": 12,
-            "Text": "int"
-          },
-          "semicolon": {
-            "Name": "semicolon",
-            "Pos": 12,
-            "Text": ";"
-          }
-        }
-      ],
-      "name": "Sequence",
       "nodes": [
         {
-          "Name": "type",
+          "Name": "package",
           "Pos": 0,
-          "Text": "type"
+          "Text": "package"
         },
         {
           "Name": "id-0",
           "Pos": 1,
-          "Text": "Sequence"
+          "Text": "main"
         },
         {
-          "Name": "struct",
+          "Name": "semicolon",
           "Pos": 2,
-          "Text": "struct"
+          "Text": ";"
+        }
+      ],
+      "type": "PackageDeclaration"
+    },
+    {
+      "body": [
+        {
+          "expression": {
+            "left": {
+              "type": "Identifier",
+              "value": "a"
+            },
+            "operator": "+",
+            "right": {
+              "type": "Identifier",
+              "value": "b"
+            },
+            "type": "BinaryOperation"
+          },
+          "nodes": [
+            {
+              "Name": "return",
+              "Pos": 13,
+              "Text": "return"
+            },
+            {
+              "Name": "semicolon",
+              "Pos": 14,
+              "Text": ";"
+            }
+          ],
+          "type": "ReturnStatement"
+        }
+      ],
+      "name": "add",
+      "nodes": [
+        {
+          "Name": "func",
+          "Pos": 3,
+          "Text": "func"
+        },
+        {
+          "Name": "id-1",
+          "Pos": 4,
+          "Text": "add"
+        },
+        {
+          "Name": "l_paren",
+          "Pos": 5,
+          "Text": "("
+        },
+        {
+          "Name": "r_paren",
+          "Pos": 10,
+          "Text": ")"
         },
         {
           "Name": "l_brace",
-          "Pos": 3,
+          "Pos": 12,
           "Text": "{"
         },
         {
           "Name": "r_brace",
-          "Pos": 13,
+          "Pos": 15,
           "Text": "}"
         },
         {
           "Name": "semicolon",
-          "Pos": 14,
+          "Pos": 16,
           "Text": ";"
         }
       ],
-      "type": "TypeDeclaration"
-    },
-    {
-      "nodes": [
+      "params": [
         {
-          "Name": "id-4",
-          "Pos": 15,
-          "Text": "seq"
-        },
-        {
-          "Name": "declaration",
-          "Pos": 16,
-          "Text": ":="
-        },
-        {
-          "type": "Expression",
-          "value": {
-            "fields": [
-              {
-                "colon": {
-                  "Name": "colon",
-                  "Pos": 81,
-                  "Text": ":"
-                },
-                "field_name": {
-                  "Name": "id-1",
-                  "Pos": 22,
-                  "Text": "Start"
-                },
-                "field_value": {
-                  "type": "number",
-                  "value": "1"
-                }
-              },
-              {
-                "colon": {
-                  "Name": "colon",
-                  "Pos": 89,
-                  "Text": ":"
-                },
-                "field_name": {
-                  "Name": "id-2",
-                  "Pos": 26,
-                  "Text": "End"
-                },
-                "field_value": {
-                  "type": "number",
-                  "value": "10"
-                }
-              },
-              {
-                "colon": {
-                  "Name": "colon",
-                  "Pos": 99,
-                  "Text": ":"
-                },
-                "field_name": {
-                  "Name": "id-3",
-                  "Pos": 30,
-                  "Text": "Step"
-                },
-                "field_value": {
-                  "type": "number",
-                  "value": "2"
-                }
-              }
-            ],
-            "nodes": [
-              {
-                "Name": "l_brace",
-                "Pos": 18,
-                "Text": "{"
-              },
-              {
-                "Name": "comma",
-                "Pos": 22,
-                "Text": ","
-              },
-              {
-                "Name": "comma",
-                "Pos": 26,
-                "Text": ","
-              },
-              {
-                "Name": "r_brace",
-                "Pos": 30,
-                "Text": "}"
-              }
-            ],
-            "struct_type": "Sequence",
-            "type": "StructLiteral"
+          "param_name": {
+            "Name": "id-2",
+            "Pos": 6,
+            "Text": "a"
+          },
+          "param_type": {
+            "Name": "int",
+            "Pos": 7,
+            "Text": "int"
           }
         },
         {
-          "Name": "semicolon",
-          "Pos": 31,
-          "Text": ";"
+          "param_name": {
+            "Name": "id-3",
+            "Pos": 8,
+            "Text": "b"
+          },
+          "param_type": {
+            "Name": "int",
+            "Pos": 9,
+            "Text": "int"
+          }
         }
       ],
-      "type": "VariableDeclaration"
+      "return_types": [
+        {
+          "Name": "int",
+          "Pos": 11,
+          "Text": "int"
+        }
+      ],
+      "type": "FunctionDeclaration"
     }
   ],
   "type": "Program"
