@@ -22,37 +22,39 @@ my $tokens = $lexer->lex_analyze();
 print "Tokens: ", Dumper($tokens);
 print "\n-----------------------------------------\n";
 
-# $tokens получены из лексера
 my $parser = Parser->new($tokens);
-my $ast = $parser->parse();
-
+my $cst = $parser->parse();
+my $symbol_table = $parser->get_symbol_table();
 
 print "Распознанные токены:\n";
 foreach my $token (@$tokens) {
     print "Name: $token->{Name}, Text: '$token->{Text}', Line: $token->{Line}, Column: $token->{Column}\n";
 }
 
+print "Сгенерированное CST:\n", Dumper($cst);
 
-
-print "Сгенерированное AST:\n", Dumper($ast);
-
-# Преобразуем структуру в JSON с отступами
-my $json = to_json($ast, { 
+my $cst_json = to_json($cst, { 
     pretty => 1,
     canonical => 1,
 });
 
-# Открываем файл для записи
-my $filename1 = 'ast.json';
-open(my $fh1, '>', $filename1) or die "Не удалось открыть файл '$filename1' для записи: $!";
+my $symbol_table_json = to_json($symbol_table, {
+    pretty => 1,
+    canonical => 1,
+});
 
-# Записываем JSON в файл
-print $fh1 $json;
+my $cst_filename = 'res_cst.json';
+open(my $cst_fh, '>', $cst_filename) or die "Не удалось открыть файл '$cst_filename' для записи: $!";
+print $cst_fh $cst_json;
+close($cst_fh);
 
-# Закрываем файл
-close($fh1);
+my $symbol_table_filename = 'res_symbol_table.json';
+open(my $symbol_table_fh, '>', $symbol_table_filename) or die "Не удалось открыть файл '$symbol_table_filename' для записи: $!";
+print $symbol_table_fh $symbol_table_json;
+close($symbol_table_fh);
 
-print "Данные успешно записаны в файл '$filename1'.\n";
+print "CST успешно записан в файл '$cst_filename'.\n";
+print "Таблица символов успешно записана в файл '$symbol_table_filename'.\n";
 
 
 
@@ -64,7 +66,7 @@ unless(-d $output_dir) {
 open(my $main_fh,         '>', "$output_dir/result.txt")       or die "Не удалось создать файл result.txt: $!";
 open(my $keywords_fh,     '>', "$output_dir/keywords.txt")     or die "Не удалось создать файл keywords.txt: $!";
 open(my $operators_fh,    '>', "$output_dir/operators.txt")    or die "Не удалось создать файл operators.txt: $!";
-open(my $identifiers_fh,    '>', "$output_dir/identifiers.txt")    or die "Не удалось создать файл identifiers.txt: $!";
+open(my $identifiers_fh,  '>', "$output_dir/identifiers.txt")  or die "Не удалось создать файл identifiers.txt: $!";
 open(my $constants_fh,    '>', "$output_dir/constants.txt")    or die "Не удалось создать файл constants.txt: $!";
 open(my $punctuations_fh, '>', "$output_dir/punctuations.txt") or die "Не удалось создать файл punctuations.txt: $!";
 

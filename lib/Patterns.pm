@@ -42,11 +42,8 @@ sub getTokenTypesList {
         { Name => "uint16",      Regex => "uint16",      Class => "keyword" },
         { Name => "uint32",      Regex => "uint32",      Class => "keyword" },
         { Name => "uint64",      Regex => "uint64",      Class => "keyword" },
-        { Name => "uintptr",     Regex => "uintptr",     Class => "keyword" },
         { Name => "float32",     Regex => "float32",     Class => "keyword" },
         { Name => "float64",     Regex => "float64",     Class => "keyword" },
-        { Name => "complex64",   Regex => "complex64",   Class => "keyword" },
-        { Name => "complex128",  Regex => "complex128",  Class => "keyword" },
     );
     
     # Операторы
@@ -114,7 +111,7 @@ sub getTokenTypesList {
         { Name => "comma",     Regex => ",",  Class => "punctuation" },
         { Name => "semicolon", Regex => ";",  Class => "punctuation" },
         { Name => "colon",     Regex => ":",  Class => "punctuation" },
-        # { Name => "newline", Regex => "\\n+", Class => "punctuation" },
+        { Name => "newline", Regex => "\\n+", Class => "punctuation" },
     );
     
     # Пропускаемые токены: пробельные символы и комментарии

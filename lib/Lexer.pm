@@ -25,31 +25,31 @@ sub new {
 
 sub lex_analyze {
     my ($self) = @_;
-    my $prev_token;
     while (1) {
         my ($res, $err) = $self->next_token();
         if (defined $err && $err ne "") {
             warn $err, "\n";
             last;
         }
-        last unless $res; 
+        last unless $res;
 
-        # Вставка `;` если необходимо
-        if (defined $prev_token) {
-            if (should_insert_semicolon($prev_token)) {
-                push @{ $self->{TokenList} }, { Name => 'semicolon', Text => ';', Line => 0, Column => 0, Pos => 0, Class => 'punctuation' };
+        if (@{$self->{TokenList}} > 1) {
+            my $prev_token = $self->{TokenList}[-2];
+            my $last_token = $self->{TokenList}[-1];
+            if ($last_token->{Name} eq 'newline' && should_insert_semicolon($prev_token)) {
+                $last_token->{Name} = 'semicolon';
+                $last_token->{Text} = ';';
+                $last_token->{Class} = 'punctuation';
             }
         }
-
-        $prev_token = $self->{TokenList}[-1] if @{ $self->{TokenList} };
     }
-
-    # Вставка `;` в конце если необходимо
+    
+    $self->{TokenList} = [grep { !should_remove_newline($_, $self->{TokenList}) } @{$self->{TokenList}}];
+    
     if (should_insert_semicolon($self->{TokenList}[-1])) {
         push @{ $self->{TokenList} }, { Name => 'semicolon', Text => ';', Line => 0, Column => 0, Pos => 0, Class => 'punctuation' };
     }
     
-    # Если EOF не добавлен лексером, добавляем его здесь
     if ($self->{TokenList}[-1]->{Name} ne 'EOF') {
         push @{ $self->{TokenList} }, { Name => 'EOF', Text => 'EOF', Line => 0, Column => 0, Pos => 0, Class => 'EOF' };
     }
@@ -65,7 +65,32 @@ sub should_insert_semicolon {
             $token->{Name} eq 'return' ||
             $token->{Name} eq 'fallthrough' ||
             $token->{Name} eq 'r_paren' ||
-            $token->{Name} eq 'r_bracket');
+            $token->{Name} eq 'r_bracket' ||
+            $token->{Name} eq 'r_brace' ||
+            $token->{Name} eq 'bool' ||
+            $token->{Name} eq 'string' ||
+            $token->{Name} eq 'int' ||
+            $token->{Name} eq 'int8' ||
+            $token->{Name} eq 'int16' ||
+            $token->{Name} eq 'int32' ||
+            $token->{Name} eq 'int64' ||
+            $token->{Name} eq 'uint' ||
+            $token->{Name} eq 'uint8' ||
+            $token->{Name} eq 'uint16' ||
+            $token->{Name} eq 'uint32' ||
+            $token->{Name} eq 'uint64' ||
+            $token->{Name} eq 'float32' ||
+            $token->{Name} eq 'float64');
+}
+
+sub should_remove_newline {
+    my ($token, $token_list) = @_;
+    my $index = 0;
+    $index++ while $index < @$token_list && $token_list->[$index] != $token;
+    return $token->{Name} eq 'newline' && (
+        $index == 0 ||
+        $token_list->[$index - 1]->{Name} =~ /^(l_paren|l_brace|comma|operator)$/
+    );
 }
 
 sub next_token {

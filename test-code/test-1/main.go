@@ -4,10 +4,8 @@ import (
 	"fmt"
 )
 
-const (
-	WelcomeMessage = "Добро пожаловать в калькулятор на Go!"
-	ErrorMessage   = "Ошибка: неверный ввод!"
-)
+const WelcomeMessage = "Добро пожаловать в калькулятор на Go!"
+const ErrorMessage = "Ошибка: неверный ввод!"
 
 func calculate(a, b float64, operation string) float64 {
 	switch operation {
@@ -30,12 +28,12 @@ func calculate(a, b float64, operation string) float64 {
 }
 
 func main() {
-	var num1, num2 float64 
-	
+	var num1, num2 float64
+
 	var operation string
-	
+
 	var flag bool = false
-	
+
 	flag1 := true
 	flag = true
 

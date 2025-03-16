@@ -3,469 +3,673 @@ package Parser;
 use strict;
 use warnings;
 
-use Data::Dumper;
-
-# Конструктор парсера
 sub new {
-    my ( $class, $tokens ) = @_;
-    my $self = {
-        tokens => $tokens,    # Список токенов от лексера
-        pos    => 0,          # Текущая позиция в списке токенов
-    };
-    bless $self, $class;
-    return $self;
+    my ($class, $tokens) = @_;
+    return bless { tokens => $tokens, pos => 0, symbol_table => { types => {}, variables => {} } }, $class;
 }
 
-sub get_table_value {
-    my ( $self, $action_table, $state, $token_name ) = @_;
-    $token_name = $token_name =~ /^id-\d+$/ ? 'id' : $token_name;
-    return
-      exists $action_table->{$state}{$token_name}
-      ? $action_table->{$state}{$token_name}
-      : undef;
-}
-
-sub should_skip_punctuation {
-    my ( $self, $token_name ) = @_;
-    return  $token_name eq "semicolon";
-            # $token_name eq "l_paren" ||
-            # $token_name eq "r_paren";
-}
-
-# Основной метод парсинга
-sub parse {
+# Возвращает текущий токен
+sub current_token {
     my ($self) = @_;
+    return $self->{tokens}->[$self->{pos}];
+}
 
-    my @state_stack = (0);
-    my @value_stack = ();
-    my $pos         = 0;
+# Переход к следующему токену
+sub consume_token {
+    my ($self) = @_;
+    $self->{pos}++ if $self->{pos} < @{$self->{tokens}};
+}
 
-    # $action_table{state}{token} = [ action_type, value ];
-    # state — текущее состояние автомата.
-    # token — текущий входной токен.
-    # action_type — тип действия:
-    #   'shift' — перейти в новое состояние (value указывает номер состояния).
-    #   'reduce' — свернуть цепочку (value указывает номер правила в rules).
-    #   'accept' — завершить парсинг.
+# Парсинг package
+sub parse_package {
+    my ($self) = @_;
+    my @nodes;
 
-  
-    my %action_table = (
-        
-        -1 => {     # EOF
-            'EOF'       => [ 'accept', 0 ], 
-            'semicolon' => [ 'accept', 0 ],
-        },
+    my $token = $self->current_token();
+    if ($token->{Name} eq 'package') {
+        push @nodes, { Name => $token->{Name}, Text => $token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
 
-        # package 
-        0 => {
-            'package' => [ 'shift', 1 ],
-            # 'import'  => [ 'shift', 4 ],
-            'func'    => [ 'shift', -1 ],
-            # 'semicolon' => [ 'shift', -1 ],
-        },
-
-        1 => {
-            'id'      => [ 'shift', 2 ],
-        },
-
-        2 => {
-            'semicolon' => [ 'reduce', 1 ],
-        },
-
-        3 => {
-            'semicolon' => [ 'shift', 2_0 ],
-        },
-
-
-        # import 
-        2_0 => {
-            'semicolon' => [ 'shift', 20 ],
-            'import'    => [ 'shift',  2_1 ],
-        },
-
-        2_1 => {
-            'l_paren' => [ 'shift', 2_2 ],
-        },
-
-        2_2 => {
-            'string'  => [ 'shift', 2_3 ],
-            'r_paren' => [ 'shift', 2_5 ],
-        },
-
-        2_3 => {
-            'semicolon' => [ 'reduce', 4],
-            'r_paren'   => [ 'reduce', 4],
-        },
-
-        2_4 => {
-            'string'  => [ 'shift', 2_3],
-            'r_paren' => [ 'reduce', 3]
-        },
-
-        2_5 => {
-            'semicolon' => [ 'reduce', 2],
-        },
-
-
-        # 4 => {
-        #     'string'  => [ '' ] 
-        # }
-
-        1_0 => {
-            'id'       => [ 'shift', 1_5 ], 
-            'l_paren'  => [ 'shift', 1_4 ],
-        },
-
-        1_1 => {
-            'plus'     => [ 'shift',  1_6 ],
-            # 'newline' => [ 'accept', 0 ],
-            'EOF'      => [ 'accept', 0 ],  # add
-        },
-
-        1_2 => {
-            'plus'     => [ 'reduce', 1_2 ],
-            'minus'    => [ 'reduce', 1_2 ],  # add
-            'multiply' => [ 'shift',  1_7 ],
-            'divide'   => [ 'shift',  1_7 ],   # add
-            'r_paren'  => [ 'reduce', 1_2 ],
-            'newline' => [ 'reduce', 1_2 ],
-        },
-
-        1_3 => {
-            'plus'     => [ 'reduce', 4 ],
-            'minus'    => [ 'reduce', 4 ],  # add
-            'multiply' => [ 'reduce', 4 ],
-            'divide'   => [ 'reduce', 4 ],  # add
-            'r_paren'  => [ 'reduce', 4 ],
-            'newline' => [ 'reduce', 4 ],
-            'EOF'      => [ 'reduce', 4 ],  # add
-        },
-
-        1_4 => {
-            'id'      => [ 'shift', 15 ],
-            'l_paren' => [ 'shift', 14 ],
-        },
-
-        1_5 => {
-            'plus'     => [ 'reduce', 6 ],
-            'minus'    => [ 'reduce', 6 ],  # add
-            'multiply' => [ 'reduce', 6 ],
-            'divide'   => [ 'reduce', 6 ],  # add
-            'r_paren'  => [ 'reduce', 6 ],
-            'newline' => [ 'reduce', 6 ],
-            'EOF'      => [ 'reduce', 6 ],  # add
-        },
-
-        1_6 => {
-            'id'       => [ 'shift', 15 ],
-            'l_paren'  => [ 'shift', 14 ],
-        },
-
-        1_7 => {
-            'id'       => [ 'shift', 1_5 ],
-            'l_paren'  => [ 'shift', 1_4 ],
-        },
-
-        1_8 => {
-            'plus'     => [ 'shift', 1_6  ],
-            'minus'    => [ 'shift', 1_6  ],   # add
-            'r_paren'  => [ 'shift', 1_11 ],
-        },
-
-        1_9 => {
-            'plus'     => [ 'reduce', 1_1 ],
-            'minus'    => [ 'reduce', 1_1 ],  # add
-            'multiply' => [ 'shift',  1_7 ],
-            'divide'   => [ 'shift',  1_7 ],  # add
-            'r_paren'  => [ 'reduce', 1_1 ],
-            'newline' => [ 'reduce', 1_1 ],
-            'EOF'      => [ 'reduce', 1_1 ],  # add
-        },
-
-        1_10 => {
-            'plus'     => [ 'reduce', 1_3 ],
-            'minus'    => [ 'reduce', 1_3 ],  # add
-            'multiply' => [ 'shift',  1_3 ],
-            'divide'   => [ 'shift',  1_3 ],  # add
-            'r_paren'  => [ 'reduce', 1_3 ],
-            'newline' => [ 'reduce', 1_3 ],
-            'EOF'      => [ 'reduce', 1_3 ],  # add
-        },
-
-        1_11 => {
-            'plus'     => [ 'reduce', 1_5 ],
-            'minus'    => [ 'reduce', 1_5 ],  # add
-            'multiply' => [ 'shift',  1_5 ],
-            'divide'   => [ 'shift',  1_5 ],  # add
-            'r_paren'  => [ 'reduce', 1_5 ],
-            'newline'  => [ 'reduce', 1_5 ],
-            'EOF'      => [ 'reduce', 1_5 ],  # add
-        },
-
-    );
-
-    # Выбран reduce
-
-    # $rules{action_state} = [ lhs, rhs_count ];
-    # actions_state — текущее состояние (номер правила).
-    # lhs — нетерминал, который получается после свертки.
-    # rhs_count — сколько элементов убрать из value_stack.
-    my %rules = (
-        1   => [ 'PACKAGE', 2 ], # PACKAGE → package id
-        # 2   => [ 'IMPORT_DECL', 2 ], # IMPORT_DECL -> 'import' string_lit
-        
-        2   => [ 'IMPORT_DECL',  4 ],  # import_decl → import ( import_specs )
-        3   => [ 'IMPORT_SPECS', 3 ],  # import_specs → import_specs semicolon import_str
-        4   => [ 'IMPORT_SPECS', 1 ],  # import_specs → import_str
-
-        1_1 => [ 'EXPR', 3 ],    # EXPR → EXPR +/- TERM
-        1_2 => [ 'EXPR', 1 ],    # EXPR → TERM 
-        1_3 => [ 'TERM', 3 ],    # TERM → TERM *|/ FACTOR
-        1_4 => [ 'TERM', 1 ],    # TERM → FACTOR
-        1_5 => [ 'FACTOR', 3 ],  # FACTOR → ( EXPR )
-        1_6 => [ 'FACTOR', 1 ],  # FACTOR → id
-
-    );
-
-    # $goto_table{state}{nonterminal} = new_state;
-    # state — текущее состояние автомата.
-    # nonterminal — нетерминал, полученный после reduce.
-    # new_state — состояние, в которое нужно перейти.
-    my %goto_table = (
-        0 => {
-            'PACKAGE' => 2_0,
-        },
-
-        # 3 => {
-        #     'IMPORT' => ,
-        # },
-
-        2_0 => {
-            'IMPORT_DECL' => -1,
-        },
-
-        # 2_1 => {
-        #     'IMPORT_SPECS' => 
-        # },
-
-        2_2 => {
-            "IMPORT_SPECS" => 2_2,
-        },
-
-
-        1_0 => {
-            'EXPR'   => 1_1,
-            'TERM'   => 1_2,
-            'FACTOR' => 1_3,
-        },
-
-        1_2 => {
-            'TERM'   => 1_2,
-        },
-
-        1_4 => { 
-            'EXPR'   => 1_8,
-            'TERM'   => 1_2,
-            'FACTOR' => 1_3, 
-        },
-
-        1_6 => { 
-            'TERM'   => 1_9,
-            'FACTOR' => 1_3,
-        },
-        1_7 => { 
-            'FACTOR' => 1_10,
-        },
-    );
-
-
-    while (1) {
-        my $current_state = $state_stack[-1];
-        my $current_token = $self->{tokens}->[$pos];
-        my $token_name    = $current_token->{Name};
-        
-
-        print "$current_state | $token_name \n";
-
-        # if state_stack[-1] eq 'STMT' break
-
-        my $action =
-          $self->get_table_value( \%action_table, $current_state, $token_name );
-
-        print Dumper(\@state_stack);
-        
-        if ( !$action ) {
-            die "This action by ($current_state, $token_name) is not exists!";
-            return;
+        my $ident = $self->current_token();
+        if ($ident->{Class} eq 'identifier') {
+            push @nodes, { Name => $ident->{Name}, Text => $ident->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидался идентификатор после 'package'";
         }
-        
-        print "Selected action:\n", Dumper(@$action);
 
-        if ($action) {
-            my ( $action_type, $action_state ) = @$action;
-            
-            if ( $action_type eq 'shift' ) {  
-                push @state_stack, $action_state;
-                if ( ! $self->should_skip_punctuation($token_name)) {
-                    push @value_stack, $current_token;
-                }
-                $pos++;
-            }
+        my $semicolon = $self->current_token();
+        if ($semicolon->{Name} eq 'semicolon') {
+            push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ';' после объявления пакета";
+        }
+    }
+    return { type => 'PackageDeclaration', nodes => \@nodes };
+}
 
-            elsif ( $action_type eq 'reduce' ) {
-                die "Ошибка: правило $action_state отсутствует!"
-                  unless exists $rules{$action_state};
+# Парсинг import
+sub parse_import {
+    my ($self) = @_;
+    my @nodes;
+    my @imports;
 
-                my ( $lhs, $rhs_count ) = @{ $rules{$action_state} };
-                my @children;
+    my $token = $self->current_token();
+    if ($token->{Name} eq 'import') {
+        push @nodes, { Name => $token->{Name}, Text => $token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
 
-                # print "\nvalue_stack: ", Dumper( \@value_stack ), "\n";
-                print "Deleted from stack count: ", "$rhs_count\n";
+        my $l_paren = $self->current_token();
+        if ($l_paren->{Name} eq 'l_paren') {
+            push @nodes, { Name => $l_paren->{Name}, Text => $l_paren->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '(' после 'import'";
+        }
 
-                for ( 1 .. $rhs_count ) {
-                    pop @state_stack;
-                    unshift @children, pop @value_stack;
-                }
+        while ($self->current_token()->{Name} eq 'string') {
+            my $import_token = $self->current_token();
+            $self->consume_token();
 
-                if ( !exists $goto_table{ $state_stack[-1] }{$lhs} ) {
-                    die "Ошибка: отсутствует переход GOTO ( $state_stack[-1] | $lhs )";
-                    return;
-                }
-
-                print "GOTO ( $state_stack[-1] | $lhs )\n";
-                
-                my $next_state = $goto_table{ $state_stack[-1] }{$lhs};
-                push @state_stack, $next_state;
-
-                print "Next state: $next_state \n";
-
-                # Фильтруем children, удаляя ненужные токены
-                my %exclude_names = (
-                    'l_paren' => 1,
-                    'r_paren' => 1,
-                );
-                @children = @{ filter_children(\@children, \%exclude_names) };
-
-                my $node = { type => $lhs, children => \@children };
-                
-                push @value_stack, $node;
-                if ($current_token->{Name} eq "semicolon") {
-                    $pos++;
-                }
-            }
-            elsif ( $action_type eq 'accept' ) {
-                # print Dumper( \@value_stack );
-                return \@value_stack;
+            # Точка с запятой после импорта
+            my $semicolon = $self->current_token();
+            if ($semicolon->{Name} eq 'semicolon') {
+                push @imports, {
+                    package   => { Name => $import_token->{Name}, Text => $import_token->{Text}, Pos => $self->{pos} },
+                    semicolon => { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} }
+                };
+                $self->consume_token();
+            } else {
+                die "Ожидалась ';' после импортируемого пути";
             }
         }
-        else {
-            die "Ошибка парсинга: неожиданный токен '$current_token->{Text}' на строке $current_token->{Line}, колонке $current_token->{Column}\n";
+
+        my $r_paren = $self->current_token();
+        if ($r_paren->{Name} eq 'r_paren') {
+            push @nodes, { Name => $r_paren->{Name}, Text => $r_paren->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ')' после списка импортов";
         }
-        print "\n\n";
+
+        my $semicolon = $self->current_token();
+        if ($semicolon->{Name} eq 'semicolon') {
+            push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ';' после ')'";
+        }
+    }
+    return { type => 'ImportDeclaration', nodes => \@nodes, imports => \@imports };
+}
+
+# Парсинг объявления типа
+sub parse_type_declaration {
+    my ($self) = @_;
+    my @nodes;
+
+    # Ключевые слова
+    my @keywords = (
+        { Name => "bool",        Regex => "bool",        Class => "keyword" },
+        { Name => "string",      Regex => "string",      Class => "keyword" },
+        { Name => "int",         Regex => "int",         Class => "keyword" },
+        { Name => "int8",        Regex => "int8",        Class => "keyword" },
+        { Name => "int16",       Regex => "int16",       Class => "keyword" },
+        { Name => "int32",       Regex => "int32",       Class => "keyword" },
+        { Name => "int64",       Regex => "int64",       Class => "keyword" },
+        { Name => "uint",        Regex => "uint",        Class => "keyword" },
+        { Name => "uint8",       Regex => "uint8",       Class => "keyword" },
+        { Name => "uint16",      Regex => "uint16",      Class => "keyword" },
+        { Name => "uint32",      Regex => "uint32",      Class => "keyword" },
+        { Name => "uint64",      Regex => "uint64",      Class => "keyword" },
+        { Name => "float32",     Regex => "float32",     Class => "keyword" },
+        { Name => "float64",     Regex => "float64",     Class => "keyword" },
+    );
+
+    my $type_token = $self->current_token();
+    if ($type_token->{Name} eq 'type') {
+        push @nodes, { Name => $type_token->{Name}, Text => $type_token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+
+        # Имя типа
+        my $type_name = $self->current_token();
+        if ($type_name->{Class} eq 'identifier') {
+            push @nodes, { Name => $type_name->{Name}, Text => $type_name->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалось имя типа после 'type'";
+        }
+
+        # Ключевое слово struct
+        my $struct_token = $self->current_token();
+        if ($struct_token->{Name} eq 'struct') {
+            push @nodes, { Name => $struct_token->{Name}, Text => $struct_token->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалось ключевое слово 'struct'";
+        }
+
+        # Открывающая фигурная скобка
+        my $l_brace = $self->current_token();
+        if ($l_brace->{Name} eq 'l_brace') {
+            push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '{' после 'struct'";
+        }
+
+        # Поля структуры
+        my @fields;
+        while ($self->current_token()->{Name} ne 'r_brace') {
+            my $field_name = $self->current_token();
+            if ($field_name->{Class} eq 'identifier') {
+                $self->consume_token(); # Переход к типу поля
+
+                my $field_type = $self->current_token();
+                my $is_keyword = 0;
+
+                # Проверяем, является ли тип ключевым словом
+                foreach my $keyword (@keywords) {
+                    if ($field_type->{Name} eq $keyword->{Name}) {
+                        $is_keyword = 1;
+                        last;
+                    }
+                }
+
+                if ($is_keyword || $field_type->{Class} eq 'identifier') {
+                    $self->consume_token(); # Переход к точке с запятой
+
+                    # Точка с запятой после поля
+                    my $semicolon = $self->current_token();
+                    if ($semicolon->{Name} eq 'semicolon') {
+                        push @fields, {
+                            field_name => { Name => $field_name->{Name}, Text => $field_name->{Text}, Pos => $self->{pos} },
+                            field_type => { Name => $field_type->{Name}, Text => $field_type->{Text}, Pos => $self->{pos} },
+                            semicolon  => { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} }
+                        };
+
+                        # Добавляем поле в таблицу символов (без знаков препинания)
+                        $self->{symbol_table}{types}{$type_name->{Text}}{fields}{$field_name->{Text}} = $field_type->{Text};
+                        $self->consume_token();
+                    } else {
+                        die "Ожидалась ';' после объявления поля";
+                    }
+                } else {
+                    die "Ожидался тип поля (ключевое слово или идентификатор)";
+                }
+            } else {
+                die "Ожидалось имя поля";
+            }
+        }
+
+        # Закрывающая фигурная скобка
+        my $r_brace = $self->current_token();
+        if ($r_brace->{Name} eq 'r_brace') {
+            push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '}' после полей структуры";
+        }
+
+        # Точка с запятой после закрывающей фигурной скобки
+        my $semicolon = $self->current_token();
+        if ($semicolon->{Name} eq 'semicolon') {
+            push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ';' после '}'";
+        }
+
+        return { type => 'TypeDeclaration', name => $type_name->{Text}, fields => \@fields, nodes => \@nodes };
+    }
+    return undef;
+}
+
+
+
+# Парсинг объявления переменной
+sub parse_variable_declaration {
+    my ($self) = @_;
+    my @nodes;
+
+    my @keywords = (
+        { Name => "bool",        Regex => "bool",        Class => "keyword" },
+        { Name => "string",      Regex => "string",      Class => "keyword" },
+        { Name => "int",         Regex => "int",         Class => "keyword" },
+        { Name => "int8",        Regex => "int8",        Class => "keyword" },
+        { Name => "int16",       Regex => "int16",       Class => "keyword" },
+        { Name => "int32",       Regex => "int32",       Class => "keyword" },
+        { Name => "int64",       Regex => "int64",       Class => "keyword" },
+        { Name => "uint",        Regex => "uint",        Class => "keyword" },
+        { Name => "uint8",       Regex => "uint8",       Class => "keyword" },
+        { Name => "uint16",      Regex => "uint16",      Class => "keyword" },
+        { Name => "uint32",      Regex => "uint32",      Class => "keyword" },
+        { Name => "uint64",      Regex => "uint64",      Class => "keyword" },
+        { Name => "float32",     Regex => "float32",     Class => "keyword" },
+        { Name => "float64",     Regex => "float64",     Class => "keyword" },
+    );
+
+    my $var_name = $self->current_token();
+    if ($var_name->{Class} eq 'identifier') {
+        push @nodes, { Name => $var_name->{Name}, Text => $var_name->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+
+        # Проверяем, является ли это коротким объявлением (:=)
+        my $declaration_token = $self->current_token();
+        if ($declaration_token->{Name} eq 'declaration') {
+            push @nodes, { Name => $declaration_token->{Name}, Text => $declaration_token->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+
+            # Парсим выражение после :=
+            my $expression = $self->parse_expression();
+
+            # Определяем тип переменной
+            my $var_type = 'auto';
+            if ($expression->{type} eq 'StructLiteral') {
+                # Если это литерал структуры, используем имя структуры как тип
+                $var_type = $expression->{struct_type};
+            }
+
+            # Добавляем переменную в таблицу символов
+            $self->{symbol_table}{variables}{$var_name->{Text}} = $var_type;
+
+            push @nodes, { type => 'Expression', value => $expression };
+        } else {
+            # Это явное объявление переменной с типом
+            my $var_type = $self->current_token();
+            my $is_valid_type = 0;
+
+            # Проверяем, является ли тип допустимым (встроенным или кастомным)
+            foreach my $keyword (@keywords) {
+                if ($var_type->{Name} eq $keyword->{Name}) {
+                    $is_valid_type = 1;
+                    last;
+                }
+            }
+
+            # Если тип не встроенный, проверяем, является ли он кастомным типом
+            if (!$is_valid_type && $var_type->{Class} eq 'identifier') {
+                $is_valid_type = 1; # Кастомный тип считается допустимым
+            }
+
+            if ($is_valid_type) {
+                push @nodes, { Name => $var_type->{Name}, Text => $var_type->{Text}, Pos => $self->{pos} };
+                $self->consume_token();
+
+                # Добавляем переменную в таблицу символов
+                $self->{symbol_table}{variables}{$var_name->{Text}} = $var_type->{Text};
+            } else {
+                die "Ожидался допустимый тип переменной (встроенный или кастомный)";
+            }
+        }
+
+        # Точка с запятой после объявления (если она есть)
+        my $semicolon = $self->current_token();
+        if ($semicolon->{Name} eq 'semicolon') {
+            push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } elsif ($semicolon->{Name} ne 'EOF' && $semicolon->{Line} == $var_name->{Line}) {
+            # Если точка с запятой отсутствует, но выражение не на новой строке, выбрасываем ошибку
+            die "Ожидалась ';' после объявления переменной";
+        }
+    }
+    return { type => 'VariableDeclaration', nodes => \@nodes };
+}
+
+# Парсинг функции
+sub parse_function {
+    my ($self) = @_;
+    my @nodes;
+
+    my $func_token = $self->current_token();
+    if ($func_token->{Name} eq 'func') {
+        push @nodes, { Name => $func_token->{Name}, Text => $func_token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+
+        # Имя функции
+        my $func_name = $self->current_token();
+        if ($func_name->{Class} eq 'identifier') {
+            push @nodes, { Name => $func_name->{Name}, Text => $func_name->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалось имя функции после 'func'";
+        }
+
+        # Открывающая скобка для параметров
+        my $l_paren = $self->current_token();
+        if ($l_paren->{Name} eq 'l_paren') {
+            push @nodes, { Name => $l_paren->{Name}, Text => $l_paren->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '(' после имени функции";
+        }
+
+        # Параметры функции (пока пропускаем)
+        while ($self->current_token()->{Name} ne 'r_paren') {
+            $self->consume_token(); # Пропускаем параметры
+        }
+
+        # Закрывающая скобка для параметров
+        my $r_paren = $self->current_token();
+        if ($r_paren->{Name} eq 'r_paren') {
+            push @nodes, { Name => $r_paren->{Name}, Text => $r_paren->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ')' после параметров функции";
+        }
+
+        # Открывающая фигурная скобка для тела функции
+        my $l_brace = $self->current_token();
+        if ($l_brace->{Name} eq 'l_brace') {
+            push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '{' после объявления функции";
+        }
+
+        # Тело функции
+        my @body;
+        while ($self->current_token()->{Name} ne 'r_brace') {
+            my $stmt = $self->parse_statement();
+            push @body, $stmt if $stmt;
+        }
+
+        # Закрывающая фигурная скобка для тела функции
+        my $r_brace = $self->current_token();
+        if ($r_brace->{Name} eq 'r_brace') {
+            push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '}' после тела функции";
+        }
+
+        # Точка с запятой после закрывающей фигурной скобки
+        my $semicolon = $self->current_token();
+        if ($semicolon->{Name} eq 'semicolon') {
+            push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ';' после '}'";
+        }
+
+        return { type => 'FunctionDeclaration', name => $func_name->{Text}, body => \@body, nodes => \@nodes };
+    }
+    return undef;
+}
+
+# Парсинг выражения (вызов функции, оператор, литерал структуры и т.д.)
+sub parse_expression {
+    my ($self) = @_;
+    my $token = $self->current_token();
+
+    if ($token->{Class} eq 'identifier') {
+        # Обработка идентификаторов (вызов функции, использование кастомного типа и т.д.)
+        my $identifier = $token->{Text};
+        $self->consume_token();
+
+        # Проверяем, является ли следующий токен открывающей скобкой '('
+        my $next_token = $self->current_token();
+        if ($next_token->{Name} eq 'l_paren') {
+            # Это вызов функции
+            $self->consume_token(); # Пропускаем '('
+
+            # Аргументы функции (пока пропускаем)
+            while ($self->current_token()->{Name} ne 'r_paren') {
+                $self->consume_token();
+            }
+
+            # Закрывающая скобка для аргументов
+            my $r_paren = $self->current_token();
+            if ($r_paren->{Name} eq 'r_paren') {
+                $self->consume_token();
+                return { type => 'FunctionCall', name => $identifier };
+            } else {
+                die "Ожидалась ')' после аргументов функции";
+            }
+        } elsif ($next_token->{Name} eq 'l_brace') {
+            # Литерал структуры (например, Sequence{Start: 1, End: 10, Step: 2})
+            # Передаем тип структуры (identifier) в parse_struct_literal
+            return $self->parse_struct_literal($identifier);
+        } else {
+            # Это использование кастомного типа (например, создание структуры)
+            return { type => 'CustomType', name => $identifier };
+        }
+    } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'number') {
+        # Обработка числовых литералов
+        my $value = $token->{Text};
+        $self->consume_token();
+        return { type => "$token->{Name}", value => $value };
+    } elsif ($token->{Name} eq 'break') {
+        # Оператор break
+        $self->consume_token();
+        return { type => 'BreakStatement' };
+    } elsif ($token->{Name} eq 'return') {
+        # Оператор return
+        $self->consume_token();
+        return { type => 'ReturnStatement' };
+    } elsif ($token->{Name} eq 'l_brace') {
+        # Литерал структуры (например, Sequence{Start: 1, End: 10, Step: 2})
+        # Если тип структуры не указан, передаем undef
+        return $self->parse_struct_literal(undef);
+    } else {
+        die "Неожиданное выражение: $token->{Text}";
     }
 }
 
-sub filter_children {
-    my ($children, $exclude_names) = @_;
-    return [ grep { !exists $exclude_names->{$_->{Name}} } @$children ];
+# Парсинг литерала структуры
+sub parse_struct_literal {
+    my ($self, $struct_type) = @_;
+    my @nodes;
+
+    # Открывающая фигурная скобка
+    my $l_brace = $self->current_token();
+    if ($l_brace->{Name} eq 'l_brace') {
+        push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+    } else {
+        die "Ожидалась '{' для литерала структуры";
+    }
+
+    # Поля структуры
+    my @fields;
+    while ($self->current_token()->{Name} ne 'r_brace') {
+        my $field_name = $self->current_token();
+        if ($field_name->{Class} eq 'identifier') {
+            $self->consume_token(); # Пропускаем имя поля
+
+            # Двоеточие после имени поля
+            my $colon = $self->current_token();
+            if ($colon->{Name} eq 'colon') {
+                # Убираем добавление colon в nodes
+                $self->consume_token();
+            } else {
+                die "Ожидалось ':' после имени поля";
+            }
+
+            # Значение поля
+            my $field_value = $self->parse_expression();
+            push @fields, {
+                field_name => { Name => $field_name->{Name}, Text => $field_name->{Text}, Pos => $self->{pos} },
+                field_value => $field_value,
+                colon => { Name => $colon->{Name}, Text => $colon->{Text}, Pos => $colon->{Pos} }
+            };
+
+            # Запятая между полями (если есть)
+            my $comma = $self->current_token();
+            if ($comma->{Name} eq 'comma') {
+                push @nodes, { Name => $comma->{Name}, Text => $comma->{Text}, Pos => $self->{pos} };
+                $self->consume_token();
+            } elsif ($self->current_token()->{Name} ne 'r_brace') {
+                die "Ожидалась ',' или '}' после значения поля";
+            }
+        } else {
+            die "Ожидалось имя поля в литерале структуры";
+        }
+    }
+
+    # Закрывающая фигурная скобка
+    my $r_brace = $self->current_token();
+    if ($r_brace->{Name} eq 'r_brace') {
+        push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+    } else {
+        die "Ожидалась '}' для завершения литерала структуры";
+    }
+
+    # Если тип структуры не был передан, пытаемся определить его из контекста
+    unless ($struct_type) {
+        $struct_type = $self->{current_struct_type} // 'auto';
+    }
+
+    # Проверяем, существует ли тип структуры в таблице символов
+    unless ($self->{symbol_table}{types}{$struct_type}) {
+        die "Тип структуры '$struct_type' не найден в таблице символов";
+    }
+
+    return {
+        type => 'StructLiteral',
+        struct_type => $struct_type, # Сохраняем тип структуры
+        fields => \@fields,
+        nodes => \@nodes
+    };
+}
+
+# Парсинг оператора (объявление переменной, цикл, условие и т.д.)
+sub parse_statement {
+    my ($self) = @_;
+    my $token = $self->current_token();
+
+    if ($token->{Name} eq 'var' || $token->{Class} eq 'identifier') {
+        # Объявление переменной
+        return $self->parse_variable_declaration();
+    } elsif ($token->{Name} eq 'for') {
+        # Цикл for
+        return $self->parse_for_loop();
+    } elsif ($token->{Name} eq 'if') {
+        # Условие if
+        return $self->parse_if_statement();
+    } else {
+        # Выражение (вызов функции, оператор и т.д.)
+        return $self->parse_expression();
+    }
+}
+
+# Парсинг цикла for
+sub parse_for_loop {
+    my ($self) = @_;
+    my @nodes;
+
+    my $for_token = $self->current_token();
+    if ($for_token->{Name} eq 'for') {
+        push @nodes, { Name => $for_token->{Name}, Text => $for_token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+
+        # Открывающая фигурная скобка для тела цикла
+        my $l_brace = $self->current_token();
+        if ($l_brace->{Name} eq 'l_brace') {
+            push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '{' после 'for'";
+        }
+
+        # Тело цикла
+        my @body;
+        while ($self->current_token()->{Name} ne 'r_brace') {
+            my $stmt = $self->parse_statement();
+            push @body, $stmt if $stmt;
+        }
+
+        # Закрывающая фигурная скобка для тела цикла
+        my $r_brace = $self->current_token();
+        if ($r_brace->{Name} eq 'r_brace') {
+            push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '}' после тела цикла";
+        }
+
+        return { type => 'ForLoop', body => \@body, nodes => \@nodes };
+    }
+    return undef;
+}
+
+# Парсинг условия if
+sub parse_if_statement {
+    my ($self) = @_;
+    my @nodes;
+
+    my $if_token = $self->current_token();
+    if ($if_token->{Name} eq 'if') {
+        push @nodes, { Name => $if_token->{Name}, Text => $if_token->{Text}, Pos => $self->{pos} };
+        $self->consume_token();
+
+        # Условие (пока пропускаем)
+        while ($self->current_token()->{Name} ne 'l_brace') {
+            $self->consume_token();
+        }
+
+        # Открывающая фигурная скобка для тела условия
+        my $l_brace = $self->current_token();
+        if ($l_brace->{Name} eq 'l_brace') {
+            push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '{' после условия 'if'";
+        }
+
+        # Тело условия
+        my @body;
+        while ($self->current_token()->{Name} ne 'r_brace') {
+            my $stmt = $self->parse_statement();
+            push @body, $stmt if $stmt;
+        }
+
+        # Закрывающая фигурная скобка для тела условия
+        my $r_brace = $self->current_token();
+        if ($r_brace->{Name} eq 'r_brace') {
+            push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->{pos} };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '}' после тела условия";
+        }
+
+        return { type => 'IfStatement', body => \@body, nodes => \@nodes };
+    }
+    return undef;
+}
+
+# Главная функция разбора
+sub parse {
+    my ($self) = @_;
+    my @children;
+
+    while (my $token = $self->current_token()) {
+        if ($token->{Name} eq 'package') {
+            push @children, $self->parse_package();
+        } elsif ($token->{Name} eq 'import') {
+            push @children, $self->parse_import();
+        } elsif ($token->{Name} eq 'type') {
+            push @children, $self->parse_type_declaration();
+        } elsif ($token->{Name} eq 'func') {
+            push @children, $self->parse_function();
+        } elsif ($token->{Class} eq 'identifier') {
+            push @children, $self->parse_variable_declaration();
+        } elsif ($token->{Class} eq 'EOF') {
+            last;
+        } else {
+            die "Неожиданный токен: $token->{Text}";
+        }
+    }
+
+    # Возвращаем корневую ноду Program с дочерними нодами
+    return { type => 'Program', children => \@children };
+}
+# Возвращает таблицу символов
+sub get_symbol_table {
+    my ($self) = @_;
+    return $self->{symbol_table};
 }
 
 1;
-
-
-
-  # my %action_table = (
-
-    #     # Начальное состояние 0: Ждем начало выражения
-    #     0 => {
-    #         # 'id'      => [ 'shift', 2 ],   # Если встречаем идентификатор (id), переходим в состояние 2
-    #         'id'      => [ 'shift', 5 ], 
-    #         'l_paren' => [ 'shift', 3 ]   # Если открывающая скобка, переходим в состояние 3
-    #     },
-
-    #     # Состояние 1: Завершенное выражение, ждем конец строки или файла
-    #     1 => {
-    #         'newline' => [ 'reduce', 0 ],  # Конец строки - сворачиваем выражение
-    #         'EOF'      => [ 'accept', 0 ]   # Конец файла - успешное завершение парсинга
-    #     },
-
-    #     # Состояние 2: После идентификатора (id), ожидаем оператор или конец выражения
-    #     2 => {
-    #         # 'plus'     => [ 'shift', 6 ],    # Если `+`, переходим в состояние 6
-    #         # 'minus'    => [ 'shift', 6 ],    # Если `-`, переходим в состояние 6
-    #         # 'multiply' => [ 'shift', 4 ],    # Если `*`, переходим в состояние 4
-    #         # 'divide'   => [ 'shift', 4 ],    # Если `/`, переходим в состояние 4
-    #         # 'r_paren'  => [ 'reduce', 3 ],   # Закрывающая скобка → свернуть `FACTOR → id`
-    #         # 'EOF'      => [ 'reduce', 3 ]    # Если конец выражения, свернуть `FACTOR → id`
-    #         'plus'     => [ 'reduce', 2 ],
-    #         'multiply' => [ 'shift', 7 ],
-    #         'divide'   => [ 'shift', 7 ],
-    #         'r_paren'  => [ 'reduce', 2 ],
-    #         'newline' => [ 'reduce', 2 ],
-    #     },
-
-    #     # Состояние 3: После `(`, ждем новое выражение (вложенность)
-    #     # 3 => {
-    #     #     'id'      => [ 'shift', 2 ],    # Ждем идентификатор
-    #     #     'l_paren' => [ 'shift', 3 ]     # Или новую вложенную скобку
-    #     # },
-        
-    #     3 => {
-    #         # 'plus' => [ 'reduce', 4 ],
-    #         'divide'   => [ 'reduce', 2 ],
-    #         'multiply' => [ 'reduce', 2 ],
-    #         # 'r_paren' => [ 'reduce', 4 ],
-    #         # 'newline' => [ 'reduce', 4 ],
-    #     },
-
-    #     # Состояние 4: После `*` или `/`, ждем следующий идентификатор
-    #     4 => {
-    #         'id'      => [ 'shift', 5 ],    # Ожидаем число или переменную
-    #         'l_paren' => [ 'shift', 3 ]     # Или новую скобку
-    #     },
-
-    #     # Состояние 5: Завершение `FACTOR`, проверяем следующий оператор
-    #     5 => {
-    #         'plus'     => [ 'reduce', 2 ],    # Завершаем `TERM * FACTOR` → `TERM`
-    #         'minus'    => [ 'reduce', 2 ],    # Завершаем `TERM / FACTOR` → `TERM`
-    #         # 'multiply' => [ 'shift',  4 ],    # Если еще одно `*`, продолжаем цепочку умножений
-    #         'multiply' => [ 'reduce', 3 ],
-    #         'divide'   => [ 'shift',  4 ],    # Если еще одно `/`, продолжаем цепочку делений
-    #         'r_paren'  => [ 'reduce', 2 ],    # Закрывающая скобка → свернуть `TERM`
-    #         'EOF'      => [ 'reduce', 2 ]     # Конец строки → свернуть `TERM`
-    #     },
-
-    #     # Состояние 6: После `+` или `-`, ждем `TERM`
-    #     6 => {
-    #         'id'      => [ 'shift', 2 ],    # Число или переменная после `+` или `-`
-    #         'l_paren' => [ 'shift', 3 ]     # Или новая скобка
-    #     },
-
-    #     7 => {
-    #         'id' => [ 'reduce', 3 ]     # Fact -> id
-    #     },
-
-    #     8 => {
-    #         'id' => [ 'reduce', 2 ]     # Term -> Fact
-    #     },
-
-    #     9 => {
-    #         'id' => [ 'reduce', 1 ]     # Expr -> Term
-    #     },
-    # );
-
-    # my %rules = (
-    #     # Базовые правила
-    #     1 => [ 'EXPR', 1 ],    # EXPR → TERM
-    #     2 => [ 'TERM', 1 ],    # TERM → FACTOR
-    #     3 => [ 'FACTOR', 1 ],  # FACTOR → id
-    #     4 => [ 'FACTOR', 3 ],  # FACTOR → ( EXPR )
-
-    #     # Правила для сложения и вычитания (низкий приоритет)
-    #     5 => [ 'EXPR', 2 ],    # EXPR → EXPR + TERM
-    #     6 => [ 'EXPR', 2 ],    # EXPR → EXPR - TERM
-
-    #     # Правила для умножения и деления (высокий приоритет)
-    #     7 => [ 'TERM', 2 ],    # TERM → TERM * FACTOR
-    #     8 => [ 'TERM', 2 ],    # TERM → TERM / FACTOR
-    # );

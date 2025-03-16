@@ -1,0 +1,14 @@
+{
+   "types" : {
+      "Sequence" : {
+         "fields" : {
+            "End" : "int",
+            "Start" : "int",
+            "Step" : "int"
+         }
+      }
+   },
+   "variables" : {
+      "seq" : "Sequence"
+   }
+}
