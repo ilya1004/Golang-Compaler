@@ -3,4 +3,5 @@ ID    Лексема
 0     package                       
 1     func                          
 2     int                           
-3     return                        
+3     if                            
+4     return                        

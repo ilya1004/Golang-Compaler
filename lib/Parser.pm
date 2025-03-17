@@ -396,6 +396,13 @@ sub parse_function {
                 die "Ожидался тип параметра";
             }
 
+            # Добавляем параметр в таблицу символов с областью видимости, привязанной к функции
+            $self->{symbol_table}{variables}{$param_name->{Text}} = {
+                type => $param_type->{Text},
+                scope => $func_name->{Text},  # Область видимости — имя функции
+                pos => $self->{token_counter}  # Текущее значение счетчика токенов
+            };
+
             push @params, {
                 param_name => { Name => $param_name->{Name}, Text => $param_name->{Text}, Pos => $self->get_next_token_pos() },
                 param_type => { Name => $param_type->{Name}, Text => $param_type->{Text}, Pos => $self->get_next_token_pos() }
@@ -645,6 +652,7 @@ sub parse_statement {
 # Парсинг выражения с присваиванием (например, a = b + 1)
 sub parse_assignment_expression {
     my ($self) = @_;
+    print "parse_assignment_expression\n";
     my $left = $self->parse_additive_expression();
     my $operator = $self->current_token();
     
@@ -689,6 +697,7 @@ sub parse_assignment_expression {
 # Парсинг выражений с операторами сложения и вычитания (например, a + b - c)
 sub parse_additive_expression {
     my ($self) = @_;
+    print "parse_additive_expression\n";
     my $left = $self->parse_multiplicative_expression();
 
     while (1) {
@@ -718,6 +727,7 @@ sub parse_additive_expression {
 # Парсинг выражений с операторами умножения и деления (например, a * b / c)
 sub parse_multiplicative_expression {
     my ($self) = @_;
+    print "parse_multiplicative_expression\n";
     my $left = $self->parse_primary_expression();
 
     while (1) {
@@ -775,14 +785,10 @@ sub parse_primary_expression {
         } else {
             die "Ожидалась ')' после выражения";
         }
-    # } elsif ($token->{Name} eq 'semicolon') {
-    #     $self->consume_token();
-    #     return { 
-    #         Name => $token->{Name}, 
-    #         Text => $token->{Text}, 
-    #         Pos => $self->get_next_token_pos() 
-    #     };
-    #     } 
+    } elsif ($token->{Name} eq 'semicolon') {
+        # Точка с запятой не является частью выражения, просто пропускаем её
+        $self->consume_token();
+        return undef;  # Возвращаем undef, чтобы не добавлять её в AST
     } else {
         die "Ожидалось простое выражение (идентификатор, число или выражение в скобках)";
     }
@@ -828,9 +834,72 @@ sub parse_for_loop {
     return undef;
 }
 
+# Парсинг логических выражений (&&, ||)
+sub parse_logical_expression {
+    my ($self) = @_;
+    print "parse_logical_expression\n";
+    my $left = $self->parse_relational_expression();
+
+    while (1) {
+        my $operator = $self->current_token();
+        if ($operator->{Class} eq 'operator' && 
+            ($operator->{Name} eq 'logical_and' || $operator->{Name} eq 'logical_or')) {
+            $self->consume_token();
+            my $operator_pos = $self->{token_counter};  # Позиция оператора
+            my $right = $self->parse_relational_expression();
+            $left = {
+                type => 'LogicalExpression',
+                left => $left,
+                operator => {
+                    type => 'Operator',
+                    value => $operator->{Text},
+                    Pos => $operator_pos
+                },
+                right => $right,
+            };
+        } else {
+            last;
+        }
+    }
+    return $left;
+}
+
+# Парсинг реляционных выражений (>, <, >=, <=, ==, !=)
+sub parse_relational_expression {
+    my ($self) = @_;
+    print "parse_relational_expression\n";
+    my $left = $self->parse_additive_expression();
+
+    while (1) {
+        my $operator = $self->current_token();
+        if ($operator->{Class} eq 'operator' && 
+            ($operator->{Name} eq 'greater' || $operator->{Name} eq 'less' || 
+             $operator->{Name} eq 'greater_equal' || $operator->{Name} eq 'less_equal' || 
+             $operator->{Name} eq 'equal' || $operator->{Name} eq 'not_equal')) {
+            $self->consume_token();
+            my $operator_pos = $self->{token_counter};  # Позиция оператора
+            my $right = $self->parse_additive_expression();
+            $left = {
+                type => 'RelationalExpression',
+                left => $left,
+                operator => {
+                    type => 'Operator',
+                    value => $operator->{Text},
+                    Pos => $operator_pos
+                },
+                right => $right,
+            };
+        } else {
+            last;
+        }
+    }
+    return $left;
+}
+
 # Парсинг условия if
 sub parse_if_statement {
     my ($self) = @_;
+    print "parse_if_statement\n";
     my @nodes;
 
     my $if_token = $self->current_token();
@@ -838,10 +907,8 @@ sub parse_if_statement {
         push @nodes, { Name => $if_token->{Name}, Text => $if_token->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
 
-        # Условие (пока пропускаем)
-        while ($self->current_token()->{Name} ne 'l_brace') {
-            $self->consume_token();
-        }
+        # Условие if
+        my $condition = $self->parse_logical_expression();
 
         # Открывающая фигурная скобка для тела условия
         my $l_brace = $self->current_token();
@@ -852,11 +919,11 @@ sub parse_if_statement {
             die "Ожидалась '{' после условия 'if'";
         }
 
-        # Тело условия
-        my @body;
+        # Тело условия if
+        my @if_body;
         while ($self->current_token()->{Name} ne 'r_brace') {
             my $stmt = $self->parse_statement();
-            push @body, $stmt if $stmt;
+            push @if_body, $stmt if $stmt;
         }
 
         # Закрывающая фигурная скобка для тела условия
@@ -868,7 +935,89 @@ sub parse_if_statement {
             die "Ожидалась '}' после тела условия";
         }
 
-        return { type => 'IfStatement', body => \@body, nodes => \@nodes };
+        # Обработка else if и else
+        my @else_if_nodes;
+        my @else_body;
+        while ($self->current_token()->{Name} eq 'else') {
+            my $else_token = $self->current_token();
+            push @nodes, { Name => $else_token->{Name}, Text => $else_token->{Text}, Pos => $self->get_next_token_pos() };
+            $self->consume_token();
+
+            if ($self->current_token()->{Name} eq 'if') {
+                # Обработка else if
+                my $else_if_token = $self->current_token();
+                push @nodes, { Name => $else_if_token->{Name}, Text => $else_if_token->{Text}, Pos => $self->get_next_token_pos() };
+                $self->consume_token();
+
+                # Условие else if
+                my $else_if_condition = $self->parse_logical_expression();
+
+                # Открывающая фигурная скобка для тела else if
+                my $l_brace_else_if = $self->current_token();
+                if ($l_brace_else_if->{Name} eq 'l_brace') {
+                    push @nodes, { Name => $l_brace_else_if->{Name}, Text => $l_brace_else_if->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалась '{' после условия 'else if'";
+                }
+
+                # Тело else if
+                my @else_if_body;
+                while ($self->current_token()->{Name} ne 'r_brace') {
+                    my $stmt = $self->parse_statement();
+                    push @else_if_body, $stmt if $stmt;
+                }
+
+                # Закрывающая фигурная скобка для тела else if
+                my $r_brace_else_if = $self->current_token();
+                if ($r_brace_else_if->{Name} eq 'r_brace') {
+                    push @nodes, { Name => $r_brace_else_if->{Name}, Text => $r_brace_else_if->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалась '}' после тела else if";
+                }
+
+                push @else_if_nodes, {
+                    type => 'ElseIfStatement',
+                    condition => $else_if_condition,
+                    body => \@else_if_body,
+                };
+            } else {
+                # Обработка else
+                # Открывающая фигурная скобка для тела else
+                my $l_brace_else = $self->current_token();
+                if ($l_brace_else->{Name} eq 'l_brace') {
+                    push @nodes, { Name => $l_brace_else->{Name}, Text => $l_brace_else->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалась '{' после 'else'";
+                }
+
+                # Тело else
+                while ($self->current_token()->{Name} ne 'r_brace') {
+                    my $stmt = $self->parse_statement();
+                    push @else_body, $stmt if $stmt;
+                }
+
+                # Закрывающая фигурная скобка для тела else
+                my $r_brace_else = $self->current_token();
+                if ($r_brace_else->{Name} eq 'r_brace') {
+                    push @nodes, { Name => $r_brace_else->{Name}, Text => $r_brace_else->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалась '}' после тела else";
+                }
+            }
+        }
+
+        return {
+            type => 'IfStatement',
+            condition => $condition,
+            body => \@if_body,
+            else_if => \@else_if_nodes,
+            else_body => \@else_body,
+            nodes => \@nodes
+        };
     }
     return undef;
 }

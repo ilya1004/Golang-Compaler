@@ -14,17 +14,20 @@ int                            int             3          19         keyword:2
 )                              r_paren         3          22         punctuation:3
 int                            int             3          24         keyword:2
 {                              l_brace         3          28         punctuation:4
-a                              id-2            4          2               
-=                              assignment      4          4          operator:0
-b                              id-3            4          6               
-+                              plus            4          8          operator:1
+if                             if              4          2          keyword:3
+a                              id-2            4          5               
+==                             equal           4          7          operator:0
 1                              number          4          10         constant:0
-+                              plus            4          12         operator:1
-2                              number          4          14         constant:1
-;                              semicolon       4          15         punctuation:0
-return                         return          5          2          keyword:3
-a                              id-2            5          9               
-;                              semicolon       5          10         punctuation:0
-}                              r_brace         6          1          punctuation:6
-;                              semicolon       6          2          punctuation:0
+{                              l_brace         4          12         punctuation:4
+b                              id-3            5          3               
+=                              assignment      5          5          operator:1
+2                              number          5          7          constant:1
+;                              semicolon       5          8          punctuation:0
+}                              r_brace         6          2          punctuation:6
+;                              semicolon       6          3          punctuation:0
+return                         return          7          2          keyword:4
+a                              id-2            7          9               
+;                              semicolon       7          10         punctuation:0
+}                              r_brace         8          1          punctuation:6
+;                              semicolon       8          2          punctuation:0
 EOF                            EOF             0          0               

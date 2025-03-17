@@ -23,69 +23,85 @@
     {
       "body": [
         {
-          "left": {
-            "Pos": 13,
-            "type": "Identifier",
-            "value": "a"
-          },
-          "operator": {
-            "Pos": 14,
-            "type": "Operator",
-            "value": "="
-          },
-          "right": {
-            "left": {
+          "body": [
+            {
               "left": {
-                "Pos": 15,
+                "Pos": 17,
                 "type": "Identifier",
                 "value": "b"
               },
               "operator": {
-                "Pos": 16,
+                "Pos": 18,
                 "type": "Operator",
-                "value": "+"
+                "value": "="
               },
               "right": {
-                "Pos": 17,
+                "Pos": 19,
                 "type": "NumberLiteral",
-                "value": "1"
+                "value": "2"
               },
-              "type": "BinaryOperation"
+              "semicolon": {
+                "Pos": 20,
+                "type": "Punctuation",
+                "value": ";"
+              },
+              "type": "AssignmentExpression"
+            }
+          ],
+          "condition": {
+            "left": {
+              "Pos": 14,
+              "type": "Identifier",
+              "value": "a"
             },
             "operator": {
-              "Pos": 18,
+              "Pos": 15,
               "type": "Operator",
-              "value": "+"
+              "value": "=="
             },
             "right": {
-              "Pos": 19,
+              "Pos": 15,
               "type": "NumberLiteral",
-              "value": "2"
+              "value": "1"
             },
-            "type": "BinaryOperation"
+            "type": "RelationalExpression"
           },
-          "semicolon": {
-            "Pos": 20,
-            "type": "Punctuation",
-            "value": ";"
-          },
-          "type": "AssignmentExpression"
+          "else_body": [],
+          "else_if": [],
+          "nodes": [
+            {
+              "Name": "if",
+              "Pos": 13,
+              "Text": "if"
+            },
+            {
+              "Name": "l_brace",
+              "Pos": 16,
+              "Text": "{"
+            },
+            {
+              "Name": "r_brace",
+              "Pos": 21,
+              "Text": "}"
+            }
+          ],
+          "type": "IfStatement"
         },
         {
           "expression": {
-            "Pos": 22,
+            "Pos": 23,
             "type": "Identifier",
             "value": "a"
           },
           "nodes": [
             {
               "Name": "return",
-              "Pos": 21,
+              "Pos": 22,
               "Text": "return"
             },
             {
               "Name": "semicolon",
-              "Pos": 23,
+              "Pos": 24,
               "Text": ";"
             }
           ],
@@ -121,12 +137,12 @@
         },
         {
           "Name": "r_brace",
-          "Pos": 24,
+          "Pos": 25,
           "Text": "}"
         },
         {
           "Name": "semicolon",
-          "Pos": 25,
+          "Pos": 26,
           "Text": ";"
         }
       ],
