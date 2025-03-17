@@ -14,18 +14,16 @@ int                            int             3          19         keyword:2
 )                              r_paren         3          22         punctuation:3
 int                            int             3          24         keyword:2
 {                              l_brace         3          28         punctuation:4
-c                              id-4            4          2               
-:=                             declaration     4          4          operator:0
-a                              id-2            4          7               
-+                              plus            4          9          operator:1
-b                              id-3            4          11              
-+                              plus            4          13         operator:1
-1                              number          4          15         constant:0
-+                              plus            4          17         operator:1
-4                              number          4          19         constant:1
-;                              semicolon       4          20         punctuation:0
+a                              id-2            4          2               
+=                              assignment      4          4          operator:0
+b                              id-3            4          6               
++                              plus            4          8          operator:1
+1                              number          4          10         constant:0
++                              plus            4          12         operator:1
+2                              number          4          14         constant:1
+;                              semicolon       4          15         punctuation:0
 return                         return          5          2          keyword:3
-c                              id-4            5          9               
+a                              id-2            5          9               
 ;                              semicolon       5          10         punctuation:0
 }                              r_brace         6          1          punctuation:6
 ;                              semicolon       6          2          punctuation:0

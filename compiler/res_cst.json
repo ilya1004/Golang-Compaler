@@ -23,87 +23,69 @@
     {
       "body": [
         {
-          "nodes": [
-            {
-              "Name": "id-4",
-              "Pos": 13,
-              "Text": "c"
+          "left": {
+            "Pos": 13,
+            "type": "Identifier",
+            "value": "a"
+          },
+          "operator": {
+            "Pos": 14,
+            "type": "Operator",
+            "value": "="
+          },
+          "right": {
+            "left": {
+              "left": {
+                "Pos": 15,
+                "type": "Identifier",
+                "value": "b"
+              },
+              "operator": {
+                "Pos": 16,
+                "type": "Operator",
+                "value": "+"
+              },
+              "right": {
+                "Pos": 17,
+                "type": "NumberLiteral",
+                "value": "1"
+              },
+              "type": "BinaryOperation"
             },
-            {
-              "Name": "declaration",
-              "Pos": 14,
-              "Text": ":="
+            "operator": {
+              "Pos": 18,
+              "type": "Operator",
+              "value": "+"
             },
-            {
-              "type": "Expression",
-              "value": {
-                "left": {
-                  "left": {
-                    "left": {
-                      "Pos": 15,
-                      "type": "Identifier",
-                      "value": "a"
-                    },
-                    "operator": {
-                      "Pos": 16,
-                      "type": "Operator",
-                      "value": "+"
-                    },
-                    "right": {
-                      "Pos": 17,
-                      "type": "Identifier",
-                      "value": "b"
-                    },
-                    "type": "BinaryOperation"
-                  },
-                  "operator": {
-                    "Pos": 18,
-                    "type": "Operator",
-                    "value": "+"
-                  },
-                  "right": {
-                    "Pos": 19,
-                    "type": "NumberLiteral",
-                    "value": "1"
-                  },
-                  "type": "BinaryOperation"
-                },
-                "operator": {
-                  "Pos": 20,
-                  "type": "Operator",
-                  "value": "+"
-                },
-                "right": {
-                  "Pos": 21,
-                  "type": "NumberLiteral",
-                  "value": "4"
-                },
-                "type": "BinaryOperation"
-              }
+            "right": {
+              "Pos": 19,
+              "type": "NumberLiteral",
+              "value": "2"
             },
-            {
-              "Name": "semicolon",
-              "Pos": 22,
-              "Text": ";"
-            }
-          ],
-          "type": "VariableDeclaration"
+            "type": "BinaryOperation"
+          },
+          "semicolon": {
+            "Pos": 20,
+            "type": "Punctuation",
+            "value": ";"
+          },
+          "type": "AssignmentExpression"
         },
         {
           "expression": {
-            "Pos": 24,
+            "Pos": 22,
             "type": "Identifier",
-            "value": "c"
+            "value": "a"
           },
           "nodes": [
             {
               "Name": "return",
-              "Pos": 23,
+              "Pos": 21,
               "Text": "return"
             },
             {
               "Name": "semicolon",
-              "Pos": 25,
+              "Pos": 23,
               "Text": ";"
             }
           ],
@@ -139,12 +121,12 @@
         },
         {
           "Name": "r_brace",
-          "Pos": 26,
+          "Pos": 24,
           "Text": "}"
         },
         {
           "Name": "semicolon",
-          "Pos": 27,
+          "Pos": 25,
           "Text": ";"
         }
       ],

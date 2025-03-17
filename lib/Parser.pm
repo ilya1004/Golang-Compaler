@@ -19,6 +19,11 @@ sub current_token {
     return $self->{tokens}->[$self->{pos}];
 }
 
+sub next_token {
+    my ($self) = @_;
+    return $self->{tokens}->[$self->{pos} + 1];
+}
+
 # Переход к следующему токену
 sub consume_token {
     my ($self) = @_;
@@ -251,9 +256,10 @@ sub parse_type_declaration {
     return undef;
 }
 
-# Парсинг объявления переменной 
+# Парсинг объявления переменной
 sub parse_variable_declaration {
     my ($self) = @_;
+    print "parse_variable_declaration\n";
     my @nodes;
 
     my @keywords = (
@@ -323,7 +329,9 @@ sub parse_variable_declaration {
                 # Добавляем переменную в таблицу символов
                 $self->{symbol_table}{variables}{$var_name->{Text}} = $var_type->{Text};
             } else {
-                die "Ожидался допустимый тип переменной (встроенный или кастомный)";
+                # Если это не тип, то это может быть оператор присваивания (например, a += b)
+                # В таком случае передаем управление parse_expression
+                return $self->parse_expression();
             }
         }
 
@@ -343,6 +351,7 @@ sub parse_variable_declaration {
 # Парсинг функции
 sub parse_function {
     my ($self) = @_;
+    print "parse_function\n";
     my @nodes;
 
     my $func_token = $self->current_token();
@@ -499,7 +508,6 @@ sub parse_function {
 # Парсинг выражения (вызов функции, оператор, литерал структуры и т.д.)
 sub parse_expression {
     my ($self) = @_;
-    print "234\n";
     return $self->parse_assignment_expression();
 }
 
@@ -612,9 +620,11 @@ sub parse_return_statement {
 # Парсинг оператора (объявление переменной, цикл, условие и т.д.)
 sub parse_statement {
     my ($self) = @_;
+    print "parse_statement\n";
     my $token = $self->current_token();
+    my $next_token = $self->next_token();
 
-    if ($token->{Name} eq 'var' || $token->{Class} eq 'identifier') {
+    if ($token->{Name} eq 'var' || ($token->{Class} eq 'identifier' && $next_token->{Name} eq 'declaration')) {
         # Объявление переменной
         return $self->parse_variable_declaration();
     } elsif ($token->{Name} eq 'for') {
@@ -632,30 +642,45 @@ sub parse_statement {
     }
 }
 
-# Парсинг выражения с присваиванием (например, a += b)
+# Парсинг выражения с присваиванием (например, a = b + 1)
 sub parse_assignment_expression {
     my ($self) = @_;
     my $left = $self->parse_additive_expression();
-
     my $operator = $self->current_token();
+    
     if ($operator->{Class} eq 'operator' && 
         ($operator->{Name} eq 'assignment' || 
          $operator->{Name} eq 'plus_assign' || 
          $operator->{Name} eq 'minus_assign' || 
          $operator->{Name} eq 'mul_assign' || 
          $operator->{Name} eq 'div_assign')) {
+        # Получаем позицию оператора из текущего токена
+        my $operator_pos = $self->get_next_token_pos();
         $self->consume_token();
         my $right = $self->parse_assignment_expression();
+        
+        # Проверяем, есть ли точка с запятой после выражения
+        my $semicolon = $self->current_token();
+        my $has_semicolon = 0;
+        if ($semicolon->{Name} eq 'semicolon') {
+            $self->consume_token();
+            $has_semicolon = 1;
+        }
+        
         return {
             type => 'AssignmentExpression',
             left => $left,
             operator => {
                 type => 'Operator',
                 value => $operator->{Text},
-                Pos => $self->get_next_token_pos()  # Позиция оператора
+                Pos => $operator_pos  # Используем позицию текущего токена
             },
             right => $right,
-            # Pos => $self->get_next_token_pos()  # Позиция всей операции
+            semicolon => $has_semicolon ? {
+                type => 'Punctuation',
+                value => $semicolon->{Text},
+                Pos => $self->get_next_token_pos()  # Позиция точки с запятой
+            } : undef,
         };
     }
     return $left;
@@ -682,7 +707,6 @@ sub parse_additive_expression {
                     Pos => $operator_pos  # Позиция оператора
                 },
                 right => $right,
-                # Pos => $self->get_next_token_pos()  # Позиция всей операции
             };
         } else {
             last;
@@ -712,7 +736,6 @@ sub parse_multiplicative_expression {
                     Pos => $operator_pos  # Позиция оператора
                 },
                 right => $right,
-                # Pos => $self->get_next_token_pos()  # Позиция всей операции
             };
         } else {
             last;
@@ -724,11 +747,13 @@ sub parse_multiplicative_expression {
 # Парсинг простого выражения (идентификатор, число и т.д.)
 sub parse_primary_expression {
     my ($self) = @_;
+    print "parse_primary_expression\n";
     my $token = $self->current_token();
+    print "Текущий токен в parse_primary_expression: $token->{Name}\n";  # Отладочный вывод
 
     if ($token->{Class} eq 'identifier') {
         $self->consume_token();
-        return { 
+        return {
             type => 'Identifier', 
             value => $token->{Text}, 
             Pos => $self->get_next_token_pos()  # Добавляем позицию
@@ -750,6 +775,14 @@ sub parse_primary_expression {
         } else {
             die "Ожидалась ')' после выражения";
         }
+    # } elsif ($token->{Name} eq 'semicolon') {
+    #     $self->consume_token();
+    #     return { 
+    #         Name => $token->{Name}, 
+    #         Text => $token->{Text}, 
+    #         Pos => $self->get_next_token_pos() 
+    #     };
+    #     } 
     } else {
         die "Ожидалось простое выражение (идентификатор, число или выражение в скобках)";
     }
@@ -843,8 +876,9 @@ sub parse_if_statement {
 # Главная функция разбора
 sub parse {
     my ($self) = @_;
+    print "parse\n";
     my @children;
-
+    
     while (my $token = $self->current_token()) {
         if ($token->{Name} eq 'package') {
             push @children, $self->parse_package();
