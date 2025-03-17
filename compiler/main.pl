@@ -25,6 +25,7 @@ print "\n-----------------------------------------\n";
 my $parser = Parser->new($tokens);
 my $cst = $parser->parse();
 my $symbol_table = $parser->get_symbol_table();
+my $imports = $parser->get_imports();  # Получаем список импортов
 
 print "Распознанные токены:\n";
 foreach my $token (@$tokens) {
@@ -43,6 +44,11 @@ my $symbol_table_json = to_json($symbol_table, {
     canonical => 1,
 });
 
+my $imports_json = to_json($imports, {
+    pretty => 1,
+    canonical => 1,
+});
+
 my $cst_filename = 'res_cst.json';
 open(my $cst_fh, '>', $cst_filename) or die "Не удалось открыть файл '$cst_filename' для записи: $!";
 print $cst_fh $cst_json;
@@ -53,8 +59,14 @@ open(my $symbol_table_fh, '>', $symbol_table_filename) or die "Не удалос
 print $symbol_table_fh $symbol_table_json;
 close($symbol_table_fh);
 
+my $imports_filename = 'res_imports.json';
+open(my $imports_fh, '>', $imports_filename) or die "Не удалось открыть файл '$imports_filename' для записи: $!";
+print $imports_fh $imports_json;
+close($imports_fh);
+
 print "CST успешно записан в файл '$cst_filename'.\n";
 print "Таблица символов успешно записана в файл '$symbol_table_filename'.\n";
+print "Список импортов успешно записан в файл '$imports_filename'.\n";
 
 
 

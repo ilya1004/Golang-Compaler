@@ -1,15 +1,16 @@
 {
-   "types" : {},
-   "variables" : {
-      "a" : {
-         "pos" : 6,
-         "scope" : "add",
-         "type" : "int"
-      },
-      "b" : {
-         "pos" : 8,
-         "scope" : "add",
-         "type" : "int"
-      }
-   }
+  "constants": {
+    "ErrorMessage": {
+      "pos": 19,
+      "scope": "-Global-",
+      "value": "\"Ошибка: неверный ввод!\""
+    },
+    "WelcomeMessage": {
+      "pos": 14,
+      "scope": "-Global-",
+      "value": "\"Добро пожаловать в калькулятор на Go!\""
+    }
+  },
+  "types": {},
+  "variables": {}
 }

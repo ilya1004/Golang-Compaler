@@ -1,33 +1,22 @@
 Лексема                      Токен               Строка    Столбец       ID        
 =================================================================================
 package                        package         1          1          keyword:0
-main                           id-0            1          9               
-;                              semicolon       1          13         punctuation:0
-func                           func            3          1          keyword:1
-add                            id-1            3          6               
-(                              l_paren         3          9          punctuation:1
-a                              id-2            3          10              
-int                            int             3          12         keyword:2
-,                              comma           3          15         punctuation:2
-b                              id-3            3          17              
-int                            int             3          19         keyword:2
-)                              r_paren         3          22         punctuation:3
-int                            int             3          24         keyword:2
-{                              l_brace         3          28         punctuation:4
-if                             if              4          2          keyword:3
-a                              id-2            4          5               
-==                             equal           4          7          operator:0
-1                              number          4          10         constant:0
-{                              l_brace         4          12         punctuation:4
-b                              id-3            5          3               
-=                              assignment      5          5          operator:1
-2                              number          5          7          constant:1
-;                              semicolon       5          8          punctuation:0
-}                              r_brace         6          2          punctuation:6
-;                              semicolon       6          3          punctuation:0
-return                         return          7          2          keyword:4
-a                              id-2            7          9               
-;                              semicolon       7          10         punctuation:0
-}                              r_brace         8          1          punctuation:6
-;                              semicolon       8          2          punctuation:0
+main1                          id-0            1          9               
+;                              semicolon       1          14         punctuation:0
+import                         import          3          1          keyword:1
+(                              l_paren         3          8          punctuation:1
+"fmt"                          string          4          2          constant:0
+;                              semicolon       4          7          punctuation:0
+)                              r_paren         5          1          punctuation:3
+;                              semicolon       5          2          punctuation:0
+const                          const           7          1          keyword:2
+WelcomeMessage                 id-1            7          7               
+=                              assignment      7          22         operator:0
+"Добро пожаловать в калькулятор на Go!" string          7          24         constant:1
+;                              semicolon       7          92         punctuation:0
+const                          const           8          1          keyword:2
+ErrorMessage                   id-2            8          7               
+=                              assignment      8          20         operator:0
+"Ошибка: неверный ввод!" string          8          22         constant:2
+;                              semicolon       8          64         punctuation:0
 EOF                            EOF             0          0               

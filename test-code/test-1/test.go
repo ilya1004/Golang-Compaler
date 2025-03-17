@@ -1,8 +1,8 @@
-package main
+package main1
 
-func add(a int, b int) int {
-	if a == 1 {
-		b = 2
-	}
-	return a
-}
+import (
+	"fmt"
+)
+
+const WelcomeMessage = "Добро пожаловать в калькулятор на Go!"
+const ErrorMessage = "Ошибка: неверный ввод!"

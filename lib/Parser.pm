@@ -2,6 +2,7 @@ package Parser;
 
 use strict;
 use warnings;
+use Data::Dumper;
 
 sub new {
     my ($class, $tokens) = @_;
@@ -9,7 +10,12 @@ sub new {
         tokens => $tokens,       # Список токенов
         pos => 0,                # Текущая позиция в списке токенов
         token_counter => 0,      # Счетчик порядковых номеров токенов
-        symbol_table => { types => {}, variables => {} }
+        symbol_table => { 
+            types => {}, 
+            variables => {}, 
+            constants => {} 
+            },
+        imports => []            # Список импортов
     }, $class;
 }
 
@@ -82,22 +88,26 @@ sub parse_package {
 # Парсинг import
 sub parse_import {
     my ($self) = @_;
+    print "parse_import\n";
     my @nodes;
     my @imports;
+    my @imports_names;
 
     my $token = $self->current_token();
     if ($token->{Name} eq 'import') {
         push @nodes, { Name => $token->{Name}, Text => $token->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
 
-        my $l_paren = $self->current_token();
-        if ($l_paren->{Name} eq 'l_paren') {
-            push @nodes, { Name => $l_paren->{Name}, Text => $l_paren->{Text}, Pos => $self->get_next_token_pos() };
+        # Проверяем, есть ли скобки для множественного импорта
+        my $has_paren = 0;
+        my $next_token = $self->current_token();
+        if ($next_token->{Name} eq 'l_paren') {
+            $has_paren = 1;
+            push @nodes, { Name => $next_token->{Name}, Text => $next_token->{Text}, Pos => $self->get_next_token_pos() };
             $self->consume_token();
-        } else {
-            die "Ожидалась '(' после 'import'";
         }
 
+        # Парсим импорты
         while ($self->current_token()->{Name} eq 'string') {
             my $import_token = $self->current_token();
             $self->consume_token();
@@ -109,27 +119,46 @@ sub parse_import {
                     package   => { Name => $import_token->{Name}, Text => $import_token->{Text}, Pos => $self->get_next_token_pos() },
                     semicolon => { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() }
                 };
+
+                # Обрабатываем имя пакета
+                my $package_name = $import_token->{Text};
+                $package_name =~ s/^"|"$//g;  # Удаляем кавычки в начале и конце строки
+                push @imports_names, {
+                    Package => {
+                        Name => $package_name,
+                        Pos => $self->{token_counter} - 2
+                    },
+                };
+
                 $self->consume_token();
             } else {
                 die "Ожидалась ';' после импортируемого пути";
             }
+
+            # Если это одиночный импорт (без скобок), выходим из цикла
+            last unless $has_paren;
         }
 
-        my $r_paren = $self->current_token();
-        if ($r_paren->{Name} eq 'r_paren') {
-            push @nodes, { Name => $r_paren->{Name}, Text => $r_paren->{Text}, Pos => $self->get_next_token_pos() };
-            $self->consume_token();
-        } else {
-            die "Ожидалась ')' после списка импортов";
+        # Если были скобки, проверяем закрывающую скобку
+        if ($has_paren) {
+            my $r_paren = $self->current_token();
+            if ($r_paren->{Name} eq 'r_paren') {
+                push @nodes, { Name => $r_paren->{Name}, Text => $r_paren->{Text}, Pos => $self->get_next_token_pos() };
+                $self->consume_token();
+            } else {
+                die "Ожидалась ')' после списка импортов";
+            }
         }
 
+        # Точка с запятой после импорта (если есть)
         my $semicolon = $self->current_token();
         if ($semicolon->{Name} eq 'semicolon') {
             push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() };
             $self->consume_token();
-        } else {
-            die "Ожидалась ';' после ')'";
         }
+
+        # Сохраняем импорты в поле объекта
+        push @{$self->{imports}}, @imports_names;
     }
     return { type => 'ImportDeclaration', nodes => \@nodes, imports => \@imports };
 }
@@ -348,6 +377,67 @@ sub parse_variable_declaration {
     return { type => 'VariableDeclaration', nodes => \@nodes };
 }
 
+sub parse_const_declaration {
+    my ($self) = @_;
+    print "parse_const_declaration\n";
+    my @nodes;
+
+    # Токен 'const'
+    my $const_token = $self->current_token();
+    if ($const_token->{Name} eq 'const') {
+        push @nodes, { Name => $const_token->{Name}, Text => $const_token->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+    } else {
+        die "Ожидалось ключевое слово 'const'";
+    }
+
+    # Имя константы
+    my $const_name = $self->current_token();
+    if ($const_name->{Class} eq 'identifier') {
+        push @nodes, { Name => $const_name->{Name}, Text => $const_name->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+    } else {
+        die "Ожидалось имя константы";
+    }
+
+    # Оператор присваивания
+    my $assign_token = $self->current_token();
+    print "$assign_token->{Name}\n";
+    if ($assign_token->{Name} eq 'assignment') {
+        push @nodes, { Name => $assign_token->{Name}, Text => $assign_token->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+    } else {
+        die "Ожидался оператор присваивания '='";
+    }
+
+    # Значение константы
+    my $const_value = $self->current_token();
+    if ($const_value->{Class} eq 'constant') {
+        push @nodes, { Name => $const_value->{Name}, Text => $const_value->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+    } else {
+        die "Ожидалось значение константы (строка или число)";
+    }
+
+    # Точка с запятой после объявления (если она есть)
+    my $semicolon = $self->current_token();
+    if ($semicolon->{Name} eq 'semicolon') {
+        push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+    } elsif ($semicolon->{Name} ne 'EOF' && $semicolon->{Line} == $const_name->{Line}) {
+        die "Ожидалась ';' после объявления константы";
+    }
+
+    # Добавляем константу в таблицу символов
+    $self->{symbol_table}{constants}{$const_name->{Text}} = {
+        value => $const_value->{Text},
+        scope => $self->{current_scope} || '-Global-',  # Область видимости
+        pos => $self->{token_counter}  # Позиция в коде
+    };
+
+    return { type => 'ConstDeclaration', nodes => \@nodes };
+}
+
 # Парсинг функции
 sub parse_function {
     my ($self) = @_;
@@ -380,12 +470,19 @@ sub parse_function {
         # Парсинг параметров функции
         my @params;
         while ($self->current_token()->{Name} ne 'r_paren') {
-            # Имя параметра
-            my $param_name = $self->current_token();
-            if ($param_name->{Class} eq 'identifier') {
+            # Имена параметров
+            my @param_names;
+            while ($self->current_token()->{Class} eq 'identifier') {
+                push @param_names, $self->current_token();
                 $self->consume_token();
-            } else {
-                die "Ожидалось имя параметра";
+
+                # Запятая между именами параметров (если есть)
+                my $comma = $self->current_token();
+                if ($comma->{Name} eq 'comma') {
+                    $self->consume_token();
+                } else {
+                    last;
+                }
             }
 
             # Тип параметра
@@ -396,19 +493,21 @@ sub parse_function {
                 die "Ожидался тип параметра";
             }
 
-            # Добавляем параметр в таблицу символов с областью видимости, привязанной к функции
-            $self->{symbol_table}{variables}{$param_name->{Text}} = {
-                type => $param_type->{Text},
-                scope => $func_name->{Text},  # Область видимости — имя функции
-                pos => $self->{token_counter}  # Текущее значение счетчика токенов
-            };
+            # Добавляем параметры в таблицу символов с областью видимости, привязанной к функции
+            foreach my $param_name (@param_names) {
+                $self->{symbol_table}{variables}{$param_name->{Text}} = {
+                    type => $param_type->{Text},
+                    scope => $func_name->{Text},  # Область видимости — имя функции
+                    pos => $self->{token_counter}  # Текущее значение счетчика токенов
+                };
 
-            push @params, {
-                param_name => { Name => $param_name->{Name}, Text => $param_name->{Text}, Pos => $self->get_next_token_pos() },
-                param_type => { Name => $param_type->{Name}, Text => $param_type->{Text}, Pos => $self->get_next_token_pos() }
-            };
+                push @params, {
+                    param_name => { Name => $param_name->{Name}, Text => $param_name->{Text}, Pos => $self->get_next_token_pos() },
+                    param_type => { Name => $param_type->{Name}, Text => $param_type->{Text}, Pos => $self->get_next_token_pos() }
+                };
+            }
 
-            # Запятая между параметрами (если есть)
+            # Запятая между группами параметров (если есть)
             my $comma = $self->current_token();
             if ($comma->{Name} eq 'comma') {
                 $self->consume_token();
@@ -624,14 +723,19 @@ sub parse_return_statement {
     return undef;
 }
 
-# Парсинг оператора (объявление переменной, цикл, условие и т.д.)
+# Парсинг оператора (объявление переменной, цикл, условие, вызов функции и т.д.)
 sub parse_statement {
     my ($self) = @_;
     print "parse_statement\n";
     my $token = $self->current_token();
     my $next_token = $self->next_token();
+    print "$token->{Text}\n";
+    print "$token->{Class}\n";
 
-    if ($token->{Name} eq 'var' || ($token->{Class} eq 'identifier' && $next_token->{Name} eq 'declaration')) {
+    if ($token->{Name} eq 'const') {
+        # Объявление константы
+        return $self->parse_const_declaration();
+    } elsif ($token->{Name} eq 'var' || ($token->{Class} eq 'identifier' && $next_token->{Name} eq 'declaration')) {
         # Объявление переменной
         return $self->parse_variable_declaration();
     } elsif ($token->{Name} eq 'for') {
@@ -643,10 +747,25 @@ sub parse_statement {
     } elsif ($token->{Name} eq 'return') {
         # Оператор return
         return $self->parse_return_statement();
+    } elsif ($token->{Name} eq 'switch') {
+        # Конструкция switch-case
+        return $self->parse_switch_statement();
+    } elsif (($token->{Class} eq 'identifier' && $next_token->{Name} eq 'l_paren') ||
+             ($token->{Class} eq 'identifier' && $self->contains_string($token->{Text}))) {
+        # Вызов функции
+        return $self->parse_function_call();
     } else {
-        # Выражение (вызов функции, оператор и т.д.)
+        # Выражение (оператор, присваивание и т.д.)
         return $self->parse_expression();
     }
+}
+
+sub contains_string {
+    my ($self, $search_string) = @_;
+    foreach my $item (@{$self->{imports}}) {
+        return 1 if $item->{Package}->{Name} eq $search_string;
+    }
+    return 0;
 }
 
 # Парсинг выражения с присваиванием (например, a = b + 1)
@@ -754,24 +873,37 @@ sub parse_multiplicative_expression {
     return $left;
 }
 
-# Парсинг простого выражения (идентификатор, число и т.д.)
+# Парсинг простого выражения (идентификатор, число, вызов функции и т.д.)
 sub parse_primary_expression {
     my ($self) = @_;
     print "parse_primary_expression\n";
     my $token = $self->current_token();
-    print "Текущий токен в parse_primary_expression: $token->{Name}\n";  # Отладочный вывод
 
     if ($token->{Class} eq 'identifier') {
-        $self->consume_token();
-        return {
-            type => 'Identifier', 
-            value => $token->{Text}, 
-            Pos => $self->get_next_token_pos()  # Добавляем позицию
-        };
+        # Проверяем, является ли следующий токен открывающей скобкой (вызов функции)
+        my $next_token = $self->next_token();
+        if ($next_token->{Name} eq 'l_paren') {
+            return $self->parse_function_call();  # Парсим вызов функции
+        } else {
+            # Это просто идентификатор
+            $self->consume_token();
+            return {
+                type => 'Identifier', 
+                value => $token->{Text}, 
+                Pos => $self->get_next_token_pos()  # Добавляем позицию
+            };
+        }
     } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'number') {
         $self->consume_token();
         return { 
             type => 'NumberLiteral', 
+            value => $token->{Text}, 
+            Pos => $self->get_next_token_pos()  # Добавляем позицию
+        };
+    } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'string') {
+        $self->consume_token();
+        return { 
+            type => 'StringLiteral', 
             value => $token->{Text}, 
             Pos => $self->get_next_token_pos()  # Добавляем позицию
         };
@@ -1022,6 +1154,185 @@ sub parse_if_statement {
     return undef;
 }
 
+# Парсинг вызова функции
+sub parse_function_call {
+    my ($self) = @_;
+    print "parse_function_call\n";
+    my @nodes;
+
+    # Парсинг имени функции (может быть с пакетом, например, fmt.Print)
+    my $package_name = undef;
+    my $function_name = $self->current_token();
+
+    if ($function_name->{Class} eq 'identifier') {
+        $self->consume_token();
+
+        # Проверяем, есть ли точка (например, fmt.Print)
+        my $dot = $self->current_token();
+        if ($dot->{Name} eq 'dot') {
+            $package_name = $function_name->{Text};  # Сохраняем имя пакета
+            $self->consume_token();
+
+            # Парсинг имени функции после точки
+            $function_name = $self->current_token();
+            if ($function_name->{Class} eq 'identifier') {
+                $self->consume_token();
+            } else {
+                die "Ожидалось имя функции после точки";
+            }
+        }
+        # Открывающая скобка для аргументов
+        my $l_paren = $self->current_token();
+        if ($l_paren->{Name} eq 'l_paren') {
+            push @nodes, { Name => $l_paren->{Name}, Text => $l_paren->{Text}, Pos => $self->get_next_token_pos() };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '(' после имени функции";
+        }
+
+        # Парсинг аргументов функции
+        my @args;
+        while ($self->current_token()->{Name} ne 'r_paren') {
+            my $arg = $self->parse_expression();  # Парсим выражение как аргумент
+            push @args, $arg;
+
+            # Запятая между аргументами (если есть)
+            my $comma = $self->current_token();
+            if ($comma->{Name} eq 'comma') {
+                $self->consume_token();
+            } elsif ($self->current_token()->{Name} ne 'r_paren') {
+                die "Ожидалась ',' или ')' после аргумента";
+            }
+        }
+
+        # Закрывающая скобка для аргументов
+        my $r_paren = $self->current_token();
+        if ($r_paren->{Name} eq 'r_paren') {
+            push @nodes, { Name => $r_paren->{Name}, Text => $r_paren->{Text}, Pos => $self->get_next_token_pos() };
+            $self->consume_token();
+        } else {
+            die "Ожидалась ')' после аргументов функции";
+        }
+
+        # Возвращаем структуру вызова функции
+        return {
+            type => 'FunctionCall',
+            package => $package_name,  # Имя пакета (если есть)
+            name => $function_name->{Text},  # Имя функции
+            args => \@args,  # Список аргументов
+            nodes => \@nodes
+        };
+    } else {
+        die "Ожидалось имя функции";
+    }
+}
+
+# Парсинг конструкции switch-case
+sub parse_switch_statement {
+    my ($self) = @_;
+    print "parse_switch_statement\n";
+    my @nodes;
+
+    # Токен 'switch'
+    my $switch_token = $self->current_token();
+    if ($switch_token->{Name} eq 'switch') {
+        push @nodes, { Name => $switch_token->{Name}, Text => $switch_token->{Text}, Pos => $self->get_next_token_pos() };
+        $self->consume_token();
+
+        # Выражение после switch
+        my $condition = $self->parse_expression();
+
+        # Открывающая фигурная скобка для тела switch
+        my $l_brace = $self->current_token();
+        if ($l_brace->{Name} eq 'l_brace') {
+            push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->get_next_token_pos() };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '{' после выражения в switch";
+        }
+
+        # Парсинг case и default
+        my @cases;
+        while ($self->current_token()->{Name} ne 'r_brace') {
+            my $case_token = $self->current_token();
+            if ($case_token->{Name} eq 'case') {
+                # Обработка case
+                push @nodes, { Name => $case_token->{Name}, Text => $case_token->{Text}, Pos => $self->get_next_token_pos() };
+                $self->consume_token();
+
+                # Значение case
+                my $case_value = $self->parse_expression();
+
+                # Двоеточие после значения case
+                my $colon = $self->current_token();
+                if ($colon->{Name} eq 'colon') {
+                    push @nodes, { Name => $colon->{Name}, Text => $colon->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалось ':' после значения case";
+                }
+
+                # Тело case
+                my @case_body;
+                while ($self->current_token()->{Name} ne 'case' && $self->current_token()->{Name} ne 'default' && $self->current_token()->{Name} ne 'r_brace') {
+                    my $stmt = $self->parse_statement();
+                    push @case_body, $stmt if $stmt;
+                }
+
+                push @cases, {
+                    type => 'CaseStatement',
+                    value => $case_value,
+                    body => \@case_body,
+                };
+            } elsif ($case_token->{Name} eq 'default') {
+                # Обработка default
+                push @nodes, { Name => $case_token->{Name}, Text => $case_token->{Text}, Pos => $self->get_next_token_pos() };
+                $self->consume_token();
+
+                # Двоеточие после default
+                my $colon = $self->current_token();
+                if ($colon->{Name} eq 'colon') {
+                    push @nodes, { Name => $colon->{Name}, Text => $colon->{Text}, Pos => $self->get_next_token_pos() };
+                    $self->consume_token();
+                } else {
+                    die "Ожидалось ':' после default";
+                }
+
+                # Тело default
+                my @default_body;
+                while ($self->current_token()->{Name} ne 'r_brace') {
+                    my $stmt = $self->parse_statement();
+                    push @default_body, $stmt if $stmt;
+                }
+
+                push @cases, {
+                    type => 'DefaultStatement',
+                    body => \@default_body,
+                };
+            } else {
+                die "Ожидался 'case' или 'default' внутри switch";
+            }
+        }
+
+        # Закрывающая фигурная скобка для тела switch
+        my $r_brace = $self->current_token();
+        if ($r_brace->{Name} eq 'r_brace') {
+            push @nodes, { Name => $r_brace->{Name}, Text => $r_brace->{Text}, Pos => $self->get_next_token_pos() };
+            $self->consume_token();
+        } else {
+            die "Ожидалась '}' после тела switch";
+        }
+
+        return {
+            type => 'SwitchStatement',
+            condition => $condition,
+            cases => \@cases,
+            nodes => \@nodes,
+        };
+    }
+    return undef;
+}
+
 # Главная функция разбора
 sub parse {
     my ($self) = @_;
@@ -1035,6 +1346,8 @@ sub parse {
             push @children, $self->parse_import();
         } elsif ($token->{Name} eq 'type') {
             push @children, $self->parse_type_declaration();
+        } elsif ($token->{Name} eq 'const') {
+            push @children, $self->parse_const_declaration();
         } elsif ($token->{Name} eq 'func') {
             push @children, $self->parse_function();
         } elsif ($token->{Class} eq 'identifier') {
@@ -1055,5 +1368,12 @@ sub get_symbol_table {
     my ($self) = @_;
     return $self->{symbol_table};
 }
+
+# Метод для получения списка импортов
+sub get_imports {
+    my ($self) = @_;
+    return $self->{imports};
+}
+
 
 1;
