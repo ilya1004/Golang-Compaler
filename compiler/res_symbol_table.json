@@ -1,16 +1,9 @@
 {
-  "constants": {
-    "ErrorMessage": {
-      "pos": 19,
-      "scope": "-Global-",
-      "value": "\"Ошибка: неверный ввод!\""
-    },
-    "WelcomeMessage": {
-      "pos": 14,
-      "scope": "-Global-",
-      "value": "\"Добро пожаловать в калькулятор на Go!\""
-    }
-  },
-  "types": {},
-  "variables": {}
+   "scopes" : {
+      "-Global-" : {
+         "constants" : {},
+         "variables" : {}
+      }
+   },
+   "types" : {}
 }

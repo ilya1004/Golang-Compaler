@@ -1,124 +1,246 @@
 {
-   "children" : [
-      {
-         "nodes" : [
+  "children": [
+    {
+      "nodes": [
+        {
+          "Name": "package",
+          "Pos": 0,
+          "Text": "package"
+        },
+        {
+          "Name": "id-0",
+          "Pos": 1,
+          "Text": "main"
+        },
+        {
+          "Name": "semicolon",
+          "Pos": 2,
+          "Text": ";"
+        }
+      ],
+      "type": "PackageDeclaration"
+    },
+    {
+      "imports": [
+        {
+          "package": {
+            "Name": "string",
+            "Pos": 4,
+            "Text": "\"fmt\""
+          },
+          "semicolon": {
+            "Name": "semicolon",
+            "Pos": 5,
+            "Text": ";"
+          }
+        }
+      ],
+      "nodes": [
+        {
+          "Name": "import",
+          "Pos": 3,
+          "Text": "import"
+        }
+      ],
+      "type": "ImportDeclaration"
+    },
+    {
+      "body": [
+        {
+          "body": [
             {
-               "Name" : "package",
-               "Pos" : 0,
-               "Text" : "package"
+              "args": [
+                {
+                  "nodes": [
+                    {
+                      "type": "PrimaryExpression",
+                      "value": {
+                        "Pos": 20,
+                        "type": "StringLiteral",
+                        "value": "\"Индекс: %d, Значение: %d\\n\""
+                      }
+                    }
+                  ],
+                  "type": "SimpleExpression"
+                },
+                {
+                  "nodes": [
+                    {
+                      "type": "PrimaryExpression",
+                      "value": {
+                        "Pos": 22,
+                        "type": "Identifier",
+                        "value": "index"
+                      }
+                    }
+                  ],
+                  "type": "SimpleExpression"
+                },
+                {
+                  "nodes": [
+                    {
+                      "type": "PrimaryExpression",
+                      "value": {
+                        "Pos": 24,
+                        "type": "Identifier",
+                        "value": "value"
+                      }
+                    }
+                  ],
+                  "type": "SimpleExpression"
+                }
+              ],
+              "name": "Printf",
+              "nodes": [
+                {
+                  "Name": "l_paren",
+                  "Pos": 19,
+                  "Text": "("
+                },
+                {
+                  "Name": "comma",
+                  "Pos": 21,
+                  "Text": ","
+                },
+                {
+                  "Name": "comma",
+                  "Pos": 23,
+                  "Text": ","
+                },
+                {
+                  "Name": "r_paren",
+                  "Pos": 25,
+                  "Text": ")"
+                }
+              ],
+              "package": "fmt",
+              "type": "FunctionCall"
             },
             {
-               "Name" : "id-0",
-               "Pos" : 1,
-               "Text" : "main1"
-            },
-            {
-               "Name" : "semicolon",
-               "Pos" : 2,
-               "Text" : ";"
+              "nodes": [
+                {
+                  "type": "PrimaryExpression",
+                  "value": null
+                }
+              ],
+              "type": "SimpleExpression"
             }
-         ],
-         "type" : "PackageDeclaration"
-      },
-      {
-         "imports" : [
+          ],
+          "condition": null,
+          "index": "index",
+          "init": null,
+          "iteration": null,
+          "loop_type": "range",
+          "nodes": [
             {
-               "package" : {
-                  "Name" : "string",
-                  "Pos" : 5,
-                  "Text" : "\"fmt\""
-               },
-               "semicolon" : {
-                  "Name" : "semicolon",
-                  "Pos" : 6,
-                  "Text" : ";"
-               }
+              "Name": "for",
+              "Pos": 11,
+              "Text": "for"
+            },
+            {
+              "Name": "id-1",
+              "Pos": 12,
+              "Text": "index"
+            },
+            {
+              "Name": "comma",
+              "Pos": 13,
+              "Text": ","
+            },
+            {
+              "Name": "id-2",
+              "Pos": 14,
+              "Text": "value"
+            },
+            {
+              "Name": "declaration",
+              "Pos": 15,
+              "Text": ":="
+            },
+            {
+              "Name": "range",
+              "Pos": 16,
+              "Text": "range"
+            },
+            {
+              "Name": "l_brace",
+              "Pos": 18,
+              "Text": "{"
+            },
+            {
+              "Name": "r_brace",
+              "Pos": 26,
+              "Text": "}"
             }
-         ],
-         "nodes" : [
+          ],
+          "range": {
+            "nodes": [
+              {
+                "type": "PrimaryExpression",
+                "value": {
+                  "Pos": 17,
+                  "type": "Identifier",
+                  "value": "arr"
+                }
+              }
+            ],
+            "type": "SimpleExpression"
+          },
+          "type": "ForLoop",
+          "value": "value"
+        },
+        {
+          "nodes": [
             {
-               "Name" : "import",
-               "Pos" : 3,
-               "Text" : "import"
-            },
-            {
-               "Name" : "l_paren",
-               "Pos" : 4,
-               "Text" : "("
-            },
-            {
-               "Name" : "r_paren",
-               "Pos" : 7,
-               "Text" : ")"
-            },
-            {
-               "Name" : "semicolon",
-               "Pos" : 8,
-               "Text" : ";"
+              "type": "PrimaryExpression",
+              "value": null
             }
-         ],
-         "type" : "ImportDeclaration"
-      },
-      {
-         "nodes" : [
-            {
-               "Name" : "const",
-               "Pos" : 9,
-               "Text" : "const"
-            },
-            {
-               "Name" : "id-1",
-               "Pos" : 10,
-               "Text" : "WelcomeMessage"
-            },
-            {
-               "Name" : "assignment",
-               "Pos" : 11,
-               "Text" : "="
-            },
-            {
-               "Name" : "string",
-               "Pos" : 12,
-               "Text" : "\"Добро пожаловать в калькулятор на Go!\""
-            },
-            {
-               "Name" : "semicolon",
-               "Pos" : 13,
-               "Text" : ";"
-            }
-         ],
-         "type" : "ConstDeclaration"
-      },
-      {
-         "nodes" : [
-            {
-               "Name" : "const",
-               "Pos" : 14,
-               "Text" : "const"
-            },
-            {
-               "Name" : "id-2",
-               "Pos" : 15,
-               "Text" : "ErrorMessage"
-            },
-            {
-               "Name" : "assignment",
-               "Pos" : 16,
-               "Text" : "="
-            },
-            {
-               "Name" : "string",
-               "Pos" : 17,
-               "Text" : "\"Ошибка: неверный ввод!\""
-            },
-            {
-               "Name" : "semicolon",
-               "Pos" : 18,
-               "Text" : ";"
-            }
-         ],
-         "type" : "ConstDeclaration"
-      }
-   ],
-   "type" : "Program"
+          ],
+          "type": "SimpleExpression"
+        }
+      ],
+      "name": "main",
+      "nodes": [
+        {
+          "Name": "func",
+          "Pos": 6,
+          "Text": "func"
+        },
+        {
+          "Name": "id-0",
+          "Pos": 7,
+          "Text": "main"
+        },
+        {
+          "Name": "l_paren",
+          "Pos": 8,
+          "Text": "("
+        },
+        {
+          "Name": "r_paren",
+          "Pos": 9,
+          "Text": ")"
+        },
+        {
+          "Name": "l_brace",
+          "Pos": 10,
+          "Text": "{"
+        },
+        {
+          "Name": "r_brace",
+          "Pos": 27,
+          "Text": "}"
+        },
+        {
+          "Name": "semicolon",
+          "Pos": 28,
+          "Text": ";"
+        }
+      ],
+      "params": [],
+      "return_types": [],
+      "type": "FunctionDeclaration"
+    }
+  ],
+  "type": "Program"
 }

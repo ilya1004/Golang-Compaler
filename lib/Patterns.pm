@@ -55,19 +55,19 @@ sub getTokenTypesList {
     my @operators = (
         { Name => "dot",         Regex => "\\.", Class => "operator" },
         
-        { Name => "plus_assign", Regex => "\\+=",  Class => "operator" },
-        { Name => "increment",   Regex => "\\+\\+", Class => "operator" },
+        { Name => "plus_assign", Regex => "\\+=",Class => "operator" },
+        { Name => "increment",   Regex => "\\+\\+",Class => "operator" },
         { Name => "plus",        Regex => "\\+", Class => "operator" },
 
-        { Name => "minus_assign",Regex => "\\-=",  Class => "operator" },
-        { Name => "decrement",   Regex => "\\-\\-",  Class => "operator" },
-        { Name => "minus",       Regex => "\\-",   Class => "operator" },
+        { Name => "minus_assign",Regex => "\\-=",Class => "operator" },
+        { Name => "decrement",   Regex => "\\-\\-",Class => "operator" },
+        { Name => "minus",       Regex => "\\-", Class => "operator" },
         
-        { Name => "mul_assign",  Regex => "\\*=",  Class => "operator" },
+        { Name => "mul_assign",  Regex => "\\*=",Class => "operator" },
         { Name => "multiply",    Regex => "\\*", Class => "operator" },
         
-        { Name => "div_assign",  Regex => "\\/=",  Class => "operator" },
-        { Name => "divide",      Regex => "\\/",   Class => "operator" },
+        { Name => "div_assign",  Regex => "\\/=",Class => "operator" },
+        { Name => "divide",      Regex => "\\/", Class => "operator" },
         
         { Name => "equal",       Regex => "==",  Class => "operator" },
         { Name => "assignment",  Regex => "=",   Class => "operator" },
@@ -75,17 +75,17 @@ sub getTokenTypesList {
         { Name => "not_equal",   Regex => "!=",  Class => "operator" },
         { Name => "logical_not", Regex => "!",   Class => "operator" },
         
-        { Name => "logical_or",  Regex => "\\|\\|", Class => "operator" },
+        { Name => "logical_or",  Regex => "\\|\\|",Class => "operator" },
         { Name => "bitwise_or",  Regex => "\\|", Class => "operator" },
 
         { Name => "logical_and", Regex => "&&",  Class => "operator" },
         { Name => "bitwise_and", Regex => "&",   Class => "operator" },
 
-        { Name => "greater_eq",  Regex => ">=",  Class => "operator" },
+        { Name => "greater_equal",Regex => ">=", Class => "operator" },
         { Name => "bitwise_shr", Regex => ">>",  Class => "operator" },
         { Name => "greater",     Regex => ">",   Class => "operator" },
 
-        { Name => "less_eq",     Regex => "<=",  Class => "operator" },
+        { Name => "less_equal",  Regex => "<=",  Class => "operator" },
         { Name => "bitwise_shl", Regex => "<<",  Class => "operator" },
         { Name => "less",        Regex => "<",   Class => "operator" },
 

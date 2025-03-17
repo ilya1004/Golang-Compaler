@@ -1,22 +1,37 @@
 Лексема                      Токен               Строка    Столбец       ID        
 =================================================================================
 package                        package         1          1          keyword:0
-main1                          id-0            1          9               
-;                              semicolon       1          14         punctuation:0
+main                           id-0            1          9               
+;                              semicolon       1          13         punctuation:0
 import                         import          3          1          keyword:1
-(                              l_paren         3          8          punctuation:1
-"fmt"                          string          4          2          constant:0
-;                              semicolon       4          7          punctuation:0
-)                              r_paren         5          1          punctuation:3
-;                              semicolon       5          2          punctuation:0
-const                          const           7          1          keyword:2
-WelcomeMessage                 id-1            7          7               
-=                              assignment      7          22         operator:0
-"Добро пожаловать в калькулятор на Go!" string          7          24         constant:1
-;                              semicolon       7          92         punctuation:0
-const                          const           8          1          keyword:2
-ErrorMessage                   id-2            8          7               
-=                              assignment      8          20         operator:0
-"Ошибка: неверный ввод!" string          8          22         constant:2
-;                              semicolon       8          64         punctuation:0
+"fmt"                          string          3          8          constant:0
+;                              semicolon       3          13         punctuation:0
+func                           func            5          1          keyword:2
+main                           id-0            5          6               
+(                              l_paren         5          10         punctuation:1
+)                              r_paren         5          11         punctuation:2
+{                              l_brace         5          13         punctuation:3
+for                            for             30         2          keyword:3
+index                          id-1            30         6               
+,                              comma           30         11         punctuation:6
+value                          id-2            30         13              
+:=                             declaration     30         19         operator:0
+range                          range           30         22         keyword:4
+arr                            id-3            30         28              
+{                              l_brace         30         32         punctuation:3
+fmt                            id-4            31         3               
+.                              dot             31         6          operator:1
+Printf                         id-5            31         7               
+(                              l_paren         31         13         punctuation:1
+"Индекс: %d, Значение: %d\n" string          31         14         constant:1
+,                              comma           31         56         punctuation:6
+index                          id-1            31         58              
+,                              comma           31         63         punctuation:6
+value                          id-2            31         65              
+)                              r_paren         31         70         punctuation:2
+;                              semicolon       31         71         punctuation:0
+}                              r_brace         32         2          punctuation:7
+;                              semicolon       32         3          punctuation:0
+}                              r_brace         33         1          punctuation:7
+;                              semicolon       33         2          punctuation:0
 EOF                            EOF             0          0               
