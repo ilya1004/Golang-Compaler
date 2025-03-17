@@ -23,27 +23,87 @@
     {
       "body": [
         {
+          "nodes": [
+            {
+              "Name": "id-4",
+              "Pos": 13,
+              "Text": "c"
+            },
+            {
+              "Name": "declaration",
+              "Pos": 14,
+              "Text": ":="
+            },
+            {
+              "type": "Expression",
+              "value": {
+                "left": {
+                  "left": {
+                    "left": {
+                      "Pos": 15,
+                      "type": "Identifier",
+                      "value": "a"
+                    },
+                    "operator": {
+                      "Pos": 16,
+                      "type": "Operator",
+                      "value": "+"
+                    },
+                    "right": {
+                      "Pos": 17,
+                      "type": "Identifier",
+                      "value": "b"
+                    },
+                    "type": "BinaryOperation"
+                  },
+                  "operator": {
+                    "Pos": 18,
+                    "type": "Operator",
+                    "value": "+"
+                  },
+                  "right": {
+                    "Pos": 19,
+                    "type": "NumberLiteral",
+                    "value": "1"
+                  },
+                  "type": "BinaryOperation"
+                },
+                "operator": {
+                  "Pos": 20,
+                  "type": "Operator",
+                  "value": "+"
+                },
+                "right": {
+                  "Pos": 21,
+                  "type": "NumberLiteral",
+                  "value": "4"
+                },
+                "type": "BinaryOperation"
+              }
+            },
+            {
+              "Name": "semicolon",
+              "Pos": 22,
+              "Text": ";"
+            }
+          ],
+          "type": "VariableDeclaration"
+        },
+        {
           "expression": {
-            "left": {
-              "type": "Identifier",
-              "value": "a"
-            },
-            "operator": "+",
-            "right": {
-              "type": "Identifier",
-              "value": "b"
-            },
-            "type": "BinaryOperation"
+            "Pos": 24,
+            "type": "Identifier",
+            "value": "c"
           },
           "nodes": [
             {
               "Name": "return",
-              "Pos": 13,
+              "Pos": 23,
               "Text": "return"
             },
             {
               "Name": "semicolon",
-              "Pos": 14,
+              "Pos": 25,
               "Text": ";"
             }
           ],
@@ -79,12 +139,12 @@
         },
         {
           "Name": "r_brace",
-          "Pos": 15,
+          "Pos": 26,
           "Text": "}"
         },
         {
           "Name": "semicolon",
-          "Pos": 16,
+          "Pos": 27,
           "Text": ";"
         }
       ],

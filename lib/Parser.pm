@@ -636,7 +636,7 @@ sub parse_statement {
 sub parse_assignment_expression {
     my ($self) = @_;
     my $left = $self->parse_additive_expression();
-    print "123\n";
+
     my $operator = $self->current_token();
     if ($operator->{Class} eq 'operator' && 
         ($operator->{Name} eq 'assignment' || 
@@ -648,9 +648,14 @@ sub parse_assignment_expression {
         my $right = $self->parse_assignment_expression();
         return {
             type => 'AssignmentExpression',
-            operator => $operator->{Text},
             left => $left,
-            right => $right
+            operator => {
+                type => 'Operator',
+                value => $operator->{Text},
+                Pos => $self->get_next_token_pos()  # Позиция оператора
+            },
+            right => $right,
+            # Pos => $self->get_next_token_pos()  # Позиция всей операции
         };
     }
     return $left;
@@ -666,12 +671,18 @@ sub parse_additive_expression {
         if ($operator->{Class} eq 'operator' && 
             ($operator->{Name} eq 'plus' || $operator->{Name} eq 'minus')) {
             $self->consume_token();
+            my $operator_pos = $self->get_next_token_pos();  # Позиция оператора
             my $right = $self->parse_multiplicative_expression();
             $left = {
                 type => 'BinaryOperation',
-                operator => $operator->{Text},
                 left => $left,
-                right => $right
+                operator => {
+                    type => 'Operator',
+                    value => $operator->{Text},
+                    Pos => $operator_pos  # Позиция оператора
+                },
+                right => $right,
+                # Pos => $self->get_next_token_pos()  # Позиция всей операции
             };
         } else {
             last;
@@ -690,12 +701,18 @@ sub parse_multiplicative_expression {
         if ($operator->{Class} eq 'operator' && 
             ($operator->{Name} eq 'multiply' || $operator->{Name} eq 'divide')) {
             $self->consume_token();
+            my $operator_pos = $self->get_next_token_pos();  # Позиция оператора
             my $right = $self->parse_primary_expression();
             $left = {
                 type => 'BinaryOperation',
-                operator => $operator->{Text},
                 left => $left,
-                right => $right
+                operator => {
+                    type => 'Operator',
+                    value => $operator->{Text},
+                    Pos => $operator_pos  # Позиция оператора
+                },
+                right => $right,
+                # Pos => $self->get_next_token_pos()  # Позиция всей операции
             };
         } else {
             last;
@@ -708,13 +725,21 @@ sub parse_multiplicative_expression {
 sub parse_primary_expression {
     my ($self) = @_;
     my $token = $self->current_token();
-    print "$token->{Name}\n";
+
     if ($token->{Class} eq 'identifier') {
         $self->consume_token();
-        return { type => 'Identifier', value => $token->{Text} };
+        return { 
+            type => 'Identifier', 
+            value => $token->{Text}, 
+            Pos => $self->get_next_token_pos()  # Добавляем позицию
+        };
     } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'number') {
         $self->consume_token();
-        return { type => 'NumberLiteral', value => $token->{Text} };
+        return { 
+            type => 'NumberLiteral', 
+            value => $token->{Text}, 
+            Pos => $self->get_next_token_pos()  # Добавляем позицию
+        };
     } elsif ($token->{Name} eq 'l_paren') {
         $self->consume_token();
         my $expr = $self->parse_expression();
@@ -841,6 +866,7 @@ sub parse {
     # Возвращаем корневую ноду Program с дочерними нодами
     return { type => 'Program', children => \@children };
 }
+
 # Возвращает таблицу символов
 sub get_symbol_table {
     my ($self) = @_;
