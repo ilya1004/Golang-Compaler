@@ -1,33 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
+
+type Student struct {
+	Name  string
+	Grade int
+}
+
+func printStudentStatus(student Student) {
+	if student.Grade >= 50 {
+		fmt.Printf("Студент %s сдал экзамен с оценкой %d.\n", student.Name, student.Grade)
+	} else {
+		fmt.Printf("Студент %s не сдал экзамен с оценкой %d.\n", student.Name, student.Grade)
+	}
+}
 
 func main() {
-	// Цикл с инициализацией, условием и итерацией
-	// for i := 0; i < 5; i++ {
-	// 	fmt.Println("Цикл 1:", i)
-	// }
+	students := []Student{
+		{Name: "Иван", Grade: 75},
+		{Name: "Мария", Grade: 45},
+		{Name: "Анна", Grade: 90},
+	}
 
-	// Цикл с условием
-	// j := 0
-	// for j < 5 {
-	// 	fmt.Println("Цикл 2:", j)
-	// 	j++
-	// }
-
-	// Бесконечный цикл (работаеты)
-	// k := 0
-	// for {
-	// 	if k == 5 {
-	// 		break
-	// 	}
-	// 	fmt.Println("Цикл 3:", k)
-	// 	k++
-	// }
-
-	// Цикл с использованием range
-	// arr := []int{1, 2, 3, 4, 5}
-	for index, value := range arr {
-		fmt.Printf("Индекс: %d, Значение: %d\n", index, value)
+	for _, student := range students {
+		printStudentStatus(student)
 	}
 }

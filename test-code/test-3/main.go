@@ -19,9 +19,9 @@ func printStudentStatus(student Student) {
 
 func main() {
 	students := []Student{
-		{"Иван", 75},
-		{"Мария", 45},
-		{"Анна", 90},
+		{Name: "Иван", Grade: 75},
+		{Name: "Мария", Grade: 45},
+		{Name: "Анна", Grade: 90},
 	}
 
 	for _, student := range students {

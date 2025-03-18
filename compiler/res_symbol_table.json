@@ -1,9 +1,104 @@
 {
-   "scopes" : {
-      "-Global-" : {
-         "constants" : {},
-         "variables" : {}
+  "scopes": {
+    "-Global-": {
+      "constants": {},
+      "variables": {}
+    },
+    "main": {
+      "variables": {
+        "students": {
+          "pos": 102,
+          "type": "auto",
+          "value": {
+            "array_type": "Student",
+            "elements": [
+              {
+                "fields": [
+                  {
+                    "name": "Name",
+                    "value": {
+                      "Pos": 74,
+                      "type": "StringLiteral",
+                      "value": "\"Иван\""
+                    }
+                  },
+                  {
+                    "name": "Grade",
+                    "value": {
+                      "Pos": 78,
+                      "type": "NumberLiteral",
+                      "value": "75"
+                    }
+                  }
+                ],
+                "struct_name": null,
+                "type": "StructInitialization"
+              },
+              {
+                "fields": [
+                  {
+                    "name": "Name",
+                    "value": {
+                      "Pos": 84,
+                      "type": "StringLiteral",
+                      "value": "\"Мария\""
+                    }
+                  },
+                  {
+                    "name": "Grade",
+                    "value": {
+                      "Pos": 88,
+                      "type": "NumberLiteral",
+                      "value": "45"
+                    }
+                  }
+                ],
+                "struct_name": null,
+                "type": "StructInitialization"
+              },
+              {
+                "fields": [
+                  {
+                    "name": "Name",
+                    "value": {
+                      "Pos": 94,
+                      "type": "StringLiteral",
+                      "value": "\"Анна\""
+                    }
+                  },
+                  {
+                    "name": "Grade",
+                    "value": {
+                      "Pos": 98,
+                      "type": "NumberLiteral",
+                      "value": "90"
+                    }
+                  }
+                ],
+                "struct_name": null,
+                "type": "StructInitialization"
+              }
+            ],
+            "type": "Array"
+          }
+        }
       }
-   },
-   "types" : {}
+    },
+    "printStudentStatus": {
+      "variables": {
+        "student": {
+          "pos": 24,
+          "type": "Student"
+        }
+      }
+    }
+  },
+  "types": {
+    "Student": {
+      "fields": {
+        "Grade": "int",
+        "Name": "string"
+      }
+    }
+  }
 }

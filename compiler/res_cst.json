@@ -1,246 +1,598 @@
 {
-  "children": [
-    {
-      "nodes": [
-        {
-          "Name": "package",
-          "Pos": 0,
-          "Text": "package"
-        },
-        {
-          "Name": "id-0",
-          "Pos": 1,
-          "Text": "main"
-        },
-        {
-          "Name": "semicolon",
-          "Pos": 2,
-          "Text": ";"
-        }
-      ],
-      "type": "PackageDeclaration"
-    },
-    {
-      "imports": [
-        {
-          "package": {
-            "Name": "string",
-            "Pos": 4,
-            "Text": "\"fmt\""
-          },
-          "semicolon": {
-            "Name": "semicolon",
-            "Pos": 5,
-            "Text": ";"
-          }
-        }
-      ],
-      "nodes": [
-        {
-          "Name": "import",
-          "Pos": 3,
-          "Text": "import"
-        }
-      ],
-      "type": "ImportDeclaration"
-    },
-    {
-      "body": [
-        {
-          "body": [
+   "children" : [
+      {
+         "nodes" : [
             {
-              "args": [
-                {
-                  "nodes": [
-                    {
-                      "type": "PrimaryExpression",
-                      "value": {
-                        "Pos": 20,
-                        "type": "StringLiteral",
-                        "value": "\"Индекс: %d, Значение: %d\\n\""
-                      }
-                    }
-                  ],
-                  "type": "SimpleExpression"
-                },
-                {
-                  "nodes": [
-                    {
-                      "type": "PrimaryExpression",
-                      "value": {
-                        "Pos": 22,
-                        "type": "Identifier",
-                        "value": "index"
-                      }
-                    }
-                  ],
-                  "type": "SimpleExpression"
-                },
-                {
-                  "nodes": [
-                    {
-                      "type": "PrimaryExpression",
-                      "value": {
-                        "Pos": 24,
-                        "type": "Identifier",
-                        "value": "value"
-                      }
-                    }
-                  ],
-                  "type": "SimpleExpression"
-                }
-              ],
-              "name": "Printf",
-              "nodes": [
-                {
-                  "Name": "l_paren",
-                  "Pos": 19,
-                  "Text": "("
-                },
-                {
-                  "Name": "comma",
-                  "Pos": 21,
-                  "Text": ","
-                },
-                {
-                  "Name": "comma",
-                  "Pos": 23,
-                  "Text": ","
-                },
-                {
-                  "Name": "r_paren",
-                  "Pos": 25,
-                  "Text": ")"
-                }
-              ],
-              "package": "fmt",
-              "type": "FunctionCall"
+               "Name" : "package",
+               "Pos" : 0,
+               "Text" : "package"
             },
             {
-              "nodes": [
-                {
-                  "type": "PrimaryExpression",
-                  "value": null
-                }
-              ],
-              "type": "SimpleExpression"
+               "Name" : "id-0",
+               "Pos" : 1,
+               "Text" : "main"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 2,
+               "Text" : ";"
             }
-          ],
-          "condition": null,
-          "index": "index",
-          "init": null,
-          "iteration": null,
-          "loop_type": "range",
-          "nodes": [
+         ],
+         "type" : "PackageDeclaration"
+      },
+      {
+         "imports" : [
             {
-              "Name": "for",
-              "Pos": 11,
-              "Text": "for"
-            },
-            {
-              "Name": "id-1",
-              "Pos": 12,
-              "Text": "index"
-            },
-            {
-              "Name": "comma",
-              "Pos": 13,
-              "Text": ","
-            },
-            {
-              "Name": "id-2",
-              "Pos": 14,
-              "Text": "value"
-            },
-            {
-              "Name": "declaration",
-              "Pos": 15,
-              "Text": ":="
-            },
-            {
-              "Name": "range",
-              "Pos": 16,
-              "Text": "range"
-            },
-            {
-              "Name": "l_brace",
-              "Pos": 18,
-              "Text": "{"
-            },
-            {
-              "Name": "r_brace",
-              "Pos": 26,
-              "Text": "}"
+               "package" : {
+                  "Name" : "string",
+                  "Pos" : 5,
+                  "Text" : "\"fmt\""
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 6,
+                  "Text" : ";"
+               }
             }
-          ],
-          "range": {
-            "nodes": [
-              {
-                "type": "PrimaryExpression",
-                "value": {
-                  "Pos": 17,
-                  "type": "Identifier",
-                  "value": "arr"
-                }
-              }
-            ],
-            "type": "SimpleExpression"
-          },
-          "type": "ForLoop",
-          "value": "value"
-        },
-        {
-          "nodes": [
+         ],
+         "nodes" : [
             {
-              "type": "PrimaryExpression",
-              "value": null
+               "Name" : "import",
+               "Pos" : 3,
+               "Text" : "import"
+            },
+            {
+               "Name" : "l_paren",
+               "Pos" : 4,
+               "Text" : "("
+            },
+            {
+               "Name" : "r_paren",
+               "Pos" : 7,
+               "Text" : ")"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 8,
+               "Text" : ";"
             }
-          ],
-          "type": "SimpleExpression"
-        }
-      ],
-      "name": "main",
-      "nodes": [
-        {
-          "Name": "func",
-          "Pos": 6,
-          "Text": "func"
-        },
-        {
-          "Name": "id-0",
-          "Pos": 7,
-          "Text": "main"
-        },
-        {
-          "Name": "l_paren",
-          "Pos": 8,
-          "Text": "("
-        },
-        {
-          "Name": "r_paren",
-          "Pos": 9,
-          "Text": ")"
-        },
-        {
-          "Name": "l_brace",
-          "Pos": 10,
-          "Text": "{"
-        },
-        {
-          "Name": "r_brace",
-          "Pos": 27,
-          "Text": "}"
-        },
-        {
-          "Name": "semicolon",
-          "Pos": 28,
-          "Text": ";"
-        }
-      ],
-      "params": [],
-      "return_types": [],
-      "type": "FunctionDeclaration"
-    }
-  ],
-  "type": "Program"
+         ],
+         "type" : "ImportDeclaration"
+      },
+      {
+         "fields" : [
+            {
+               "field_name" : {
+                  "Name" : "id-2",
+                  "Pos" : 13,
+                  "Text" : "Name"
+               },
+               "field_type" : {
+                  "Name" : "string",
+                  "Pos" : 14,
+                  "Text" : "string"
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 15,
+                  "Text" : ";"
+               }
+            },
+            {
+               "field_name" : {
+                  "Name" : "id-3",
+                  "Pos" : 16,
+                  "Text" : "Grade"
+               },
+               "field_type" : {
+                  "Name" : "int",
+                  "Pos" : 17,
+                  "Text" : "int"
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 18,
+                  "Text" : ";"
+               }
+            }
+         ],
+         "name" : "Student",
+         "nodes" : [
+            {
+               "Name" : "type",
+               "Pos" : 9,
+               "Text" : "type"
+            },
+            {
+               "Name" : "id-1",
+               "Pos" : 10,
+               "Text" : "Student"
+            },
+            {
+               "Name" : "struct",
+               "Pos" : 11,
+               "Text" : "struct"
+            },
+            {
+               "Name" : "l_brace",
+               "Pos" : 12,
+               "Text" : "{"
+            },
+            {
+               "Name" : "r_brace",
+               "Pos" : 19,
+               "Text" : "}"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 20,
+               "Text" : ";"
+            }
+         ],
+         "type" : "TypeDeclaration"
+      },
+      {
+         "body" : [
+            {
+               "body" : [
+                  {
+                     "args" : [
+                        {
+                           "Pos" : 35,
+                           "type" : "StringLiteral",
+                           "value" : "\"Студент %s сдал экзамен с оценкой %d.\\n\""
+                        },
+                        {
+                           "field" : {
+                              "Pos" : 38,
+                              "type" : "Identifier",
+                              "value" : "Name"
+                           },
+                           "object" : {
+                              "Pos" : 37,
+                              "type" : "Identifier",
+                              "value" : "student"
+                           },
+                           "type" : "FieldAccess"
+                        },
+                        {
+                           "field" : {
+                              "Pos" : 41,
+                              "type" : "Identifier",
+                              "value" : "Grade"
+                           },
+                           "object" : {
+                              "Pos" : 40,
+                              "type" : "Identifier",
+                              "value" : "student"
+                           },
+                           "type" : "FieldAccess"
+                        }
+                     ],
+                     "name" : "Printf",
+                     "nodes" : [
+                        {
+                           "Name" : "l_paren",
+                           "Pos" : 34,
+                           "Text" : "("
+                        },
+                        {
+                           "Name" : "comma",
+                           "Pos" : 36,
+                           "Text" : ","
+                        },
+                        {
+                           "Name" : "comma",
+                           "Pos" : 39,
+                           "Text" : ","
+                        },
+                        {
+                           "Name" : "r_paren",
+                           "Pos" : 42,
+                           "Text" : ")"
+                        }
+                     ],
+                     "package" : "fmt",
+                     "type" : "FunctionCall"
+                  }
+               ],
+               "condition" : {
+                  "left" : {
+                     "field" : {
+                        "Pos" : 29,
+                        "type" : "Identifier",
+                        "value" : "Grade"
+                     },
+                     "object" : {
+                        "Pos" : 28,
+                        "type" : "Identifier",
+                        "value" : "student"
+                     },
+                     "type" : "FieldAccess"
+                  },
+                  "operator" : {
+                     "Pos" : 30,
+                     "type" : "Operator",
+                     "value" : ">="
+                  },
+                  "right" : {
+                     "Pos" : 30,
+                     "type" : "NumberLiteral",
+                     "value" : "50"
+                  },
+                  "type" : "RelationalExpression"
+               },
+               "else_body" : [
+                  {
+                     "args" : [
+                        {
+                           "Pos" : 49,
+                           "type" : "StringLiteral",
+                           "value" : "\"Студент %s не сдал экзамен с оценкой %d.\\n\""
+                        },
+                        {
+                           "field" : {
+                              "Pos" : 52,
+                              "type" : "Identifier",
+                              "value" : "Name"
+                           },
+                           "object" : {
+                              "Pos" : 51,
+                              "type" : "Identifier",
+                              "value" : "student"
+                           },
+                           "type" : "FieldAccess"
+                        },
+                        {
+                           "field" : {
+                              "Pos" : 55,
+                              "type" : "Identifier",
+                              "value" : "Grade"
+                           },
+                           "object" : {
+                              "Pos" : 54,
+                              "type" : "Identifier",
+                              "value" : "student"
+                           },
+                           "type" : "FieldAccess"
+                        }
+                     ],
+                     "name" : "Printf",
+                     "nodes" : [
+                        {
+                           "Name" : "l_paren",
+                           "Pos" : 48,
+                           "Text" : "("
+                        },
+                        {
+                           "Name" : "comma",
+                           "Pos" : 50,
+                           "Text" : ","
+                        },
+                        {
+                           "Name" : "comma",
+                           "Pos" : 53,
+                           "Text" : ","
+                        },
+                        {
+                           "Name" : "r_paren",
+                           "Pos" : 56,
+                           "Text" : ")"
+                        }
+                     ],
+                     "package" : "fmt",
+                     "type" : "FunctionCall"
+                  }
+               ],
+               "else_if" : [],
+               "nodes" : [
+                  {
+                     "Name" : "if",
+                     "Pos" : 27,
+                     "Text" : "if"
+                  },
+                  {
+                     "Name" : "l_brace",
+                     "Pos" : 31,
+                     "Text" : "{"
+                  },
+                  {
+                     "Name" : "r_brace",
+                     "Pos" : 43,
+                     "Text" : "}"
+                  },
+                  {
+                     "Name" : "else",
+                     "Pos" : 44,
+                     "Text" : "else"
+                  },
+                  {
+                     "Name" : "l_brace",
+                     "Pos" : 45,
+                     "Text" : "{"
+                  },
+                  {
+                     "Name" : "r_brace",
+                     "Pos" : 57,
+                     "Text" : "}"
+                  }
+               ],
+               "type" : "IfStatement"
+            }
+         ],
+         "name" : "printStudentStatus",
+         "nodes" : [
+            {
+               "Name" : "func",
+               "Pos" : 21,
+               "Text" : "func"
+            },
+            {
+               "Name" : "id-4",
+               "Pos" : 22,
+               "Text" : "printStudentStatus"
+            },
+            {
+               "Name" : "l_paren",
+               "Pos" : 23,
+               "Text" : "("
+            },
+            {
+               "Name" : "r_paren",
+               "Pos" : 25,
+               "Text" : ")"
+            },
+            {
+               "Name" : "l_brace",
+               "Pos" : 26,
+               "Text" : "{"
+            },
+            {
+               "Name" : "r_brace",
+               "Pos" : 58,
+               "Text" : "}"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 59,
+               "Text" : ";"
+            }
+         ],
+         "params" : [
+            {
+               "param_name" : {
+                  "Name" : "id-5",
+                  "Pos" : 24,
+                  "Text" : "student"
+               },
+               "param_type" : "Student"
+            }
+         ],
+         "return_types" : [],
+         "type" : "FunctionDeclaration"
+      },
+      {
+         "body" : [
+            {
+               "nodes" : [
+                  {
+                     "Name" : "id-8",
+                     "Pos" : 65,
+                     "Text" : "students"
+                  },
+                  {
+                     "Name" : "declaration",
+                     "Pos" : 66,
+                     "Text" : ":="
+                  },
+                  {
+                     "type" : "Expression",
+                     "value" : {
+                        "array_type" : "Student",
+                        "elements" : [
+                           {
+                              "fields" : [
+                                 {
+                                    "name" : "Name",
+                                    "value" : {
+                                       "Pos" : 74,
+                                       "type" : "StringLiteral",
+                                       "value" : "\"Иван\""
+                                    }
+                                 },
+                                 {
+                                    "name" : "Grade",
+                                    "value" : {
+                                       "Pos" : 78,
+                                       "type" : "NumberLiteral",
+                                       "value" : "75"
+                                    }
+                                 }
+                              ],
+                              "struct_name" : null,
+                              "type" : "StructInitialization"
+                           },
+                           {
+                              "fields" : [
+                                 {
+                                    "name" : "Name",
+                                    "value" : {
+                                       "Pos" : 84,
+                                       "type" : "StringLiteral",
+                                       "value" : "\"Мария\""
+                                    }
+                                 },
+                                 {
+                                    "name" : "Grade",
+                                    "value" : {
+                                       "Pos" : 88,
+                                       "type" : "NumberLiteral",
+                                       "value" : "45"
+                                    }
+                                 }
+                              ],
+                              "struct_name" : null,
+                              "type" : "StructInitialization"
+                           },
+                           {
+                              "fields" : [
+                                 {
+                                    "name" : "Name",
+                                    "value" : {
+                                       "Pos" : 94,
+                                       "type" : "StringLiteral",
+                                       "value" : "\"Анна\""
+                                    }
+                                 },
+                                 {
+                                    "name" : "Grade",
+                                    "value" : {
+                                       "Pos" : 98,
+                                       "type" : "NumberLiteral",
+                                       "value" : "90"
+                                    }
+                                 }
+                              ],
+                              "struct_name" : null,
+                              "type" : "StructInitialization"
+                           }
+                        ],
+                        "type" : "Array"
+                     }
+                  },
+                  {
+                     "Name" : "semicolon",
+                     "Pos" : 102,
+                     "Text" : ";"
+                  }
+               ],
+               "type" : "VariableDeclaration"
+            },
+            {
+               "body" : [
+                  {
+                     "args" : [
+                        {
+                           "Pos" : 113,
+                           "type" : "Identifier",
+                           "value" : "student"
+                        }
+                     ],
+                     "name" : "printStudentStatus",
+                     "nodes" : [
+                        {
+                           "Name" : "l_paren",
+                           "Pos" : 112,
+                           "Text" : "("
+                        },
+                        {
+                           "Name" : "r_paren",
+                           "Pos" : 114,
+                           "Text" : ")"
+                        }
+                     ],
+                     "package" : null,
+                     "type" : "FunctionCall"
+                  }
+               ],
+               "condition" : null,
+               "index" : "_",
+               "init" : null,
+               "iteration" : null,
+               "loop_type" : "range",
+               "nodes" : [
+                  {
+                     "Name" : "for",
+                     "Pos" : 103,
+                     "Text" : "for"
+                  },
+                  {
+                     "Name" : "id-9",
+                     "Pos" : 104,
+                     "Text" : "_"
+                  },
+                  {
+                     "Name" : "comma",
+                     "Pos" : 105,
+                     "Text" : ","
+                  },
+                  {
+                     "Name" : "id-5",
+                     "Pos" : 106,
+                     "Text" : "student"
+                  },
+                  {
+                     "Name" : "declaration",
+                     "Pos" : 107,
+                     "Text" : ":="
+                  },
+                  {
+                     "Name" : "range",
+                     "Pos" : 108,
+                     "Text" : "range"
+                  },
+                  {
+                     "Name" : "l_brace",
+                     "Pos" : 110,
+                     "Text" : "{"
+                  },
+                  {
+                     "Name" : "r_brace",
+                     "Pos" : 115,
+                     "Text" : "}"
+                  }
+               ],
+               "range" : {
+                  "Pos" : 109,
+                  "type" : "Identifier",
+                  "value" : "students"
+               },
+               "type" : "ForLoop",
+               "value" : "student"
+            }
+         ],
+         "name" : "main",
+         "nodes" : [
+            {
+               "Name" : "func",
+               "Pos" : 60,
+               "Text" : "func"
+            },
+            {
+               "Name" : "id-0",
+               "Pos" : 61,
+               "Text" : "main"
+            },
+            {
+               "Name" : "l_paren",
+               "Pos" : 62,
+               "Text" : "("
+            },
+            {
+               "Name" : "r_paren",
+               "Pos" : 63,
+               "Text" : ")"
+            },
+            {
+               "Name" : "l_brace",
+               "Pos" : 64,
+               "Text" : "{"
+            },
+            {
+               "Name" : "r_brace",
+               "Pos" : 116,
+               "Text" : "}"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 117,
+               "Text" : ";"
+            }
+         ],
+         "params" : [],
+         "return_types" : [],
+         "type" : "FunctionDeclaration"
+      }
+   ],
+   "type" : "Program"
 }

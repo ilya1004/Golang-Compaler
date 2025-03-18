@@ -2,6 +2,12 @@ ID    Лексема
 ==================================
 0     package                       
 1     import                        
-2     func                          
-3     for                           
-4     range                         
+2     type                          
+3     struct                        
+4     string                        
+5     int                           
+6     func                          
+7     if                            
+8     else                          
+9     for                           
+10    range                         
