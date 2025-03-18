@@ -355,7 +355,11 @@ sub parse_variable_declaration {
     if ($is_var_declaration) {
         # Токен 'var'
         my $var_token = $self->current_token();
-        push @nodes, { Name => $var_token->{Name}, Text => $var_token->{Text}, Pos => $self->get_next_token_pos() };
+        push @nodes, { 
+            Name => $var_token->{Name}, 
+            Text => $var_token->{Text}, 
+            Pos => $self->get_next_token_pos() 
+            };
         $self->consume_token();
     } elsif (!$is_short_declaration) {
         die "Ожидалось ключевое слово 'var' или короткое объявление (:=)";
@@ -388,7 +392,7 @@ sub parse_variable_declaration {
     if ($is_var_declaration) {
         # Тип переменных
         $var_type = $self->parse_type();  # Используем новую функцию parse_type
-        if ($var_type == undef) {
+        if ($var_type eq undef) {
             $var_type = "auto";
         }
         push @nodes, { Name => 'Type', Text => $var_type, Pos => $self->get_next_token_pos() };
@@ -408,8 +412,17 @@ sub parse_variable_declaration {
         if ($next_token->{Name} eq 'l_brace') {
             # Парсим инициализацию структуры
             my $struct_initialization = $self->parse_struct_initialization();
-            push @nodes, { type => 'StructInitialization', value => $struct_initialization };
+            
+            delete $struct_initialization->{nodes};
 
+            print Dumper($struct_initialization), "\n";
+            
+            if ($struct_initialization->{type} eq 'StructInitialization') {
+                $var_type = $struct_initialization->{struct_name};
+            }
+
+            push @nodes, { type => 'StructInitialization', value => $struct_initialization };
+            
             # Добавляем переменные в таблицу символов
             my $scope = $self->{current_scope} || '-Global-';
             foreach my $var_name (@var_names) {
@@ -424,14 +437,21 @@ sub parse_variable_declaration {
             my $expr = $self->parse_expression();
             push @nodes, { type => 'Expression', value => $expr };
             
-            if ($expr->{elements}) {
+            if ($expr->{type} eq 'FunctionCall') {
+                delete $expr->{nodes};
+            }
+
+            if ($expr->{type} eq 'Array') {
                 delete $expr->{nodes};
                 foreach my $element (@{$expr->{elements}}) {
                     delete $element->{nodes};
                 }
-                # print Dumper($expr), "\n";
             }
-
+            
+            if ($expr->{type} eq 'Array' && $expr->{array_type}) {
+                $var_type = "[]$expr->{array_type}";
+            }
+        
             # Добавляем переменные в таблицу символов
             my $scope = $self->{current_scope} || '-Global-';
             foreach my $var_name (@var_names) {
@@ -803,7 +823,7 @@ sub parse_type {
     print "parse_type\n";
     my $type_token = $self->current_token();
     print Dumper($type_token), "\n";
-
+    # die;
     # Обработка массивов (например, []int, [][]float64)
     if ($type_token->{Name} eq 'l_bracket') {
         $self->consume_token();  # Пропускаем '['
@@ -829,6 +849,8 @@ sub parse_type {
     if ($type_token->{Class} eq 'keyword' || $type_token->{Class} eq 'identifier') {
         my $type_name = $type_token->{Text};
         $self->consume_token();
+        print Dumper($type_name);
+        # die;
         return $type_name;
     }
 
@@ -1031,9 +1053,9 @@ sub parse_struct_literal {
     }
 
     # Если тип структуры не был передан, пытаемся определить его из контекста
-    unless ($struct_type) {
-        $struct_type = $self->{current_struct_type} // 'auto';
-    }
+    # unless ($struct_type) {
+    #     $struct_type = $self->{current_struct_type} // 'auto';
+    # }
 
     # Проверяем, существует ли тип структуры в таблице символов
     unless ($self->{symbol_table}{types}{$struct_type}) {

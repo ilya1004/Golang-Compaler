@@ -1,104 +1,94 @@
 {
   "scopes": {
     "-Global-": {
-      "constants": {},
+      "constants": {
+        "ErrorMessage": {
+          "pos": 19,
+          "value": "\"Ошибка: неверный ввод!\""
+        },
+        "WelcomeMessage": {
+          "pos": 14,
+          "value": "\"Добро пожаловать в калькулятор на Go!\""
+        }
+      },
       "variables": {}
     },
-    "main": {
+    "calculate": {
       "variables": {
-        "students": {
-          "pos": 102,
-          "type": "auto",
-          "value": {
-            "array_type": "Student",
-            "elements": [
-              {
-                "fields": [
-                  {
-                    "name": "Name",
-                    "value": {
-                      "Pos": 74,
-                      "type": "StringLiteral",
-                      "value": "\"Иван\""
-                    }
-                  },
-                  {
-                    "name": "Grade",
-                    "value": {
-                      "Pos": 78,
-                      "type": "NumberLiteral",
-                      "value": "75"
-                    }
-                  }
-                ],
-                "struct_name": null,
-                "type": "StructInitialization"
-              },
-              {
-                "fields": [
-                  {
-                    "name": "Name",
-                    "value": {
-                      "Pos": 84,
-                      "type": "StringLiteral",
-                      "value": "\"Мария\""
-                    }
-                  },
-                  {
-                    "name": "Grade",
-                    "value": {
-                      "Pos": 88,
-                      "type": "NumberLiteral",
-                      "value": "45"
-                    }
-                  }
-                ],
-                "struct_name": null,
-                "type": "StructInitialization"
-              },
-              {
-                "fields": [
-                  {
-                    "name": "Name",
-                    "value": {
-                      "Pos": 94,
-                      "type": "StringLiteral",
-                      "value": "\"Анна\""
-                    }
-                  },
-                  {
-                    "name": "Grade",
-                    "value": {
-                      "Pos": 98,
-                      "type": "NumberLiteral",
-                      "value": "90"
-                    }
-                  }
-                ],
-                "struct_name": null,
-                "type": "StructInitialization"
-              }
-            ],
-            "type": "Array"
-          }
+        "a": {
+          "pos": 22,
+          "type": "float64"
+        },
+        "b": {
+          "pos": 23,
+          "type": "float64"
+        },
+        "operation": {
+          "pos": 24,
+          "type": "string"
         }
       }
     },
-    "printStudentStatus": {
+    "main": {
       "variables": {
-        "student": {
-          "pos": 24,
-          "type": "Student"
+        "flag": {
+          "pos": 108,
+          "type": "bool",
+          "value": {
+            "Pos": 107,
+            "type": "Identifier",
+            "value": "false"
+          }
+        },
+        "flag1": {
+          "pos": 112,
+          "type": "auto",
+          "value": {
+            "Pos": 111,
+            "type": "Identifier",
+            "value": "true"
+          }
+        },
+        "num1": {
+          "pos": 98,
+          "type": "float64"
+        },
+        "num2": {
+          "pos": 98,
+          "type": "float64"
+        },
+        "operation": {
+          "pos": 102,
+          "type": "string"
+        },
+        "result": {
+          "pos": 185,
+          "type": "auto",
+          "value": {
+            "args": [
+              {
+                "Pos": 179,
+                "type": "Identifier",
+                "value": "num1"
+              },
+              {
+                "Pos": 181,
+                "type": "Identifier",
+                "value": "num2"
+              },
+              {
+                "Pos": 183,
+                "type": "Identifier",
+                "value": "operation"
+              }
+            ],
+            "name": "calculate",
+            "package": null,
+            "type": "FunctionCall"
+          }
         }
       }
     }
   },
-  "types": {
-    "Student": {
-      "fields": {
-        "Grade": "int",
-        "Name": "string"
-      }
-    }
-  }
+  "types": {}
 }
