@@ -359,7 +359,7 @@ sub parse_variable_declaration {
             Name => $var_token->{Name}, 
             Text => $var_token->{Text}, 
             Pos => $self->get_next_token_pos() 
-            };
+        };
         $self->consume_token();
     } elsif (!$is_short_declaration) {
         die "Ожидалось ключевое слово 'var' или короткое объявление (:=)";
@@ -390,8 +390,7 @@ sub parse_variable_declaration {
     # Для короткого объявления (:=) пропускаем этап указания типа
     my $var_type;
     if ($is_var_declaration) {
-        # Тип переменных
-        $var_type = $self->parse_type();  # Используем новую функцию parse_type
+        $var_type = $self->parse_type();
         if ($var_type eq undef) {
             $var_type = "auto";
         }
@@ -400,7 +399,14 @@ sub parse_variable_declaration {
 
     # Проверяем, есть ли присвоение значения
     my $assign_token = $self->current_token();
-    print Dumper($assign_token), "\n";
+
+    # Проверяем корректность оператора присваивания
+    if ($is_var_declaration && $assign_token->{Name} eq 'declaration') {
+        die "Некорректный оператор ':=' в декларации с 'var'; ожидался '='";
+    } elsif (!$is_var_declaration && $assign_token->{Name} eq 'assignment') {
+        die "Некорректный оператор '=' в короткой декларации; ожидался ':='";
+    }
+
     if ($assign_token->{Name} eq 'assignment' || $assign_token->{Name} eq 'declaration') {
         push @nodes, { Name => $assign_token->{Name}, Text => $assign_token->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
@@ -477,7 +483,6 @@ sub parse_variable_declaration {
 
     # Точка с запятой после объявления (если она есть)
     my $semicolon = $self->current_token();
-    # print Dumper($semicolon), "\n";
     if ($semicolon->{Name} eq 'semicolon') {
         push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
@@ -485,7 +490,8 @@ sub parse_variable_declaration {
         die "Ожидалась ';' после объявления переменной";
     }
 
-    return { type => 'VariableDeclaration', nodes => \@nodes };
+    my $node_type = $is_var_declaration ? 'VariableDeclaration' : 'ShortVariableDeclaration';
+    return { type => $node_type, nodes => \@nodes };
 }
 
 # Парсинг объявления структуры
@@ -759,7 +765,7 @@ sub parse_function {
         } elsif ($return_token->{Class} eq 'keyword' || $return_token->{Class} eq 'identifier' || $return_token->{Name} eq 'l_bracket') {
             # Если возвращаемое значение одно
             my $return_type = $self->parse_type();  # Используем новую функцию parse_type
-            print "123123\n";
+            # print "123123\n";
             if ($return_type) {
                 push @return_types, $return_type;
             } else {
@@ -822,24 +828,26 @@ sub parse_type {
     my ($self) = @_;
     print "parse_type\n";
     my $type_token = $self->current_token();
-    print Dumper($type_token), "\n";
-    # die;
-    # Обработка массивов (например, []int, [][]float64)
+
+    my $next_token = $self->next_token();
+    if ($next_token->{Name} eq 'declaration' && $next_token->{Text} eq ':=') {
+        return undef;
+    }
+
     if ($type_token->{Name} eq 'l_bracket') {
-        $self->consume_token();  # Пропускаем '['
+        $self->consume_token();
         
         # Проверяем, есть ли закрывающая скобка
         my $close_bracket = $self->current_token();
         if ($close_bracket->{Name} eq 'r_bracket') {
-            $self->consume_token();  # Пропускаем ']'
+            $self->consume_token();
             
-            # Рекурсивно парсим тип элемента массива
             my $array_type = $self->parse_type();
             if (!$array_type) {
                 die "Ожидался тип элемента массива";
             }
             
-            return "[]$array_type";  # Возвращаем тип массива
+            return "[]$array_type";
         } else {
             die "Ожидалась ']' после типа массива";
         }
@@ -849,12 +857,10 @@ sub parse_type {
     if ($type_token->{Class} eq 'keyword' || $type_token->{Class} eq 'identifier') {
         my $type_name = $type_token->{Text};
         $self->consume_token();
-        print Dumper($type_name);
-        # die;
         return $type_name;
     }
 
-    return undef;  # Если тип не распознан
+    return undef;
 }
 
 # Парсинг выражения (расширен для поддержки массивов и структур)
@@ -1322,9 +1328,8 @@ sub parse_primary_expression {
 
         # Проверяем, является ли следующий токен двоеточием (поле структуры)
         if ($next_token->{Name} eq 'colon') {
-            $self->consume_token();  # Пропускаем двоеточие
+            $self->consume_token();
 
-            # Парсим значение поля
             my $field_value = $self->parse_expression();
             return {
                 type => 'StructField',
@@ -1335,42 +1340,58 @@ sub parse_primary_expression {
 
         # Проверяем, является ли следующий токен открывающей скобкой (вызов функции)
         if ($next_token->{Name} eq 'l_paren') {
-            return $self->parse_function_call($identifier);  # Парсим вызов функции
+            return $self->parse_function_call($identifier);
         }
 
-        # Проверяем, есть ли постфиксная операция (i++, i--)
         my $postfix_token = $self->current_token();
         if ($postfix_token->{Name} eq 'increment' || $postfix_token->{Name} eq 'decrement') {
-            my $operator = $postfix_token->{Text};  # '++' или '--'
-            $self->consume_token();  # Пропускаем оператор
+            my $operator = $postfix_token->{Text};
+            $self->consume_token();
 
             return {
                 type => 'UnaryOperation',
                 operator => {
                     type => 'Operator',
                     value => $operator,
-                    Pos => $self->get_next_token_pos()  # Позиция оператора
+                    Pos => $self->get_next_token_pos()
                 },
                 operand => $identifier,
-                is_prefix => 0  # Указываем, что это постфиксная операция
+                is_prefix => 0
             };
         } else {
-            # Это просто идентификатор без постфиксной операции
             return $identifier;
         }
     } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'number') {
+         my $text = $token->{Text};
+
+        my $type;
+        if ($text =~ /^[+-]?\d+$/) {
+            $type = 'IntLiteral';
+        } elsif ($text =~ /^[+-]?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?$/ || $text =~ /^[+-]?\d+[eE][+-]?\d+$/) {
+            $type = 'FloatLiteral';
+        } else {
+            die "Invalid numeric literal: $text";
+        }
+
         $self->consume_token();
         return {
-            type => 'NumberLiteral',
-            value => $token->{Text},
-            Pos => $self->get_next_token_pos()  # Позиция числа
+            type  => $type,
+            value => $text,
+            Pos   => $self->get_next_token_pos()
         };
     } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'string') {
         $self->consume_token();
         return {
             type => 'StringLiteral',
             value => $token->{Text},
-            Pos => $self->get_next_token_pos()  # Позиция строки
+            Pos => $self->get_next_token_pos()
+        };
+    } elsif ($token->{Class} eq 'constant' && $token->{Name} eq 'boolean') {
+        $self->consume_token();
+        return {
+            type => 'BoolLiteral',
+            value => $token->{Text},
+            Pos => $self->get_next_token_pos()
         };
     } elsif ($token->{Name} eq 'l_paren') {
         $self->consume_token();
@@ -1396,37 +1417,32 @@ sub parse_package_or_field_access {
     my ($self, $identifier) = @_;
     print "parse_package_or_field_access\n";
 
-    # Пропускаем точку
-    $self->consume_token();  # Точка уже проверена в parse_primary_expression
+    $self->consume_token();
 
-    # Парсим имя поля или функции
     my $field_or_func_token = $self->current_token();
     if ($field_or_func_token->{Class} eq 'identifier') {
         $self->consume_token();
 
-        # Проверяем, является ли следующий токен открывающей скобкой (вызов функции)
         my $next_token = $self->current_token();
         print Dumper($next_token), "\n";
         if ($next_token->{Name} eq 'l_paren') {
-            # Это вызов функции через пакет (например, qwe.generateSequence(seq))
             return $self->parse_function_call({
                 type => 'PackageCall',
                 package => $identifier,
                 function => {
                     type => 'Identifier',
                     value => $field_or_func_token->{Text},
-                    Pos => $self->get_next_token_pos()  # Позиция функции
+                    Pos => $self->get_next_token_pos()
                 }
             });
         } else {
-            # Это обращение к полю структуры (например, seq.End)
             return {
                 type => 'FieldAccess',
                 object => $identifier,
                 field => {
                     type => 'Identifier',
                     value => $field_or_func_token->{Text},
-                    Pos => $self->get_next_token_pos()  # Позиция поля
+                    Pos => $self->get_next_token_pos()
                 }
             };
         }

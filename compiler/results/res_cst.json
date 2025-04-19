@@ -1,0 +1,177 @@
+{
+   "children" : [
+      {
+         "nodes" : [
+            {
+               "Name" : "package",
+               "Pos" : 0,
+               "Text" : "package"
+            },
+            {
+               "Name" : "id-0",
+               "Pos" : 1,
+               "Text" : "main"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 2,
+               "Text" : ";"
+            }
+         ],
+         "type" : "PackageDeclaration"
+      },
+      {
+         "body" : [
+            {
+               "nodes" : [
+                  {
+                     "Name" : "var",
+                     "Pos" : 8,
+                     "Text" : "var"
+                  },
+                  {
+                     "Name" : "id-1",
+                     "Pos" : 9,
+                     "Text" : "a"
+                  },
+                  {
+                     "Name" : "Type",
+                     "Pos" : 10,
+                     "Text" : "int"
+                  },
+                  {
+                     "Name" : "assignment",
+                     "Pos" : 11,
+                     "Text" : "="
+                  },
+                  {
+                     "type" : "Expression",
+                     "value" : {
+                        "Pos" : 12,
+                        "type" : "IntLiteral",
+                        "value" : "10"
+                     }
+                  },
+                  {
+                     "Name" : "semicolon",
+                     "Pos" : 13,
+                     "Text" : ";"
+                  }
+               ],
+               "type" : "VariableDeclaration"
+            },
+            {
+               "nodes" : [
+                  {
+                     "Name" : "id-2",
+                     "Pos" : 14,
+                     "Text" : "y"
+                  },
+                  {
+                     "Name" : "declaration",
+                     "Pos" : 15,
+                     "Text" : ":="
+                  },
+                  {
+                     "type" : "Expression",
+                     "value" : {
+                        "Pos" : 16,
+                        "type" : "FloatLiteral",
+                        "value" : "3.14"
+                     }
+                  },
+                  {
+                     "Name" : "semicolon",
+                     "Pos" : 17,
+                     "Text" : ";"
+                  }
+               ],
+               "type" : "ShortVariableDeclaration"
+            },
+            {
+               "nodes" : [
+                  {
+                     "Name" : "id-3",
+                     "Pos" : 18,
+                     "Text" : "sum"
+                  },
+                  {
+                     "Name" : "declaration",
+                     "Pos" : 19,
+                     "Text" : ":="
+                  },
+                  {
+                     "type" : "Expression",
+                     "value" : {
+                        "left" : {
+                           "Pos" : 20,
+                           "type" : "Identifier",
+                           "value" : "a"
+                        },
+                        "operator" : {
+                           "Pos" : 21,
+                           "type" : "Operator",
+                           "value" : "+"
+                        },
+                        "right" : {
+                           "Pos" : 22,
+                           "type" : "IntLiteral",
+                           "value" : "2"
+                        },
+                        "type" : "BinaryOperation"
+                     }
+                  },
+                  {
+                     "Name" : "semicolon",
+                     "Pos" : 23,
+                     "Text" : ";"
+                  }
+               ],
+               "type" : "ShortVariableDeclaration"
+            }
+         ],
+         "name" : "main",
+         "nodes" : [
+            {
+               "Name" : "func",
+               "Pos" : 3,
+               "Text" : "func"
+            },
+            {
+               "Name" : "id-0",
+               "Pos" : 4,
+               "Text" : "main"
+            },
+            {
+               "Name" : "l_paren",
+               "Pos" : 5,
+               "Text" : "("
+            },
+            {
+               "Name" : "r_paren",
+               "Pos" : 6,
+               "Text" : ")"
+            },
+            {
+               "Name" : "l_brace",
+               "Pos" : 7,
+               "Text" : "{"
+            },
+            {
+               "Name" : "r_brace",
+               "Pos" : 24,
+               "Text" : "}"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 25,
+               "Text" : ";"
+            }
+         ],
+         "params" : [],
+         "return_types" : [],
+         "type" : "FunctionDeclaration"
+      }
+   ],
+   "type" : "Program"
+}

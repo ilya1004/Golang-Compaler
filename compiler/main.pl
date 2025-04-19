@@ -6,15 +6,21 @@ use JSON;
 use lib '../lib';
 use Lexer;
 use Parser;
+use SemanticAnalyzer;
 
 our $index = 0;
 our %ids;
 
-my $filename = '../test-code/test-1/test.go';
+my $filename = '../test-code/test-0/main.go';
 
 open(my $fh, '<', $filename) or die "Не удалось открыть файл '$filename': $!";
 my $code = do { local $/; <$fh> };
 close($fh);
+
+my $output_dir = 'results';
+unless(-d $output_dir) {
+    mkdir $output_dir or die "Не удалось создать директорию '$output_dir': $!";
+}
 
 my $lexer = Lexer->new($code);
 my $tokens = $lexer->lex_analyze();
@@ -25,7 +31,7 @@ print "\n-----------------------------------------\n";
 my $parser = Parser->new($tokens);
 my $cst = $parser->parse();
 my $symbol_table = $parser->get_symbol_table();
-my $imports = $parser->get_imports();  # Получаем список импортов
+my $imports = $parser->get_imports();
 
 print "Распознанные токены:\n";
 foreach my $token (@$tokens) {
@@ -49,17 +55,17 @@ my $imports_json = to_json($imports, {
     canonical => 1,
 });
 
-my $cst_filename = 'res_cst.json';
+my $cst_filename = "$output_dir/res_cst.json";
 open(my $cst_fh, '>', $cst_filename) or die "Не удалось открыть файл '$cst_filename' для записи: $!";
 print $cst_fh $cst_json;
 close($cst_fh);
 
-my $symbol_table_filename = 'res_symbol_table.json';
+my $symbol_table_filename = "$output_dir/res_symbol_table.json";
 open(my $symbol_table_fh, '>', $symbol_table_filename) or die "Не удалось открыть файл '$symbol_table_filename' для записи: $!";
 print $symbol_table_fh $symbol_table_json;
 close($symbol_table_fh);
 
-my $imports_filename = 'res_imports.json';
+my $imports_filename = "$output_dir/res_imports.json";
 open(my $imports_fh, '>', $imports_filename) or die "Не удалось открыть файл '$imports_filename' для записи: $!";
 print $imports_fh $imports_json;
 close($imports_fh);
@@ -68,24 +74,42 @@ print "CST успешно записан в файл '$cst_filename'.\n";
 print "Таблица символов успешно записана в файл '$symbol_table_filename'.\n";
 print "Список импортов успешно записан в файл '$imports_filename'.\n";
 
+# Вызов семантического анализатора
+my $analyzer = SemanticAnalyzer->new($cst, $symbol_table, $imports);
+my $errors = $analyzer->analyze();
 
-
-my $output_dir = 'results';
-unless(-d $output_dir) {
-    mkdir $output_dir or die "Не удалось создать директорию '$output_dir': $!";
+# Вывод результатов семантического анализа
+print "\n-----------------------------------------\n";
+print "Результаты семантического анализа:\n";
+if (@$errors) {
+    print "Найдены семантические ошибки:\n";
+    foreach my $error (@$errors) {
+        # Попробуем получить строку и столбец из токена по позиции
+        my $token = $tokens->[$error->{pos}] || {};
+        my $line = $token->{Line} || 'неизвестно';
+        my $column = $token->{Column} || 'неизвестно';
+        print "Ошибка: $error->{message} (позиция: $error->{pos}, строка: $line, столбец: $column)\n";
+    }
+} else {
+    print "Семантический анализ прошел успешно, ошибок не найдено.\n";
 }
 
-open(my $main_fh,         '>', "$output_dir/result.txt")       or die "Не удалось создать файл result.txt: $!";
-open(my $keywords_fh,     '>', "$output_dir/keywords.txt")     or die "Не удалось создать файл keywords.txt: $!";
-open(my $operators_fh,    '>', "$output_dir/operators.txt")    or die "Не удалось создать файл operators.txt: $!";
-open(my $identifiers_fh,  '>', "$output_dir/identifiers.txt")  or die "Не удалось создать файл identifiers.txt: $!";
-open(my $constants_fh,    '>', "$output_dir/constants.txt")    or die "Не удалось создать файл constants.txt: $!";
-open(my $punctuations_fh, '>', "$output_dir/punctuations.txt") or die "Не удалось создать файл punctuations.txt: $!";
+# Сохранение результатов семантического анализа в файл
+my $semantic_errors_filename = "$output_dir/res_semantic_errors.json";
+open(my $semantic_fh, '>', $semantic_errors_filename) or die "Не удалось открыть файл '$semantic_errors_filename' для записи: $!";
+print $semantic_fh to_json($errors, { pretty => 1, canonical => 1 });
+close($semantic_fh);
+print "Результаты семантического анализа записаны в файл '$semantic_errors_filename'.\n";
 
+open(my $main_fh,         '>', "$output_dir/lex_result.txt")       or die "Не удалось создать файл result.txt: $!";
+open(my $keywords_fh,     '>', "$output_dir/lex_keywords.txt")     or die "Не удалось создать файл keywords.txt: $!";
+open(my $operators_fh,    '>', "$output_dir/lex_operators.txt")    or die "Не удалось создать файл operators.txt: $!";
+open(my $identifiers_fh,  '>', "$output_dir/lex_identifiers.txt")  or die "Не удалось создать файл identifiers.txt: $!";
+open(my $constants_fh,    '>', "$output_dir/lex_constants.txt")    or die "Не удалось создать файл constants.txt: $!";
+open(my $punctuations_fh, '>', "$output_dir/lex_punctuations.txt") or die "Не удалось создать файл punctuations.txt: $!";
 
 my $header    = sprintf("%-35s %-24s %-15s %-20s %-10s\n", "Лексема", "Токен", "Строка", "Столбец", "ID");
 my $separator = "=================================================================================\n";
-
 
 print $main_fh $header, $separator;
 
@@ -117,7 +141,6 @@ sub get_token_id {
     if ($class eq "punctuation"){ return exists $unique_punctuations{$text} ? "$class:" . $unique_punctuations{$text} : ""; }
     return "";
 }
-
 
 foreach my $token (@{$lexer->{TokenList}}) {
     my $token_id = get_token_id($token->{Class}, $token->{Text});

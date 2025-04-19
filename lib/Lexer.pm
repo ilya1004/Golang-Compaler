@@ -121,10 +121,6 @@ sub next_token {
             if ($tokenType->{Class} eq "identifier") {
                 $name .= $suffix; 
             }
-
-            # if ($name eq "newline") {
-            #     $firstMatch = '\n';
-            # }
           
             my %token = (
                 Name   => $name,

@@ -1,0 +1,53 @@
+{
+  "scopes": {
+    "-Global-": {
+      "constants": {},
+      "variables": {}
+    },
+    "main": {
+      "variables": {
+        "a": {
+          "pos": 13,
+          "type": "int",
+          "value": {
+            "Pos": 12,
+            "type": "IntLiteral",
+            "value": "10"
+          }
+        },
+        "sum": {
+          "pos": 23,
+          "type": "auto",
+          "value": {
+            "left": {
+              "Pos": 20,
+              "type": "Identifier",
+              "value": "a"
+            },
+            "operator": {
+              "Pos": 21,
+              "type": "Operator",
+              "value": "+"
+            },
+            "right": {
+              "Pos": 22,
+              "type": "IntLiteral",
+              "value": "2"
+            },
+            "type": "BinaryOperation"
+          }
+        },
+        "y": {
+          "pos": 17,
+          "type": "auto",
+          "value": {
+            "Pos": 16,
+            "type": "FloatLiteral",
+            "value": "3.14"
+          }
+        }
+      }
+    }
+  },
+  "types": {}
+}

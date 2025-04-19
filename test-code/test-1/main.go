@@ -34,6 +34,8 @@ func main() {
 
 	var flag bool = false
 
+	qwe := num1 + num2
+	fmt.Println(qwe)
 	flag1 := true
 	flag = true
 
