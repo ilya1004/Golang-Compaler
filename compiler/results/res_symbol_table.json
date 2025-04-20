@@ -1,53 +1,59 @@
 {
+  "functions": {
+    "generateSequence": {
+      "params": [
+        {
+          "name": "seq",
+          "param_pos": 0,
+          "type": "Sequence"
+        }
+      ],
+      "pos": 78,
+      "return_types": ["[]int"]
+    }
+  },
   "scopes": {
     "-Global-": {
       "constants": {},
       "variables": {}
     },
-    "main": {
+    "generateSequence": {
       "variables": {
-        "a": {
-          "pos": 13,
-          "type": "int",
-          "value": {
-            "Pos": 12,
-            "type": "IntLiteral",
-            "value": "10"
-          }
-        },
-        "sum": {
-          "pos": 23,
+        "i": {
+          "pos": 33,
           "type": "auto",
           "value": {
-            "left": {
-              "Pos": 20,
+            "field": {
+              "Pos": 32,
               "type": "Identifier",
-              "value": "a"
+              "value": "Start"
             },
-            "operator": {
-              "Pos": 21,
-              "type": "Operator",
-              "value": "+"
+            "object": {
+              "Pos": 31,
+              "type": "Identifier",
+              "value": "seq"
             },
-            "right": {
-              "Pos": 22,
-              "type": "IntLiteral",
-              "value": "2"
-            },
-            "type": "BinaryOperation"
+            "type": "FieldAccess"
           }
         },
-        "y": {
-          "pos": 17,
-          "type": "auto",
-          "value": {
-            "Pos": 16,
-            "type": "FloatLiteral",
-            "value": "3.14"
-          }
+        "result": {
+          "pos": 27,
+          "type": "[]int"
+        },
+        "seq": {
+          "pos": 21,
+          "type": "Sequence"
         }
       }
     }
   },
-  "types": {}
+  "types": {
+    "Sequence": {
+      "fields": {
+        "End": "int",
+        "Start": "int",
+        "Step": "int"
+      }
+    }
+  }
 }

@@ -40,36 +40,55 @@ foreach my $token (@$tokens) {
 
 print "Сгенерированное CST:\n", Dumper($cst);
 
+# Сериализация токенов в JSON
+my $tokens_json = to_json($tokens, { 
+    pretty => 1,
+    canonical => 1,
+});
+
+# Сериализация CST в JSON
 my $cst_json = to_json($cst, { 
     pretty => 1,
     canonical => 1,
 });
 
+# Сериализация таблицы символов в JSON
 my $symbol_table_json = to_json($symbol_table, {
     pretty => 1,
     canonical => 1,
 });
 
+# Сериализация импортов в JSON
 my $imports_json = to_json($imports, {
     pretty => 1,
     canonical => 1,
 });
 
+# Запись токенов в файл
+my $tokens_filename = "$output_dir/res_tokens.json";
+open(my $tokens_fh, '>', $tokens_filename) or die "Не удалось открыть файл '$tokens_filename' для записи: $!";
+print $tokens_fh $tokens_json;
+close($tokens_fh);
+
+# Запись CST в файл
 my $cst_filename = "$output_dir/res_cst.json";
 open(my $cst_fh, '>', $cst_filename) or die "Не удалось открыть файл '$cst_filename' для записи: $!";
 print $cst_fh $cst_json;
 close($cst_fh);
 
+# Запись таблицы символов в файл
 my $symbol_table_filename = "$output_dir/res_symbol_table.json";
 open(my $symbol_table_fh, '>', $symbol_table_filename) or die "Не удалось открыть файл '$symbol_table_filename' для записи: $!";
 print $symbol_table_fh $symbol_table_json;
 close($symbol_table_fh);
 
+# Запись импортов в файл
 my $imports_filename = "$output_dir/res_imports.json";
 open(my $imports_fh, '>', $imports_filename) or die "Не удалось открыть файл '$imports_filename' для записи: $!";
 print $imports_fh $imports_json;
 close($imports_fh);
 
+print "Токены успешно записаны в файл '$tokens_filename'.\n";
 print "CST успешно записан в файл '$cst_filename'.\n";
 print "Таблица символов успешно записана в файл '$symbol_table_filename'.\n";
 print "Список импортов успешно записан в файл '$imports_filename'.\n";

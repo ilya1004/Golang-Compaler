@@ -592,6 +592,16 @@ sub parse_const_declaration {
         die "Ожидалось имя константы";
     }
 
+    # Проверяем, указан ли тип
+    my $const_type;
+    my $next_token = $self->current_token();
+    if ($next_token->{Class} eq 'keyword' || $next_token->{Class} eq 'identifier') {
+        $const_type = $self->parse_type();
+        if ($const_type) {
+            push @nodes, { Name => 'Type', Text => $const_type, Pos => $self->get_next_token_pos() };
+        }
+    }
+
     # Оператор присваивания
     my $assign_token = $self->current_token();
     if ($assign_token->{Name} eq 'assignment') {
@@ -622,6 +632,7 @@ sub parse_const_declaration {
     # Добавляем константу в таблицу символов
     my $scope = $self->{current_scope} || '-Global-';
     $self->{symbol_table}{scopes}{$scope}{constants}{$const_name->{Text}} = {
+        type => $const_type || 'auto',  # Тип указан явно или auto
         value => $const_value->{Text},
         pos => $self->{token_counter}  # Позиция в коде
     };
@@ -663,6 +674,7 @@ sub parse_function {
 
         # Парсинг параметров функции
         my @params;
+        my $param_pos = 0;  # Счетчик позиции параметра
         while ($self->current_token()->{Name} ne 'r_paren') {
             # Имена параметров
             my @param_names;
@@ -680,7 +692,7 @@ sub parse_function {
             }
 
             # Тип параметра
-            my $param_type = $self->parse_type();  # Используем новую функцию parse_type
+            my $param_type = $self->parse_type();
             if (!$param_type) {
                 die "Ожидался тип параметра";
             }
@@ -689,13 +701,16 @@ sub parse_function {
             foreach my $param_name (@param_names) {
                 $self->{symbol_table}{scopes}{$func_name->{Text}}{variables}{$param_name->{Text}} = {
                     type => $param_type,
-                    pos => $self->{token_counter}  # Текущее значение счетчика токенов
+                    pos => $self->{token_counter}
                 };
 
                 push @params, {
                     param_name => { Name => $param_name->{Name}, Text => $param_name->{Text}, Pos => $self->get_next_token_pos() },
-                    param_type => $param_type
+                    param_type => $param_type,
+                    param_pos => $param_pos  # Сохраняем позицию параметра
                 };
+
+                $param_pos++;  # Увеличиваем позицию для следующего параметра
             }
 
             # Запятая между группами параметров (если есть)
@@ -714,7 +729,7 @@ sub parse_function {
                 Name => $r_paren->{Name},
                 Text => $r_paren->{Text}, 
                 Pos => $self->get_next_token_pos() 
-                };
+            };
             $self->consume_token();
         } else {
             die "Ожидалась ')' после параметров функции";
@@ -725,16 +740,15 @@ sub parse_function {
         my $return_token = $self->current_token();
         print Dumper($return_token), "\n";
         if ($return_token->{Name} eq 'l_paren') {
-            # Если возвращаемых значений несколько (в скобках)
             push @nodes, { 
                 Name => $return_token->{Name}, 
                 Text => $return_token->{Text}, 
                 Pos => $self->get_next_token_pos() 
-                };
+            };
             $self->consume_token();
 
             while ($self->current_token()->{Name} ne 'r_paren') {
-                my $return_type = $self->parse_type();  # Используем новую функцию parse_type
+                my $return_type = $self->parse_type();
                 if ($return_type) {
                     push @return_types, $return_type;
                 } else {
@@ -757,21 +771,31 @@ sub parse_function {
                     Name => $r_paren_return->{Name}, 
                     Text => $r_paren_return->{Text}, 
                     Pos => $self->get_next_token_pos() 
-                    };
+                };
                 $self->consume_token();
             } else {
                 die "Ожидалась ')' после возвращаемых значений";
             }
         } elsif ($return_token->{Class} eq 'keyword' || $return_token->{Class} eq 'identifier' || $return_token->{Name} eq 'l_bracket') {
             # Если возвращаемое значение одно
-            my $return_type = $self->parse_type();  # Используем новую функцию parse_type
-            # print "123123\n";
+            my $return_type = $self->parse_type();
             if ($return_type) {
                 push @return_types, $return_type;
             } else {
                 die "Ожидался тип возвращаемого значения";
             }
         }
+
+        # Записываем сигнатуру функции в таблицу символов
+        $self->{symbol_table}{functions}{$func_name->{Text}} = {
+            params => [ map { { 
+                name => $_->{param_name}{Text}, 
+                type => $_->{param_type}, 
+                param_pos => $_->{param_pos} 
+            } } @params ],
+            return_types => \@return_types,
+            pos => $func_name->{Pos}
+        };
 
         # Открывающая фигурная скобка для тела функции
         my $l_brace = $self->current_token();

@@ -21,155 +21,361 @@
          "type" : "PackageDeclaration"
       },
       {
+         "fields" : [
+            {
+               "field_name" : {
+                  "Name" : "id-2",
+                  "Pos" : 7,
+                  "Text" : "Start"
+               },
+               "field_type" : {
+                  "Name" : "int",
+                  "Pos" : 8,
+                  "Text" : "int"
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 9,
+                  "Text" : ";"
+               }
+            },
+            {
+               "field_name" : {
+                  "Name" : "id-3",
+                  "Pos" : 10,
+                  "Text" : "End"
+               },
+               "field_type" : {
+                  "Name" : "int",
+                  "Pos" : 11,
+                  "Text" : "int"
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 12,
+                  "Text" : ";"
+               }
+            },
+            {
+               "field_name" : {
+                  "Name" : "id-4",
+                  "Pos" : 13,
+                  "Text" : "Step"
+               },
+               "field_type" : {
+                  "Name" : "int",
+                  "Pos" : 14,
+                  "Text" : "int"
+               },
+               "semicolon" : {
+                  "Name" : "semicolon",
+                  "Pos" : 15,
+                  "Text" : ";"
+               }
+            }
+         ],
+         "name" : "Sequence",
+         "nodes" : [
+            {
+               "Name" : "type",
+               "Pos" : 3,
+               "Text" : "type"
+            },
+            {
+               "Name" : "id-1",
+               "Pos" : 4,
+               "Text" : "Sequence"
+            },
+            {
+               "Name" : "struct",
+               "Pos" : 5,
+               "Text" : "struct"
+            },
+            {
+               "Name" : "l_brace",
+               "Pos" : 6,
+               "Text" : "{"
+            },
+            {
+               "Name" : "r_brace",
+               "Pos" : 16,
+               "Text" : "}"
+            },
+            {
+               "Name" : "semicolon",
+               "Pos" : 17,
+               "Text" : ";"
+            }
+         ],
+         "type" : "TypeDeclaration"
+      },
+      {
          "body" : [
             {
                "nodes" : [
                   {
                      "Name" : "var",
-                     "Pos" : 8,
+                     "Pos" : 24,
                      "Text" : "var"
                   },
                   {
-                     "Name" : "id-1",
-                     "Pos" : 9,
-                     "Text" : "a"
+                     "Name" : "id-7",
+                     "Pos" : 25,
+                     "Text" : "result"
                   },
                   {
                      "Name" : "Type",
-                     "Pos" : 10,
-                     "Text" : "int"
-                  },
-                  {
-                     "Name" : "assignment",
-                     "Pos" : 11,
-                     "Text" : "="
-                  },
-                  {
-                     "type" : "Expression",
-                     "value" : {
-                        "Pos" : 12,
-                        "type" : "IntLiteral",
-                        "value" : "10"
-                     }
+                     "Pos" : 26,
+                     "Text" : "[]int"
                   },
                   {
                      "Name" : "semicolon",
-                     "Pos" : 13,
+                     "Pos" : 27,
                      "Text" : ";"
                   }
                ],
                "type" : "VariableDeclaration"
             },
             {
-               "nodes" : [
+               "body" : [
                   {
-                     "Name" : "id-2",
-                     "Pos" : 14,
-                     "Text" : "y"
-                  },
-                  {
-                     "Name" : "declaration",
-                     "Pos" : 15,
-                     "Text" : ":="
-                  },
-                  {
-                     "type" : "Expression",
-                     "value" : {
-                        "Pos" : 16,
-                        "type" : "FloatLiteral",
-                        "value" : "3.14"
-                     }
-                  },
-                  {
-                     "Name" : "semicolon",
-                     "Pos" : 17,
-                     "Text" : ";"
+                     "left" : {
+                        "Pos" : 42,
+                        "type" : "Identifier",
+                        "value" : "result"
+                     },
+                     "operator" : {
+                        "Pos" : 43,
+                        "type" : "Operator",
+                        "value" : "="
+                     },
+                     "right" : {
+                        "args" : [
+                           {
+                              "Pos" : 46,
+                              "type" : "Identifier",
+                              "value" : "result"
+                           },
+                           {
+                              "Pos" : 48,
+                              "type" : "Identifier",
+                              "value" : "i"
+                           }
+                        ],
+                        "name" : "append",
+                        "nodes" : [
+                           {
+                              "Name" : "l_paren",
+                              "Pos" : 45,
+                              "Text" : "("
+                           },
+                           {
+                              "Name" : "comma",
+                              "Pos" : 47,
+                              "Text" : ","
+                           },
+                           {
+                              "Name" : "r_paren",
+                              "Pos" : 49,
+                              "Text" : ")"
+                           }
+                        ],
+                        "package" : null,
+                        "type" : "FunctionCall"
+                     },
+                     "semicolon" : {
+                        "Pos" : 50,
+                        "type" : "Punctuation",
+                        "value" : ";"
+                     },
+                     "type" : "AssignmentExpression"
                   }
                ],
-               "type" : "ShortVariableDeclaration"
+               "condition" : {
+                  "left" : {
+                     "Pos" : 34,
+                     "type" : "Identifier",
+                     "value" : "i"
+                  },
+                  "operator" : {
+                     "Pos" : 35,
+                     "type" : "Operator",
+                     "value" : "<="
+                  },
+                  "right" : {
+                     "field" : {
+                        "Pos" : 36,
+                        "type" : "Identifier",
+                        "value" : "End"
+                     },
+                     "object" : {
+                        "Pos" : 35,
+                        "type" : "Identifier",
+                        "value" : "seq"
+                     },
+                     "type" : "FieldAccess"
+                  },
+                  "type" : "RelationalExpression"
+               },
+               "index" : null,
+               "init" : {
+                  "nodes" : [
+                     {
+                        "Name" : "id-8",
+                        "Pos" : 29,
+                        "Text" : "i"
+                     },
+                     {
+                        "Name" : "declaration",
+                        "Pos" : 30,
+                        "Text" : ":="
+                     },
+                     {
+                        "type" : "Expression",
+                        "value" : {
+                           "field" : {
+                              "Pos" : 32,
+                              "type" : "Identifier",
+                              "value" : "Start"
+                           },
+                           "object" : {
+                              "Pos" : 31,
+                              "type" : "Identifier",
+                              "value" : "seq"
+                           },
+                           "type" : "FieldAccess"
+                        }
+                     },
+                     {
+                        "Name" : "semicolon",
+                        "Pos" : 33,
+                        "Text" : ";"
+                     }
+                  ],
+                  "type" : "ShortVariableDeclaration"
+               },
+               "iteration" : {
+                  "left" : {
+                     "Pos" : 37,
+                     "type" : "Identifier",
+                     "value" : "i"
+                  },
+                  "operator" : {
+                     "Pos" : 38,
+                     "type" : "Operator",
+                     "value" : "+="
+                  },
+                  "right" : {
+                     "field" : {
+                        "Pos" : 40,
+                        "type" : "Identifier",
+                        "value" : "Step"
+                     },
+                     "object" : {
+                        "Pos" : 39,
+                        "type" : "Identifier",
+                        "value" : "seq"
+                     },
+                     "type" : "FieldAccess"
+                  },
+                  "semicolon" : null,
+                  "type" : "AssignmentExpression"
+               },
+               "loop_type" : "standard",
+               "nodes" : [
+                  {
+                     "Name" : "for",
+                     "Pos" : 28,
+                     "Text" : "for"
+                  },
+                  {
+                     "Name" : "l_brace",
+                     "Pos" : 41,
+                     "Text" : "{"
+                  },
+                  {
+                     "Name" : "r_brace",
+                     "Pos" : 51,
+                     "Text" : "}"
+                  }
+               ],
+               "range" : null,
+               "type" : "ForLoop",
+               "value" : null
             },
             {
+               "expression" : {
+                  "Pos" : 53,
+                  "type" : "Identifier",
+                  "value" : "result"
+               },
                "nodes" : [
                   {
-                     "Name" : "id-3",
-                     "Pos" : 18,
-                     "Text" : "sum"
-                  },
-                  {
-                     "Name" : "declaration",
-                     "Pos" : 19,
-                     "Text" : ":="
-                  },
-                  {
-                     "type" : "Expression",
-                     "value" : {
-                        "left" : {
-                           "Pos" : 20,
-                           "type" : "Identifier",
-                           "value" : "a"
-                        },
-                        "operator" : {
-                           "Pos" : 21,
-                           "type" : "Operator",
-                           "value" : "+"
-                        },
-                        "right" : {
-                           "Pos" : 22,
-                           "type" : "IntLiteral",
-                           "value" : "2"
-                        },
-                        "type" : "BinaryOperation"
-                     }
+                     "Name" : "return",
+                     "Pos" : 52,
+                     "Text" : "return"
                   },
                   {
                      "Name" : "semicolon",
-                     "Pos" : 23,
+                     "Pos" : 54,
                      "Text" : ";"
                   }
                ],
-               "type" : "ShortVariableDeclaration"
+               "type" : "ReturnStatement"
             }
          ],
-         "name" : "main",
+         "name" : "generateSequence",
          "nodes" : [
             {
                "Name" : "func",
-               "Pos" : 3,
+               "Pos" : 18,
                "Text" : "func"
             },
             {
-               "Name" : "id-0",
-               "Pos" : 4,
-               "Text" : "main"
+               "Name" : "id-5",
+               "Pos" : 19,
+               "Text" : "generateSequence"
             },
             {
                "Name" : "l_paren",
-               "Pos" : 5,
+               "Pos" : 20,
                "Text" : "("
             },
             {
                "Name" : "r_paren",
-               "Pos" : 6,
+               "Pos" : 22,
                "Text" : ")"
             },
             {
                "Name" : "l_brace",
-               "Pos" : 7,
+               "Pos" : 23,
                "Text" : "{"
             },
             {
                "Name" : "r_brace",
-               "Pos" : 24,
+               "Pos" : 55,
                "Text" : "}"
             },
             {
                "Name" : "semicolon",
-               "Pos" : 25,
+               "Pos" : 56,
                "Text" : ";"
             }
          ],
-         "params" : [],
-         "return_types" : [],
+         "params" : [
+            {
+               "param_name" : {
+                  "Name" : "id-6",
+                  "Pos" : 21,
+                  "Text" : "seq"
+               },
+               "param_pos" : 0,
+               "param_type" : "Sequence"
+            }
+         ],
+         "return_types" : [
+            "[]int"
+         ],
          "type" : "FunctionDeclaration"
       }
    ],

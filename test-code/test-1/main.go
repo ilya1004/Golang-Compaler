@@ -28,7 +28,9 @@ func calculate(a, b float64, operation string) float64 {
 }
 
 func main() {
-	var num1, num2 float64
+	// var num1, num2 float64
+	var num1 float64
+	var num2 float64
 
 	var operation string
 
