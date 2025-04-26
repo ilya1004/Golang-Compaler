@@ -390,7 +390,7 @@ sub parse_variable_declaration {
     my $var_type;
     if ($is_var_declaration) {
         $var_type = $self->parse_type();
-        if ($var_type eq undef) {
+        if (!defined($var_type)) {
             $var_type = "auto";
         }
         push @nodes, { Name => 'Type', Text => $var_type, Pos => $self->get_next_token_pos() };

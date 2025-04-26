@@ -21,20 +21,12 @@ sub new {
     return $self;
 }
 
-# Main method to start analysis
-sub analyze {
-    my ($self) = @_;
-    $self->traverse_cst($self->{cst});
-    $self->save_symbol_table();
-    return $self->{errors};
-}
-
 # Save symbol table to file
 sub save_symbol_table {
     my ($self) = @_;
     my $output_dir = 'results';
     my $symbol_table_filename = "$output_dir/res_symbol_table_updated.json";
-    
+    # print Dumper($self->{symbol_table}{scopes}{"generateSequence"});
     my $symbol_table_json = to_json($self->{symbol_table}, {
         pretty => 1,
         canonical => 1,
@@ -45,6 +37,14 @@ sub save_symbol_table {
     close($fh);
     
     print "Обновленная таблица символов записана в файл '$symbol_table_filename'.\n";
+}
+
+# Main method to start analysis
+sub analyze {
+    my ($self) = @_;
+    $self->traverse_cst($self->{cst});
+    $self->save_symbol_table();
+    return $self->{errors};
 }
 
 # Recursive traversal of CST
@@ -71,7 +71,6 @@ sub traverse_cst {
 # Analyze a specific node
 sub analyze_node {
     my ($self, $node) = @_;
-    # print "analyze_node\n";
     return unless exists $node->{type};
     my $type = $node->{type};
 
@@ -187,23 +186,100 @@ sub get_type {
 
 # Get the type of a variable from the symbol table
 sub get_variable_type {
-    my ($self, $var_name) = @_;
+    my ($self, $var_name, $usage_pos) = @_;
     my $scope = $self->{current_scope} || '-Global-';
 
-    # Проверяем текущую область
+    # Проверяем текущую область (переменные и константы)
     if (exists $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}) {
         my $var_info = $self->{symbol_table}{scopes}{$scope}{variables}{$var_name};
-        return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+        # Если usage_pos не передан, возвращаем тип без проверки позиции
+        if (!defined($usage_pos)) {
+            return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+        }
+        # Проверяем, что позиция декларации меньше или равна позиции использования
+        if ($usage_pos >= $var_info->{pos}) {
+            return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+        }
+    }
+    if (exists $self->{symbol_table}{scopes}{$scope}{constants}{$var_name}) {
+        my $const_info = $self->{symbol_table}{scopes}{$scope}{constants}{$var_name};
+        if (!defined($usage_pos)) {
+            return $const_info->{type};
+        }
+        if ($usage_pos >= $const_info->{pos}) {
+            return $const_info->{type};
+        }
+    }
+
+    # Проверяем inner_scopes текущей области
+    if (exists $self->{symbol_table}{scopes}{$scope}{inner_scopes}) {
+        for my $inner_scope (@{$self->{symbol_table}{scopes}{$scope}{inner_scopes}}) {
+            if (exists $inner_scope->{variables}{$var_name}) {
+                my $var_info = $inner_scope->{variables}{$var_name};
+                if (!defined($usage_pos)) {
+                    return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+                }
+                if ($usage_pos >= $var_info->{pos}) {
+                    return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+                }
+            }
+            if (exists $inner_scope->{constants}{$var_name}) {
+                my $const_info = $inner_scope->{constants}{$var_name};
+                if (!defined($usage_pos)) {
+                    return $const_info->{type};
+                }
+                if ($usage_pos >= $const_info->{pos}) {
+                    return $const_info->{type};
+                }
+            }
+        }
     }
 
     # Проверяем родительские области
     my @scope_parts = split('_', $scope);
     while (@scope_parts) {
-        pop @scope_parts;  # Удаляем последний сегмент
+        pop @scope_parts;
         my $parent_scope = @scope_parts ? join('_', @scope_parts) : '-Global-';
         if (exists $self->{symbol_table}{scopes}{$parent_scope}{variables}{$var_name}) {
             my $var_info = $self->{symbol_table}{scopes}{$parent_scope}{variables}{$var_name};
-            return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+            if (!defined($usage_pos)) {
+                return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+            }
+            if ($usage_pos >= $var_info->{pos}) {
+                return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+            }
+        }
+        if (exists $self->{symbol_table}{scopes}{$parent_scope}{constants}{$var_name}) {
+            my $const_info = $self->{symbol_table}{scopes}{$parent_scope}{constants}{$var_name};
+            if (!defined($usage_pos)) {
+                return $const_info->{type};
+            }
+            if ($usage_pos >= $const_info->{pos}) {
+                return $const_info->{type};
+            }
+        }
+        # Проверяем inner_scopes родительской области
+        if (exists $self->{symbol_table}{scopes}{$parent_scope}{inner_scopes}) {
+            for my $inner_scope (@{$self->{symbol_table}{scopes}{$parent_scope}{inner_scopes}}) {
+                if (exists $inner_scope->{variables}{$var_name}) {
+                    my $var_info = $inner_scope->{variables}{$var_name};
+                    if (!defined($usage_pos)) {
+                        return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+                    }
+                    if ($usage_pos >= $var_info->{pos}) {
+                        return $var_info->{type} eq 'auto' && exists $var_info->{value} ? 'auto' : $var_info->{type};
+                    }
+                }
+                if (exists $inner_scope->{constants}{$var_name}) {
+                    my $const_info = $inner_scope->{constants}{$var_name};
+                    if (!defined($usage_pos)) {
+                        return $const_info->{type};
+                    }
+                    if ($usage_pos >= $const_info->{pos}) {
+                        return $const_info->{type};
+                    }
+                }
+            }
         }
         last if $parent_scope eq '-Global-';
     }
@@ -217,48 +293,13 @@ sub add_error {
     push @{$self->{errors}}, { message => $message, pos => $pos };
 }
 
-# Check binary operations
-sub check_binary_operation {
-    my ($self, $node) = @_;
-    print "check_binary_operation\n";
-    unless (exists $node->{left} && exists $node->{right} && exists $node->{operator}) {
-        $self->add_error("Некорректная структура бинарной операции", $node->{Pos} || 0);
-        return;
-    }
-
-    my $left_type  = $self->get_type($node->{left});
-    my $right_type = $self->get_type($node->{right});
-    my $operator   = $node->{operator}{value};
-
-    if ($left_type eq 'unknown' || $right_type eq 'unknown') {
-        $self->add_error("Неизвестный тип в бинарной операции", $node->{operator}{Pos});
-        return;
-    }
-
-    if ($left_type ne $right_type) {
-        $self->add_error("Несовместимые типы: " . $left_type . " и " . $right_type . " для оператора $operator", $node->{operator}{Pos});
-        return;
-    }
-
-    if ($operator eq '+' && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64|string)$/) {
-        $self->add_error("Оператор + применим только к целочисленным, числам с плавающей точкой или строкам, получен " . $left_type, $node->{operator}{Pos});
-    } elsif ($operator =~ /^(-|\*|\/)$/ && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64)$/) {
-        $self->add_error("Оператор $operator применим только к целочисленным или числам с плавающей точкой, получен " . $left_type, $node->{operator}{Pos});
-    } elsif ($operator =~ /^(<|>|<=|>=|==|!=)$/ && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64|string|bool)$/) {
-        $self->add_error("Оператор $operator применим только к целочисленным, числам с плавающей точкой, строкам или логическим значениям, получен " . $left_type, $node->{operator}{Pos});
-    } elsif ($operator =~ /^(&&\|\|)$/ && $left_type ne 'bool') {
-        $self->add_error("Оператор $operator применим только к логическим значениям, получен " . $left_type, $node->{operator}{Pos});
-    }
-}
-
 # Check variable declarations
 sub check_declaration {
     my ($self, $node) = @_;
-    print "check_declaration\n";
-
     unless (($node->{type} eq 'VariableDeclaration' || $node->{type} eq 'ShortVariableDeclaration') && 
             exists $node->{nodes} && ref($node->{nodes}) eq 'ARRAY') {
         $self->add_error("Некорректная структура декларации переменной", $node->{Pos} || 0);
+        return;
     }
 
     my $nodes = $node->{nodes};
@@ -268,6 +309,7 @@ sub check_declaration {
     if ($is_var_declaration) {
         unless (scalar(@{$nodes}) >= 3 && $nodes->[0]{Name} eq 'var') {
             $self->add_error("Некорректная структура декларации переменной с var", $node->{Pos} || 0);
+            return;
         }
 
         my @identifiers;
@@ -284,62 +326,95 @@ sub check_declaration {
 
         unless (@identifiers) {
             $self->add_error("Ожидается хотя бы один идентификатор в декларации var", $nodes->[1]{Pos} || $node->{Pos} || 0);
+            return;
         }
 
-        my $declared_type = $nodes->[$i];
-        unless ($declared_type && $declared_type->{Name} eq 'Type' && exists $declared_type->{Text}) {
-            $self->add_error("Ожидается тип в декларации var", $declared_type ? $declared_type->{Pos} || 0 : $node->{Pos} || 0);
-        }
+        # Проверяем, есть ли тип (например, 'auto') или выражение
+        my $has_type = ($i < @$nodes && $nodes->[$i]{Name} eq 'Type' && exists $nodes->[$i]{Text});
+        my $declared_type = $has_type ? $nodes->[$i] : undef;
+        my $declared_type_value = $declared_type ? $declared_type->{Text} : undef;
 
-        my $declared_type_value = $declared_type->{Text};
-        my $has_expression = ($i + 1 < @$nodes && $nodes->[$i + 1]{Name} eq 'equal');
+        # Проверяем наличие выражения ('=')
+        my $has_expression = ($has_type ? $i + 1 : $i) < @$nodes && $nodes->[$has_type ? $i + 1 : $i]{Name} eq 'assignment';
 
-        if ($has_expression) {
-            unless ($i + 2 < @$nodes) {
-                $self->add_error("Ожидается выражение после '=' в декларации var", $nodes->[$i + 1]{Pos} || $node->{Pos} || 0);
-            }
-            my $expression = $nodes->[$i + 2];
-            my $right_type = $self->get_expression_type($expression->{type} eq 'Expression' ? $expression->{value} : $expression);
-
-            if ($right_type eq 'unknown') {
-                $self->add_error("Неизвестный тип в правой части декларации", $expression->{Pos} || $node->{Pos} || 0);
-            }
-
-            if ($declared_type_value ne $right_type) {
-                $self->add_error(
-                    "Несовместимые типы: нельзя присвоить " . $right_type . 
-                    " переменной типа " . $declared_type_value, 
-                    $expression->{Pos} || $node->{Pos} || 0
-                );
-            }
+        if (!$has_expression && !$has_type) {
+            $self->add_error("Ожидается тип или выражение в декларации var", $nodes->[$i]{Pos} || $node->{Pos} || 0);
+            return;
         }
 
         for my $identifier (@identifiers) {
             my $var_name = $identifier->{Text};
             my $var_pos = $identifier->{Pos} || $node->{Pos} || 0;
-            my $var_type = $self->get_variable_type($var_name);
+            if (exists $self->{symbol_table}{scopes}{$scope}{constants}{$var_name}) {
+                $self->add_error("Идентификатор '$var_name' уже используется как константа в области '$scope'", $var_pos);
+                return;
+            }
+            if (exists $self->{symbol_table}{functions}{$var_name}) {
+                $self->add_error("Идентификатор '$var_name' уже используется как имя функции", $var_pos);
+                return;
+            }
+        }
 
-            if ($var_type eq 'unknown') {
-                $self->add_error("Переменная '$var_name' не объявлена в таблице символов", $var_pos);
+        if ($has_expression) {
+            my $expr_index = $has_type ? $i + 2 : $i + 1;
+            unless ($expr_index < @$nodes) {
+                $self->add_error("Ожидается выражение после '=' в декларации var", $nodes->[$expr_index - 1]{Pos} || $node->{Pos} || 0);
+                return;
+            }
+            my $expression = $nodes->[$expr_index];
+            my $right_type;
+
+            # Проверяем, является ли выражение FunctionCall
+            if (exists $expression->{type} && $expression->{type} eq 'Expression' && exists $expression->{value} &&
+                exists $expression->{value}{type} && $expression->{value}{type} eq 'FunctionCall') {
+                my $func_call = $expression->{value};
+                if (exists $func_call->{return_type}) {
+                    $right_type = $func_call->{return_type};
+                } elsif (exists $func_call->{name} && exists $self->{symbol_table}{functions}{$func_call->{name}}) {
+                    $right_type = $self->{symbol_table}{functions}{$func_call->{name}}{return_types}[0] || 'unknown';
+                } else {
+                    $right_type = 'unknown';
+                }
+            } else {
+                # Иначе используем get_expression_type
+                $right_type = $self->get_expression_type($expression->{type} eq 'Expression' ? $expression->{value} : $expression);
             }
 
-            if ($var_type eq 'auto' && $has_expression) {
-                if (exists $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}) {
-                    $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}{type} = $declared_type_value;
-                    if ($has_expression) {
-                        $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}{value} = $nodes->[$i + 2]{type} eq 'Expression' ? $nodes->[$i + 2]{value} : $nodes->[$i + 2];
-                    }
-                } elsif (exists $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}) {
-                    $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}{type} = $declared_type_value;
-                    if ($has_expression) {
-                        $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}{value} = $nodes->[$i + 2]{type} eq 'Expression' ? $nodes->[$i + 2]{value} : $nodes->[$i + 2];
-                    }
-                }
+            if ($right_type eq 'unknown' || ($right_type eq 'auto' && $declared_type_value ne 'auto')) {
+                $self->add_error("Неизвестный или неподдерживаемый тип в правой части декларации var", $expression->{Pos} || $node->{Pos} || 0);
+                return;
+            }
+
+            # Если тип в CST — 'auto' или не указан, используем выведенный тип из выражения
+            my $final_type = ($declared_type_value && $declared_type_value eq 'auto') || !$has_type ? $right_type : $declared_type_value;
+
+            for my $identifier (@identifiers) {
+                my $var_name = $identifier->{Text};
+                my $var_pos = $identifier->{Pos} || $node->{Pos} || 0;
+                $self->{symbol_table}{scopes}{$scope}{variables}{$var_name} = {
+                    type => $final_type,
+                    pos => $var_pos,
+                    value => $expression
+                };
+            }
+        } else {
+            if ($declared_type_value eq 'auto') {
+                $self->add_error("Тип 'auto' недопустим в декларации var без выражения", $declared_type->{Pos} || $node->{Pos} || 0);
+                return;
+            }
+            for my $identifier (@identifiers) {
+                my $var_name = $identifier->{Text};
+                my $var_pos = $identifier->{Pos} || $node->{Pos} || 0;
+                $self->{symbol_table}{scopes}{$scope}{variables}{$var_name} = {
+                    type => $declared_type_value,
+                    pos => $var_pos
+                };
             }
         }
     } else {
         unless (scalar(@{$nodes}) >= 3 && $nodes->[1]{Name} eq 'declaration' && $nodes->[1]{Text} eq ':=') {
             $self->add_error("Некорректная структура короткой декларации переменной", $node->{Pos} || 0);
+            return;
         }
 
         my $identifier = $nodes->[0];
@@ -348,39 +423,46 @@ sub check_declaration {
 
         unless ($identifier->{Name} =~ /^id-/ && exists $identifier->{Text}) {
             $self->add_error("Ожидается идентификатор в короткой декларации", $var_pos);
+            return;
         }
 
         my $var_name = $identifier->{Text};
-        my $var_type = $self->get_variable_type($var_name);
 
-        my $right_type = $self->get_expression_type($expression->{type} eq 'Expression' ? $expression->{value} : $expression);
-
-        if ($var_type eq 'unknown') {
-            $self->add_error("Переменная '$var_name' не объявлена в таблице символов", $var_pos);
+        if (exists $self->{symbol_table}{scopes}{$scope}{constants}{$var_name}) {
+            $self->add_error("Идентификатор '$var_name' уже используется как константа в области '$scope'", $var_pos);
+            return;
+        }
+        if (exists $self->{symbol_table}{functions}{$var_name}) {
+            $self->add_error("Идентификатор '$var_name' уже используется как имя функции", $var_pos);
+            return;
         }
 
-        if ($right_type eq 'unknown') {
-            $self->add_error("Неизвестный тип в правой части декларации", $expression->{Pos} || $node->{Pos} || 0);
-        }
-
-        if ($var_type eq 'auto') {
-            if (exists $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}) {
-                $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}{type} = $right_type;
-                $self->{symbol_table}{scopes}{$scope}{variables}{$var_name}{value} = $expression->{type} eq 'Expression' ? $expression->{value} : $expression;
-            } elsif (exists $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}) {
-                $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}{type} = $right_type;
-                $self->{symbol_table}{scopes}{"-Global-"}{variables}{$var_name}{value} = $expression->{type} eq 'Expression' ? $expression->{value} : $expression;
+        my $right_type;
+        # Проверяем, является ли выражение FunctionCall
+        if (exists $expression->{type} && $expression->{type} eq 'Expression' && exists $expression->{value} &&
+            exists $expression->{value}{type} && $expression->{value}{type} eq 'FunctionCall') {
+            my $func_call = $expression->{value};
+            if (exists $func_call->{return_type}) {
+                $right_type = $func_call->{return_type};
+            } elsif (exists $func_call->{name} && exists $self->{symbol_table}{functions}{$func_call->{name}}) {
+                $right_type = $self->{symbol_table}{functions}{$func_call->{name}}{return_types}[0] || 'unknown';
             } else {
-                $self->add_error("Переменная '$var_name' не найдена ни в текущей, ни в глобальной области видимости", $var_pos);
+                $right_type = 'unknown';
             }
         } else {
-            unless ($var_type eq $right_type) {
-                $self->add_error(
-                    "Несовместимый тип для переменной '$var_name': ожидался $var_type, получен $right_type",
-                    $expression->{Pos} || $node->{Pos} || 0
-                );
-            }
+            $right_type = $self->get_expression_type($expression->{type} eq 'Expression' ? $expression->{value} : $expression);
         }
+
+        if ($right_type eq 'unknown' || $right_type eq 'auto') {
+            $self->add_error("Неизвестный или неподдерживаемый тип в правой части короткой декларации", $expression->{Pos} || $node->{Pos} || 0);
+            return;
+        }
+
+        $self->{symbol_table}{scopes}{$scope}{variables}{$var_name} = {
+            type => $right_type,
+            pos => $var_pos,
+            value => $expression
+        };
     }
 }
 
@@ -389,7 +471,10 @@ sub get_expression_type {
     my ($self, $value) = @_;
     print "get_expression_type\n";
 
-    if ($value->{type} eq 'FunctionCall') {
+    if ($value->{type} eq 'Expression' && exists $value->{value}) {
+        return $self->get_expression_type($value->{value});
+    }
+    elsif ($value->{type} eq 'FunctionCall') {
         my $func_name = $value->{name};
         if (exists $self->{symbol_table}{functions}{$func_name}) {
             my $func_info = $self->{symbol_table}{functions}{$func_name};
@@ -578,7 +663,6 @@ sub get_expression_type {
 # Check constant declarations
 sub check_const_declaration {
     my ($self, $node) = @_;
-    print "check_const_declaration\n";
 
     unless ($node->{type} eq 'ConstDeclaration' && exists $node->{nodes} && ref($node->{nodes}) eq 'ARRAY') {
         $self->add_error("Некорректная структура декларации константы", $node->{Pos} || 0);
@@ -633,17 +717,26 @@ sub check_const_declaration {
         return;
     }
 
-    # Проверяем точку с запятой (если есть)
     if ($node_index < @$nodes && $nodes->[$node_index]{Name} eq 'semicolon') {
         $semicolon = $nodes->[$node_index];
     }
 
-    # Извлекаем информацию
     my $const_name = $identifier->{Text};
     my $declared_type = $has_type ? $type_node->{Text} : 'auto';
     my $value_pos = $value_node->{Pos} || $node->{Pos} || 0;
+    my $const_pos = $identifier->{Pos} || $node->{Pos} || 0;
 
-    # Определяем тип значения
+    my $scope = $self->{current_scope} || '-Global-';
+    
+    if (exists $self->{symbol_table}{scopes}{$scope}{variables}{$const_name}) {
+        $self->add_error("Идентификатор '$const_name' уже используется как переменная в области '$scope'", $const_pos);
+        return;
+    }
+    if (exists $self->{symbol_table}{functions}{$const_name}) {
+        $self->add_error("Идентификатор '$const_name' уже используется как имя функции", $const_pos);
+        return;
+    }
+
     my $value_type;
     if ($value_node->{Name} eq 'number') {
         $value_type = $value_node->{Text} =~ /\./ ? 'float64' : 'int';
@@ -655,14 +748,6 @@ sub check_const_declaration {
         $value_type = 'unknown';
     }
 
-    # Проверяем наличие константы в таблице символов
-    my $scope = $self->{current_scope} || '-Global-';
-    unless (exists $self->{symbol_table}{scopes}{$scope}{constants}{$const_name}) {
-        $self->add_error("Константа $const_name не объявлена в таблице символов", $identifier->{Pos} || $node->{Pos} || 0);
-        return;
-    }
-
-    # Проверяем соответствие типов
     if ($declared_type ne 'auto' && $declared_type ne $value_type) {
         $self->add_error(
             "Несовместимые типы: нельзя присвоить " . $value_type . " константе типа " . $declared_type, $value_pos
@@ -670,9 +755,53 @@ sub check_const_declaration {
         return;
     }
 
-    # Обновляем таблицу символов, если тип auto
-    if ($self->{symbol_table}{scopes}{$scope}{constants}{$const_name}{type} eq 'auto') {
-        $self->{symbol_table}{scopes}{$scope}{constants}{$const_name}{type} = $value_type;
+    # Добавляем константу в таблицу символов
+    $self->{symbol_table}{scopes}{$scope}{constants}{$const_name} = {
+        type => $declared_type eq 'auto' ? $value_type : $declared_type,
+        pos => $const_pos,
+        value => $value_node->{Text}
+    };
+}
+
+# Check binary operations
+sub check_binary_operation {
+    my ($self, $node) = @_;
+
+    unless (exists $node->{left} && exists $node->{right} && exists $node->{operator}) {
+        $self->add_error("Некорректная структура бинарной операции", $node->{Pos} || 0);
+        return;
+    }
+
+    # Проверяем, что идентификаторы объявлены до использования
+    if (exists $node->{left}{type} && $node->{left}{type} eq 'Identifier') {
+        $self->check_variable_usage($node->{left}{value}, $node->{left}{Pos} || $node->{Pos} || 0);
+    }
+    if (exists $node->{right}{type} && $node->{right}{type} eq 'Identifier') {
+        $self->check_variable_usage($node->{right}{value}, $node->{right}{Pos} || $node->{Pos} || 0);
+    }
+
+    my $left_type  = $self->get_type($node->{left});
+    my $right_type = $self->get_type($node->{right});
+    my $operator   = $node->{operator}{value};
+
+    if ($left_type eq 'unknown' || $right_type eq 'unknown') {
+        $self->add_error("Неизвестный тип в бинарной операции", $node->{operator}{Pos} || $node->{Pos} || 0);
+        return;
+    }
+
+    if ($left_type ne $right_type) {
+        $self->add_error("Несовместимые типы: " . $left_type . " и " . $right_type . " для оператора $operator", $node->{operator}{Pos} || $node->{Pos} || 0);
+        return;
+    }
+
+    if ($operator eq '+' && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64|string)$/) {
+        $self->add_error("Оператор + применим только к целочисленным, числам с плавающей точкой или строкам, получен " . $left_type, $node->{operator}{Pos} || $node->{Pos} || 0);
+    } elsif ($operator =~ /^(-|\*|\/)$/ && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64)$/) {
+        $self->add_error("Оператор $operator применим только к целочисленным или числам с плавающей точкой, получен " . $left_type, $node->{operator}{Pos} || $node->{Pos} || 0);
+    } elsif ($operator =~ /^(<|>|<=|>=|==|!=)$/ && $left_type !~ /^(int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|float32|float64|string|bool)$/) {
+        $self->add_error("Оператор $operator применим только к целочисленным, числам с плавающей точкой, строкам или логическим значениям, получен " . $left_type, $node->{operator}{Pos} || $node->{Pos} || 0);
+    } elsif ($operator =~ /^(&&\|\|)$/ && $left_type ne 'bool') {
+        $self->add_error("Оператор $operator применим только к логическим значениям, получен " . $left_type, $node->{operator}{Pos} || $node->{Pos} || 0);
     }
 }
 
@@ -689,6 +818,13 @@ sub check_function_call {
     my $package = $node->{package};
     my $args = $node->{args} || [];
     my $pos = $node->{Pos} || 0;
+
+    # Проверяем, что идентификаторы в аргументах объявлены
+    for my $arg (@$args) {
+        if (exists $arg->{type} && $arg->{type} eq 'Identifier') {
+            $self->check_variable_usage($arg->{value}, $arg->{Pos} || $pos);
+        }
+    }
 
     my @sorted_args = @$args;
     my $func_info;
@@ -712,8 +848,8 @@ sub check_function_call {
         } elsif (exists $self->{symbol_table}{functions}{$func_name}) {
             $func_info = $self->{symbol_table}{functions}{$func_name};
         } else {
-            $pos = $pos || $node->{args}[0]{Pos};
-            $self->add_error("Функция '$func_name' не объявлена", $pos);
+            $pos = $pos || ($node->{args}[0]{Pos} // undef) if @{$node->{args}};
+            $self->add_error("Функция '$func_name' не объявлена", $pos || $node->{Pos} || 0);
             return;
         }
     }
@@ -779,6 +915,13 @@ sub check_function_call {
 sub check_builtin_function {
     my ($self, $node, $func_name, $package, $func_info, $sorted_args, $pos) = @_;
 
+    # Проверяем, что идентификаторы в аргументах объявлены
+    for my $arg (@$sorted_args) {
+        if (exists $arg->{type} && $arg->{type} eq 'Identifier') {
+            $self->check_variable_usage($arg->{value}, $arg->{Pos} || $pos);
+        }
+    }
+
     if ($func_name eq 'append' && (!defined $package || $package eq 'builtin')) {
         unless (@$sorted_args >= 1) {
             $self->add_error(
@@ -803,6 +946,11 @@ sub check_builtin_function {
         for my $i (1..$#$sorted_args) {
             my $arg = $sorted_args->[$i];
             my $arg_type = $self->get_type($arg);
+
+            # Обработка auto
+            if ($arg_type eq 'auto' && exists $arg->{value}) {
+                $arg_type = $self->get_type($arg->{value});
+            }
 
             unless ($arg_type eq $element_type) {
                 $self->add_error(
@@ -853,7 +1001,7 @@ sub check_builtin_function {
         return 1;
     }
 
-    # Другие встроенные функции (например, println)
+    # Другие встроенные функции
     my $expected_params = $func_info->{params} || [];
     my $expected_count = @$expected_params;
     my $is_variadic = $expected_count > 0 && $expected_params->[-1]{type} =~ /^\.\.\./;
@@ -932,20 +1080,23 @@ sub check_for_loop {
         }
     }
 
-    # Создаем новую область видимости для цикла с позицией слова 'for'
     my $for_scope = $old_scope . "_for_" . $for_pos;
-    $self->{symbol_table}{scopes}{$for_scope} = { variables => {} } unless exists $self->{symbol_table}{scopes}{$for_scope};
+    # Создаем область в scopes
+    $self->{symbol_table}{scopes}{$for_scope} = { variables => {}, inner_scopes => [] };
     $self->{current_scope} = $for_scope;
 
-    # Инициализируем inner_scopes в текущей области, если отсутствует
+    # Инициализируем inner_scopes для родительской области, если не существует
     $self->{symbol_table}{scopes}{$old_scope}{inner_scopes} = [] unless exists $self->{symbol_table}{scopes}{$old_scope}{inner_scopes};
 
-    # Обработка цикла типа range
+    # Проверка переменной в range
     if ($node->{loop_type} eq 'range' && exists $node->{range} && ref($node->{range}) eq 'HASH') {
         my $range_var = $node->{range}{value};
-        my $range_type = $self->get_variable_type($range_var);
-
-        unless ($range_type && $range_type =~ /^\[\](.+)$/) {
+        # Проверяем, что переменная range объявлена до использования
+        if ($node->{range}{type} eq 'Identifier') {
+            $self->check_variable_usage($range_var, $node->{range}{Pos} || $node->{Pos} || 0);
+        }
+        my $range_type = $self->get_variable_type($range_var, $node->{range}{Pos} || $node->{Pos} || 0);
+        unless ($range_type ne 'unknown' && $range_type =~ /^\[\](.+)$/) {
             $self->add_error(
                 "Переменная '$range_var' в range должна быть массивом, получен тип '$range_type'",
                 $node->{range}{Pos} || $node->{Pos} || 0
@@ -956,7 +1107,6 @@ sub check_for_loop {
         my $element_type = $1;
         my $index_type = 'int';
 
-        # Обработка переменных index и value из nodes
         my $nodes = $node->{nodes} || [];
         my ($index_var, $value_var);
         for my $i (0..$#$nodes) {
@@ -970,7 +1120,6 @@ sub check_for_loop {
             last if defined $index_var && defined $value_var;
         }
 
-        # Добавление переменных в область цикла
         if ($index_var) {
             my $var_name = $index_var->{Text};
             my $var_pos = $index_var->{Pos} || $node->{Pos} || 0;
@@ -993,21 +1142,37 @@ sub check_for_loop {
     # Обработка инициализатора (init) для стандартных циклов
     if (exists $node->{init} && ref($node->{init}) eq 'HASH') {
         $node->{init}{parent_type} = 'ForLoop';
+        # Анализируем init с областью цикла
+        $self->{current_scope} = $for_scope;
         $self->analyze_node($node->{init});
+        # Удаляем переменные из родительской области, если они были добавлены
+        if ($node->{init}{type} eq 'ShortVariableDeclaration' && exists $node->{init}{nodes}) {
+            my $nodes = $node->{init}{nodes};
+            for my $n (@$nodes) {
+                if ($n->{Name} =~ /^id-/ && exists $n->{Text} && exists $n->{Pos}) {
+                    my $var_name = $n->{Text};
+                    delete $self->{symbol_table}{scopes}{$old_scope}{variables}{$var_name};
+                }
+            }
+        }
     }
 
     # Обработка условия (condition)
     if (exists $node->{condition} && ref($node->{condition}) eq 'HASH') {
+        $self->{current_scope} = $for_scope;
         $self->analyze_node($node->{condition});
     }
 
     # Обработка итерации (iteration)
     if (exists $node->{iteration} && ref($node->{iteration}) eq 'HASH') {
+        $self->{current_scope} = $for_scope;
         $self->analyze_node($node->{iteration});
     }
 
     # Обработка тела цикла (body)
     if (exists $node->{body} && ref($node->{body}) eq 'ARRAY') {
+        # Устанавливаем область цикла для тела
+        $self->{current_scope} = $for_scope;
         for my $child (@{$node->{body}}) {
             $self->traverse_cst($child);
         }
@@ -1016,12 +1181,20 @@ sub check_for_loop {
     # Добавляем область цикла в inner_scopes родительской области
     push @{$self->{symbol_table}{scopes}{$old_scope}{inner_scopes}}, {
         name => $for_scope,
-        variables => $self->{symbol_table}{scopes}{$for_scope}{variables}
+        variables => { %{$self->{symbol_table}{scopes}{$for_scope}{variables}} },
+        inner_scopes => [ @{$self->{symbol_table}{scopes}{$for_scope}{inner_scopes}} ]
     };
 
     # Восстанавливаем область видимости
     $self->{current_scope} = $old_scope;
 }
 
+sub check_variable_usage {
+    my ($self, $var_name, $pos) = @_;
+    my $type = $self->get_variable_type($var_name, $pos);
+    if ($type eq 'unknown') {
+        $self->add_error("Переменная '$var_name' используется до её декларации", $pos);
+    }
+}
 
 1;

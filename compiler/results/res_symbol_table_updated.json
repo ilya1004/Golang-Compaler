@@ -1,71 +1,16 @@
 {
-  "functions": {
-    "generateSequence": {
-      "params": [
-        {
-          "name": "seq",
-          "param_pos": 0,
-          "type": "Sequence"
-        }
-      ],
-      "pos": 78,
-      "return_types": ["[]int"]
-    }
-  },
-  "scopes": {
-    "-Global-": {
-      "constants": {},
-      "variables": {}
-    },
-    "generateSequence": {
-      "inner_scopes": [
-        {
-          "name": "generateSequence_for_28",
-          "variables": {}
-        }
-      ],
-      "variables": {
-        "i": {
-          "pos": 33,
-          "type": "int",
-          "value": {
-            "field": {
-              "Pos": 32,
-              "type": "Identifier",
-              "value": "Start"
-            },
-            "object": {
-              "Pos": 31,
-              "type": "Identifier",
-              "value": "seq"
-            },
-            "type": "FieldAccess"
-          }
-        },
-        "result": {
-          "pos": 27,
-          "type": "[]int"
-        },
-        "seq": {
-          "pos": 21,
-          "type": "Sequence"
-        }
+   "functions" : {
+      "main" : {
+         "params" : [],
+         "pos" : 19,
+         "return_types" : []
       }
-    },
-    "generateSequence_for": {
-      "variables": {}
-    },
-    "generateSequence_for_28": {
-      "variables": {}
-    }
-  },
-  "types": {
-    "Sequence": {
-      "fields": {
-        "End": "int",
-        "Start": "int",
-        "Step": "int"
+   },
+   "scopes" : {
+      "-Global-" : {
+         "constants" : {},
+         "variables" : {}
       }
-    }
-  }
+   },
+   "types" : {}
 }

@@ -27,528 +27,56 @@
       "Class" : "keyword",
       "Column" : 1,
       "Line" : 3,
-      "Name" : "type",
-      "Pos" : 14,
-      "Text" : "type"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 6,
-      "Line" : 3,
-      "Name" : "id-1",
-      "Pos" : 19,
-      "Text" : "Sequence"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 15,
-      "Line" : 3,
-      "Name" : "struct",
-      "Pos" : 28,
-      "Text" : "struct"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 22,
-      "Line" : 3,
-      "Name" : "l_brace",
-      "Pos" : 35,
-      "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 2,
-      "Line" : 4,
-      "Name" : "id-2",
-      "Pos" : 38,
-      "Text" : "Start"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 8,
-      "Line" : 4,
-      "Name" : "int",
-      "Pos" : 44,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 11,
-      "Line" : 4,
-      "Name" : "semicolon",
-      "Pos" : 47,
-      "Text" : ";"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 2,
-      "Line" : 5,
-      "Name" : "id-3",
-      "Pos" : 49,
-      "Text" : "End"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 8,
-      "Line" : 5,
-      "Name" : "int",
-      "Pos" : 55,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 11,
-      "Line" : 5,
-      "Name" : "semicolon",
-      "Pos" : 58,
-      "Text" : ";"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 2,
-      "Line" : 6,
-      "Name" : "id-4",
-      "Pos" : 60,
-      "Text" : "Step"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 8,
-      "Line" : 6,
-      "Name" : "int",
-      "Pos" : 66,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 11,
-      "Line" : 6,
-      "Name" : "semicolon",
-      "Pos" : 69,
-      "Text" : ";"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 1,
-      "Line" : 7,
-      "Name" : "r_brace",
-      "Pos" : 70,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 2,
-      "Line" : 7,
-      "Name" : "semicolon",
-      "Pos" : 71,
-      "Text" : ";"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 1,
-      "Line" : 9,
       "Name" : "func",
-      "Pos" : 73,
+      "Pos" : 14,
       "Text" : "func"
    },
    {
       "Class" : "identifier",
       "Column" : 6,
-      "Line" : 9,
-      "Name" : "id-5",
-      "Pos" : 78,
-      "Text" : "generateSequence"
+      "Line" : 3,
+      "Name" : "id-0",
+      "Pos" : 19,
+      "Text" : "main"
    },
    {
       "Class" : "punctuation",
-      "Column" : 22,
-      "Line" : 9,
+      "Column" : 10,
+      "Line" : 3,
       "Name" : "l_paren",
-      "Pos" : 94,
+      "Pos" : 23,
       "Text" : "("
    },
    {
-      "Class" : "identifier",
-      "Column" : 23,
-      "Line" : 9,
-      "Name" : "id-6",
-      "Pos" : 95,
-      "Text" : "seq"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 27,
-      "Line" : 9,
-      "Name" : "id-1",
-      "Pos" : 99,
-      "Text" : "Sequence"
-   },
-   {
       "Class" : "punctuation",
-      "Column" : 35,
-      "Line" : 9,
+      "Column" : 11,
+      "Line" : 3,
       "Name" : "r_paren",
-      "Pos" : 107,
+      "Pos" : 24,
       "Text" : ")"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 37,
-      "Line" : 9,
-      "Name" : "l_bracket",
-      "Pos" : 109,
-      "Text" : "["
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 38,
-      "Line" : 9,
-      "Name" : "r_bracket",
-      "Pos" : 110,
-      "Text" : "]"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 39,
-      "Line" : 9,
-      "Name" : "int",
-      "Pos" : 111,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 43,
-      "Line" : 9,
-      "Name" : "l_brace",
-      "Pos" : 115,
-      "Text" : "{"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 2,
-      "Line" : 10,
-      "Name" : "var",
-      "Pos" : 118,
-      "Text" : "var"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 6,
-      "Line" : 10,
-      "Name" : "id-7",
-      "Pos" : 122,
-      "Text" : "result"
    },
    {
       "Class" : "punctuation",
       "Column" : 13,
-      "Line" : 10,
-      "Name" : "l_bracket",
-      "Pos" : 129,
-      "Text" : "["
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 14,
-      "Line" : 10,
-      "Name" : "r_bracket",
-      "Pos" : 130,
-      "Text" : "]"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 15,
-      "Line" : 10,
-      "Name" : "int",
-      "Pos" : 131,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 18,
-      "Line" : 10,
-      "Name" : "semicolon",
-      "Pos" : 134,
-      "Text" : ";"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 2,
-      "Line" : 12,
-      "Name" : "for",
-      "Pos" : 137,
-      "Text" : "for"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 6,
-      "Line" : 12,
-      "Name" : "id-8",
-      "Pos" : 141,
-      "Text" : "i"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 8,
-      "Line" : 12,
-      "Name" : "declaration",
-      "Pos" : 143,
-      "Text" : ":="
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 11,
-      "Line" : 12,
-      "Name" : "id-6",
-      "Pos" : 146,
-      "Text" : "seq"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 14,
-      "Line" : 12,
-      "Name" : "dot",
-      "Pos" : 149,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 15,
-      "Line" : 12,
-      "Name" : "id-2",
-      "Pos" : 150,
-      "Text" : "Start"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 20,
-      "Line" : 12,
-      "Name" : "semicolon",
-      "Pos" : 155,
-      "Text" : ";"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 22,
-      "Line" : 12,
-      "Name" : "id-8",
-      "Pos" : 157,
-      "Text" : "i"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 24,
-      "Line" : 12,
-      "Name" : "less_equal",
-      "Pos" : 159,
-      "Text" : "<="
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 27,
-      "Line" : 12,
-      "Name" : "id-6",
-      "Pos" : 162,
-      "Text" : "seq"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 30,
-      "Line" : 12,
-      "Name" : "dot",
-      "Pos" : 165,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 31,
-      "Line" : 12,
-      "Name" : "id-3",
-      "Pos" : 166,
-      "Text" : "End"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 34,
-      "Line" : 12,
-      "Name" : "semicolon",
-      "Pos" : 169,
-      "Text" : ";"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 36,
-      "Line" : 12,
-      "Name" : "id-8",
-      "Pos" : 171,
-      "Text" : "i"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 38,
-      "Line" : 12,
-      "Name" : "plus_assign",
-      "Pos" : 173,
-      "Text" : "+="
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 41,
-      "Line" : 12,
-      "Name" : "id-6",
-      "Pos" : 176,
-      "Text" : "seq"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 44,
-      "Line" : 12,
-      "Name" : "dot",
-      "Pos" : 179,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 45,
-      "Line" : 12,
-      "Name" : "id-4",
-      "Pos" : 180,
-      "Text" : "Step"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 50,
-      "Line" : 12,
+      "Line" : 3,
       "Name" : "l_brace",
-      "Pos" : 185,
+      "Pos" : 26,
       "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 3,
-      "Line" : 13,
-      "Name" : "id-7",
-      "Pos" : 189,
-      "Text" : "result"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 10,
-      "Line" : 13,
-      "Name" : "assignment",
-      "Pos" : 196,
-      "Text" : "="
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 12,
-      "Line" : 13,
-      "Name" : "id-9",
-      "Pos" : 198,
-      "Text" : "append"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 18,
-      "Line" : 13,
-      "Name" : "l_paren",
-      "Pos" : 204,
-      "Text" : "("
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 19,
-      "Line" : 13,
-      "Name" : "id-7",
-      "Pos" : 205,
-      "Text" : "result"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 25,
-      "Line" : 13,
-      "Name" : "comma",
-      "Pos" : 211,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 27,
-      "Line" : 13,
-      "Name" : "id-8",
-      "Pos" : 213,
-      "Text" : "i"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 28,
-      "Line" : 13,
-      "Name" : "r_paren",
-      "Pos" : 214,
-      "Text" : ")"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 29,
-      "Line" : 13,
-      "Name" : "semicolon",
-      "Pos" : 215,
-      "Text" : ";"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 2,
-      "Line" : 14,
-      "Name" : "r_brace",
-      "Pos" : 217,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 3,
-      "Line" : 14,
-      "Name" : "semicolon",
-      "Pos" : 218,
-      "Text" : ";"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 2,
-      "Line" : 15,
-      "Name" : "return",
-      "Pos" : 220,
-      "Text" : "return"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 9,
-      "Line" : 15,
-      "Name" : "id-7",
-      "Pos" : 227,
-      "Text" : "result"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 15,
-      "Line" : 15,
-      "Name" : "semicolon",
-      "Pos" : 233,
-      "Text" : ";"
    },
    {
       "Class" : "punctuation",
       "Column" : 1,
-      "Line" : 16,
+      "Line" : 5,
       "Name" : "r_brace",
-      "Pos" : 234,
+      "Pos" : 29,
       "Text" : "}"
    },
    {
       "Class" : "punctuation",
       "Column" : 2,
-      "Line" : 16,
+      "Line" : 5,
       "Name" : "semicolon",
-      "Pos" : 235,
+      "Pos" : 30,
       "Text" : ";"
    },
    {

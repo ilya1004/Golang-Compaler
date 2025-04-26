@@ -3,70 +3,11 @@
 package                        package         1          1          keyword:0
 main                           id-0            1          9               
 ;                              semicolon       1          13         punctuation:0
-type                           type            3          1          keyword:1
-Sequence                       id-1            3          6               
-struct                         struct          3          15         keyword:2
-{                              l_brace         3          22         punctuation:1
-Start                          id-2            4          2               
-int                            int             4          8          keyword:3
-;                              semicolon       4          11         punctuation:0
-End                            id-3            5          2               
-int                            int             5          8          keyword:3
-;                              semicolon       5          11         punctuation:0
-Step                           id-4            6          2               
-int                            int             6          8          keyword:3
-;                              semicolon       6          11         punctuation:0
-}                              r_brace         7          1          punctuation:3
-;                              semicolon       7          2          punctuation:0
-func                           func            9          1          keyword:4
-generateSequence               id-5            9          6               
-(                              l_paren         9          22         punctuation:4
-seq                            id-6            9          23              
-Sequence                       id-1            9          27              
-)                              r_paren         9          35         punctuation:5
-[                              l_bracket       9          37         punctuation:6
-]                              r_bracket       9          38         punctuation:7
-int                            int             9          39         keyword:3
-{                              l_brace         9          43         punctuation:1
-var                            var             10         2          keyword:5
-result                         id-7            10         6               
-[                              l_bracket       10         13         punctuation:6
-]                              r_bracket       10         14         punctuation:7
-int                            int             10         15         keyword:3
-;                              semicolon       10         18         punctuation:0
-for                            for             12         2          keyword:6
-i                              id-8            12         6               
-:=                             declaration     12         8          operator:0
-seq                            id-6            12         11              
-.                              dot             12         14         operator:1
-Start                          id-2            12         15              
-;                              semicolon       12         20         punctuation:0
-i                              id-8            12         22              
-<=                             less_equal      12         24         operator:2
-seq                            id-6            12         27              
-.                              dot             12         30         operator:1
-End                            id-3            12         31              
-;                              semicolon       12         34         punctuation:0
-i                              id-8            12         36              
-+=                             plus_assign     12         38         operator:3
-seq                            id-6            12         41              
-.                              dot             12         44         operator:1
-Step                           id-4            12         45              
-{                              l_brace         12         50         punctuation:1
-result                         id-7            13         3               
-=                              assignment      13         10         operator:4
-append                         id-9            13         12              
-(                              l_paren         13         18         punctuation:4
-result                         id-7            13         19              
-,                              comma           13         25         punctuation:8
-i                              id-8            13         27              
-)                              r_paren         13         28         punctuation:5
-;                              semicolon       13         29         punctuation:0
-}                              r_brace         14         2          punctuation:3
-;                              semicolon       14         3          punctuation:0
-return                         return          15         2          keyword:7
-result                         id-7            15         9               
-;                              semicolon       15         15         punctuation:0
-}                              r_brace         16         1          punctuation:3
-;                              semicolon       16         2          punctuation:0
+func                           func            3          1          keyword:1
+main                           id-0            3          6               
+(                              l_paren         3          10         punctuation:1
+)                              r_paren         3          11         punctuation:2
+{                              l_brace         3          13         punctuation:3
+}                              r_brace         5          1          punctuation:5
+;                              semicolon       5          2          punctuation:0
 EOF                            EOF             0          0               

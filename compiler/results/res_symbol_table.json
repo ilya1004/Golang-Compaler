@@ -1,59 +1,16 @@
 {
-  "functions": {
-    "generateSequence": {
-      "params": [
-        {
-          "name": "seq",
-          "param_pos": 0,
-          "type": "Sequence"
-        }
-      ],
-      "pos": 78,
-      "return_types": ["[]int"]
-    }
-  },
-  "scopes": {
-    "-Global-": {
-      "constants": {},
-      "variables": {}
-    },
-    "generateSequence": {
-      "variables": {
-        "i": {
-          "pos": 33,
-          "type": "auto",
-          "value": {
-            "field": {
-              "Pos": 32,
-              "type": "Identifier",
-              "value": "Start"
-            },
-            "object": {
-              "Pos": 31,
-              "type": "Identifier",
-              "value": "seq"
-            },
-            "type": "FieldAccess"
-          }
-        },
-        "result": {
-          "pos": 27,
-          "type": "[]int"
-        },
-        "seq": {
-          "pos": 21,
-          "type": "Sequence"
-        }
+   "functions" : {
+      "main" : {
+         "params" : [],
+         "pos" : 19,
+         "return_types" : []
       }
-    }
-  },
-  "types": {
-    "Sequence": {
-      "fields": {
-        "End": "int",
-        "Start": "int",
-        "Step": "int"
+   },
+   "scopes" : {
+      "-Global-" : {
+         "constants" : {},
+         "variables" : {}
       }
-    }
-  }
+   },
+   "types" : {}
 }

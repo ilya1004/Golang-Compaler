@@ -1,10 +1,4 @@
 ID    Лексема                
 ==================================
 0     package                       
-1     type                          
-2     struct                        
-3     int                           
-4     func                          
-5     var                           
-6     for                           
-7     return                        
+1     func                          
