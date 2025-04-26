@@ -18,6 +18,12 @@
       "variables": {}
     },
     "generateSequence": {
+      "inner_scopes": [
+        {
+          "name": "generateSequence_for_28",
+          "variables": {}
+        }
+      ],
       "variables": {
         "i": {
           "pos": 33,
@@ -45,6 +51,12 @@
           "type": "Sequence"
         }
       }
+    },
+    "generateSequence_for": {
+      "variables": {}
+    },
+    "generateSequence_for_28": {
+      "variables": {}
     }
   },
   "types": {

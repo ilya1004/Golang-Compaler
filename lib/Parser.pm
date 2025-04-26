@@ -14,7 +14,7 @@ sub new {
             scopes => {
                 '-Global-' => {
                     constants => {},
-                    variables => {}
+                    variables => {},
                 }
             },
             types => {}
@@ -387,7 +387,6 @@ sub parse_variable_declaration {
         }
     }
 
-    # Для короткого объявления (:=) пропускаем этап указания типа
     my $var_type;
     if ($is_var_declaration) {
         $var_type = $self->parse_type();
@@ -397,7 +396,6 @@ sub parse_variable_declaration {
         push @nodes, { Name => 'Type', Text => $var_type, Pos => $self->get_next_token_pos() };
     }
 
-    # Проверяем, есть ли присвоение значения
     my $assign_token = $self->current_token();
 
     # Проверяем корректность оператора присваивания
@@ -411,17 +409,12 @@ sub parse_variable_declaration {
         push @nodes, { Name => $assign_token->{Name}, Text => $assign_token->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
 
-        # Проверяем, есть ли открывающая фигурная скобка '{' (инициализация структуры)
         my $next_token = $self->next_token();
-        print Dumper($next_token), "\n";
 
         if ($next_token->{Name} eq 'l_brace') {
-            # Парсим инициализацию структуры
             my $struct_initialization = $self->parse_struct_initialization();
             
             delete $struct_initialization->{nodes};
-
-            print Dumper($struct_initialization), "\n";
             
             if ($struct_initialization->{type} eq 'StructInitialization') {
                 $var_type = $struct_initialization->{struct_name};
@@ -429,13 +422,12 @@ sub parse_variable_declaration {
 
             push @nodes, { type => 'StructInitialization', value => $struct_initialization };
             
-            # Добавляем переменные в таблицу символов
             my $scope = $self->{current_scope} || '-Global-';
             foreach my $var_name (@var_names) {
                 $self->{symbol_table}{scopes}{$scope}{variables}{$var_name->{Text}} = {
-                    type => $var_type ? $var_type : 'auto',  # Тип выводится автоматически, если не указан
-                    pos => $self->{token_counter},  # Позиция в коде
-                    value => $struct_initialization  # Значение переменной
+                    type => $var_type ? $var_type : 'auto',
+                    pos => $self->{token_counter},
+                    value => $struct_initialization
                 };
             }
         } else {
@@ -462,26 +454,24 @@ sub parse_variable_declaration {
             my $scope = $self->{current_scope} || '-Global-';
             foreach my $var_name (@var_names) {
                 $self->{symbol_table}{scopes}{$scope}{variables}{$var_name->{Text}} = {
-                    type => $var_type ? $var_type : 'auto',  # Тип выводится автоматически, если не указан
-                    pos => $self->{token_counter},  # Позиция в коде
-                    value => $expr  # Значение переменной
+                    type => $var_type ? $var_type : 'auto',
+                    pos => $self->{token_counter},
+                    value => $expr
                 };
             }
         }
     } elsif ($is_var_declaration) {
-        # Если присвоения нет, просто добавляем переменные в таблицу символов
         my $scope = $self->{current_scope} || '-Global-';
         foreach my $var_name (@var_names) {
             $self->{symbol_table}{scopes}{$scope}{variables}{$var_name->{Text}} = {
                 type => $var_type,
-                pos => $self->{token_counter}  # Позиция в коде
+                pos => $self->{token_counter}
             };
         }
     } else {
         die "Ожидалось присвоение значения для короткого объявления";
     }
 
-    # Точка с запятой после объявления (если она есть)
     my $semicolon = $self->current_token();
     if ($semicolon->{Name} eq 'semicolon') {
         push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() };
@@ -502,7 +492,6 @@ sub parse_struct_initialization {
 
     my $struct_name = $self->current_token();
     my $struct_name_str;
-    print Dumper($struct_name), "\n";
     if ($struct_name->{Class} eq 'identifier') {
         $struct_name_str = $struct_name->{Text};
         $self->consume_token();
@@ -510,7 +499,6 @@ sub parse_struct_initialization {
 
     # Открывающая фигурная скобка
     my $l_brace = $self->current_token();
-    print Dumper($l_brace), "\n";
     if ($l_brace->{Name} eq 'l_brace') {
         push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
@@ -707,13 +695,12 @@ sub parse_function {
                 push @params, {
                     param_name => { Name => $param_name->{Name}, Text => $param_name->{Text}, Pos => $self->get_next_token_pos() },
                     param_type => $param_type,
-                    param_pos => $param_pos  # Сохраняем позицию параметра
+                    param_pos => $param_pos
                 };
 
-                $param_pos++;  # Увеличиваем позицию для следующего параметра
+                $param_pos++;
             }
 
-            # Запятая между группами параметров (если есть)
             my $comma = $self->current_token();
             if ($comma->{Name} eq 'comma') {
                 $self->consume_token();
@@ -722,7 +709,6 @@ sub parse_function {
             }
         }
 
-        # Закрывающая скобка для параметров
         my $r_paren = $self->current_token();
         if ($r_paren->{Name} eq 'r_paren') {
             push @nodes, { 
@@ -735,10 +721,8 @@ sub parse_function {
             die "Ожидалась ')' после параметров функции";
         }
 
-        # Парсинг возвращаемых значений
         my @return_types;
         my $return_token = $self->current_token();
-        print Dumper($return_token), "\n";
         if ($return_token->{Name} eq 'l_paren') {
             push @nodes, { 
                 Name => $return_token->{Name}, 
@@ -764,7 +748,6 @@ sub parse_function {
                 }
             }
 
-            # Закрывающая скобка для возвращаемых значений
             my $r_paren_return = $self->current_token();
             if ($r_paren_return->{Name} eq 'r_paren') {
                 push @nodes, { 
@@ -799,7 +782,6 @@ sub parse_function {
 
         # Открывающая фигурная скобка для тела функции
         my $l_brace = $self->current_token();
-        print Dumper($l_brace), "\n";
         if ($l_brace->{Name} eq 'l_brace') {
             push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->get_next_token_pos() };
             $self->consume_token();
@@ -1110,19 +1092,14 @@ sub parse_return_statement {
     if ($return_token->{Name} eq 'return') {
         push @nodes, { Name => $return_token->{Name}, Text => $return_token->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
-        print Dumper($return_token), "\n";
 
-        # Парсим выражение после return
         my $expression = $self->parse_expression();
 
-        # Проверяем, есть ли точка с запятой или выражение завершается на новой строке
         my $semicolon = $self->current_token();
-        print Dumper($semicolon), "\n";
         if ($semicolon->{Name} eq 'semicolon') {
             push @nodes, { Name => $semicolon->{Name}, Text => $semicolon->{Text}, Pos => $self->get_next_token_pos() };
             $self->consume_token();
         } elsif ($semicolon->{Line} == $return_token->{Line}) {
-            # Если точка с запятой отсутствует, но выражение не на новой строке, выбрасываем ошибку
             die "Ожидалась ';' после оператора return";
         }
 
@@ -1137,7 +1114,6 @@ sub parse_statement {
     print "parse_statement\n";
     my $token = $self->current_token();
     my $next_token = $self->next_token();
-    print "$token->{Text}\n";
 
     if ($token->{Name} eq 'const') {
         # Объявление константы
@@ -1312,14 +1288,11 @@ sub parse_primary_expression {
     my ($self) = @_;
     print "parse_primary_expression\n";
     my $token = $self->current_token();
-    print Dumper($token), "\n";
 
-    # Обработка префиксных операций (++i, --i)
     if ($token->{Name} eq 'increment' || $token->{Name} eq 'decrement') {
-        my $operator = $token->{Text};  # '++' или '--'
-        $self->consume_token();  # Пропускаем оператор
+        my $operator = $token->{Text};
+        $self->consume_token();
 
-        # Парсим выражение, к которому применяется операция
         my $operand = $self->parse_primary_expression();
 
         return {
@@ -1327,30 +1300,26 @@ sub parse_primary_expression {
             operator => {
                 type => 'Operator',
                 value => $operator,
-                Pos => $self->get_next_token_pos()  # Позиция оператора
+                Pos => $self->get_next_token_pos()
             },
             operand => $operand,
-            is_prefix => 1  # Указываем, что это префиксная операция
+            is_prefix => 1
         };
     }
 
-    # Обработка идентификаторов, чисел, строк и вызовов функций
     if ($token->{Class} eq 'identifier') {
-        # Парсим идентификатор
         my $identifier = {
             type => 'Identifier',
             value => $token->{Text},
-            Pos => $self->get_next_token_pos()  # Позиция идентификатора
+            Pos => $self->get_next_token_pos()
         };
         $self->consume_token();
 
-        # Проверяем, является ли следующий токен точкой (обращение к полю или вызов через пакет)
         my $next_token = $self->current_token();
         if ($next_token->{Name} eq 'dot') {
             return $self->parse_package_or_field_access($identifier);
         }
 
-        # Проверяем, является ли следующий токен двоеточием (поле структуры)
         if ($next_token->{Name} eq 'colon') {
             $self->consume_token();
 
@@ -1362,7 +1331,6 @@ sub parse_primary_expression {
             };
         }
 
-        # Проверяем, является ли следующий токен открывающей скобкой (вызов функции)
         if ($next_token->{Name} eq 'l_paren') {
             return $self->parse_function_call($identifier);
         }
@@ -1428,9 +1396,8 @@ sub parse_primary_expression {
             die "Ожидалась ')' после выражения";
         }
     } elsif ($token->{Name} eq 'semicolon') {
-        # Точка с запятой не является частью выражения, просто пропускаем её
         $self->consume_token();
-        return undef;  # Возвращаем undef, чтобы не добавлять её в AST
+        return undef;
     } else {
         die "Ожидалось простое выражение (идентификатор, число или выражение в скобках)";
     }
@@ -1448,7 +1415,7 @@ sub parse_package_or_field_access {
         $self->consume_token();
 
         my $next_token = $self->current_token();
-        print Dumper($next_token), "\n";
+
         if ($next_token->{Name} eq 'l_paren') {
             return $self->parse_function_call({
                 type => 'PackageCall',
@@ -1674,16 +1641,13 @@ sub parse_function_call {
     my $function_name;
 
     if ($function_info) {
-        # Если это вызов через пакет (например, fmt.Print)
         if ($function_info->{type} eq 'PackageCall') {
             $package_name = $function_info->{package}->{value};
             $function_name = $function_info->{function}->{value};
         } else {
-            # Это обычный вызов функции
             $function_name = $function_info->{value};
         }
     } else {
-        # Парсинг имени функции (если информация не передана)
         $function_name = $self->current_token();
         if ($function_name->{Class} eq 'identifier') {
             $self->consume_token();
@@ -1694,7 +1658,6 @@ sub parse_function_call {
 
     # Открывающая скобка для аргументов
     my $l_paren = $self->current_token();
-    print Dumper($l_paren), "\n";
     if ($l_paren->{Name} eq 'l_paren') {
         push @nodes, { Name => $l_paren->{Name}, Text => $l_paren->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
@@ -1705,7 +1668,6 @@ sub parse_function_call {
     # Парсинг аргументов функции
     my @args;
     while ($self->current_token()->{Name} ne 'r_paren') {
-        # Проверяем, есть ли оператор '&' (передача по ссылке)
         my $is_reference = 0;
         my $bitwise_and = $self->current_token();
         if ($bitwise_and->{Name} eq 'bitwise_and') {
@@ -1714,17 +1676,14 @@ sub parse_function_call {
             $self->consume_token();
         }
 
-        # Парсим выражение как аргумент
         my $arg = $self->parse_expression();
 
-        # Если аргумент передается по ссылке, добавляем флаг
         if ($is_reference) {
             $arg->{is_by_reference} = 1;
         }
 
         push @args, $arg;
 
-        # Запятая между аргументами (если есть)
         my $comma = $self->current_token();
         if ($comma->{Name} eq 'comma') {
             push @nodes, { Name => $comma->{Name}, Text => $comma->{Text}, Pos => $self->get_next_token_pos() };
@@ -1746,9 +1705,9 @@ sub parse_function_call {
     # Возвращаем структуру вызова функции
     return {
         type => 'FunctionCall',
-        package => $package_name,  # Имя пакета (если есть)
-        name => $function_name,    # Имя функции
-        args => \@args,            # Список аргументов
+        package => $package_name,
+        name => $function_name,
+        args => \@args,
         nodes => \@nodes
     };
 }
@@ -1888,21 +1847,18 @@ sub parse_for_loop {
     my $next_token = $self->current_token();
     my $next_next_token = $self->next_token();
 
-    # Проверяем, является ли цикл бесконечным (for {})
     if ($next_token->{Name} eq 'l_brace') {
-        $loop_type = 'infinite';  # Бесконечный цикл
+        $loop_type = 'infinite';
     }
-    # Проверяем, есть ли два идентификатора через запятую (например, index, value)
+
     elsif ($next_token->{Class} eq 'identifier' && $next_next_token->{Name} eq 'comma') {
-        # Это цикл с двумя идентификаторами и range (например, for index, value := range arr)
+
         $loop_type = 'range';
 
-        # Парсим первый идентификатор (index)
         $index = $self->current_token();
         push @nodes, { Name => $index->{Name}, Text => $index->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
 
-        # Пропускаем запятую
         my $comma = $self->current_token();
         if ($comma->{Name} eq 'comma') {
             push @nodes, { Name => $comma->{Name}, Text => $comma->{Text}, Pos => $self->get_next_token_pos() };
@@ -1911,7 +1867,6 @@ sub parse_for_loop {
             die "Ожидалась ',' после первого идентификатора";
         }
 
-        # Парсим второй идентификатор (value)
         $value = $self->current_token();
         if ($value->{Class} eq 'identifier') {
             push @nodes, { Name => $value->{Name}, Text => $value->{Text}, Pos => $self->get_next_token_pos() };
@@ -1920,7 +1875,6 @@ sub parse_for_loop {
             die "Ожидался второй идентификатор";
         }
 
-        # Пропускаем оператор присваивания (:=)
         my $declaration = $self->current_token();
         if ($declaration->{Name} eq 'declaration') {
             push @nodes, { Name => $declaration->{Name}, Text => $declaration->{Text}, Pos => $self->get_next_token_pos() };
@@ -1929,7 +1883,6 @@ sub parse_for_loop {
             die "Ожидалось ':=' после идентификаторов";
         }
 
-        # Пропускаем ключевое слово 'range'
         my $range_token = $self->current_token();
         if ($range_token->{Name} eq 'range') {
             push @nodes, { Name => $range_token->{Name}, Text => $range_token->{Text}, Pos => $self->get_next_token_pos() };
@@ -1938,49 +1891,37 @@ sub parse_for_loop {
             die "Ожидалось ключевое слово 'range'";
         }
 
-        # Парсим выражение после range (например, arr)
         $range = $self->parse_expression();
     }
-    # Проверяем, есть ли инициализация (например, i := 0)
     elsif ($next_token->{Class} eq 'identifier' && $next_next_token->{Name} eq 'declaration') {
-        # Это цикл с инициализацией, условием и итерацией (например, for i := 0; i < 5; i++)
         $loop_type = 'standard';
 
-        # Парсим инициализацию
         $init = $self->parse_variable_declaration();
         
-        # Проверяем, есть ли условие
         if ($self->current_token()->{Name} eq 'semicolon' || $self->has_semicolon($init)) {
             if ($self->current_token()->{Name} eq 'semicolon') {
-                $self->consume_token();  # Пропускаем ';'
+                $self->consume_token();
             }
         } else {
             die "Ожидалось ';' после инициализации";
         }
 
-        # Парсим условие
         $condition = $self->parse_logical_expression();
 
-        # Проверяем, есть ли итерация
         if ($self->current_token()->{Name} eq 'semicolon') {
-            $self->consume_token();  # Пропускаем ';'
+            $self->consume_token();
         } else {
             die "Ожидалось ';' после условия";
         }
 
-        # Парсим итерацию
         $iteration = $self->parse_statement();
     } else {
-        # Это цикл только с условием (например, for j < 5)
         $loop_type = 'condition_only';
-
-        # Парсим условие
         $condition = $self->parse_logical_expression();
     }
 
     # Открывающая фигурная скобка для тела цикла
     my $l_brace = $self->current_token();
-    print Dumper($l_brace), "\n";
     if ($l_brace->{Name} eq 'l_brace') {
         push @nodes, { Name => $l_brace->{Name}, Text => $l_brace->{Text}, Pos => $self->get_next_token_pos() };
         $self->consume_token();
@@ -2012,8 +1953,8 @@ sub parse_for_loop {
         condition => $condition,
         iteration => $iteration,
         range => $range,
-        index => $index ? $index->{Text} : undef,  # Первая переменная (index)
-        value => $value ? $value->{Text} : undef,  # Вторая переменная (value)
+        index => $index ? $index->{Text} : undef,
+        value => $value ? $value->{Text} : undef,
         body => \@body,
         nodes => \@nodes
     };
@@ -2025,13 +1966,12 @@ sub has_semicolon {
     return 0 unless exists $data->{nodes};
 
     foreach my $node (@{$data->{nodes}}) {
-        # Проверяем наличие ключа 'Name' и его значение
         if (exists $node->{Name} && $node->{Name} eq 'semicolon') {
-            return 1;  # Нода найдена
+            return 1;
         }
     }
 
-    return 0;  # Нода не найдена
+    return 0;
 }
 
 # Главная функция разбора

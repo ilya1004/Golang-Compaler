@@ -25,20 +25,20 @@ unless(-d $output_dir) {
 my $lexer = Lexer->new($code);
 my $tokens = $lexer->lex_analyze();
 
-print "Tokens: ", Dumper($tokens);
-print "\n-----------------------------------------\n";
+# print "Tokens: ", Dumper($tokens);
+# print "\n-----------------------------------------\n";
 
 my $parser = Parser->new($tokens);
 my $cst = $parser->parse();
 my $symbol_table = $parser->get_symbol_table();
 my $imports = $parser->get_imports();
 
-print "Распознанные токены:\n";
-foreach my $token (@$tokens) {
-    print "Name: $token->{Name}, Text: '$token->{Text}', Line: $token->{Line}, Column: $token->{Column}\n";
-}
+# print "Распознанные токены:\n";
+# foreach my $token (@$tokens) {
+#     print "Name: $token->{Name}, Text: '$token->{Text}', Line: $token->{Line}, Column: $token->{Column}\n";
+# }
 
-print "Сгенерированное CST:\n", Dumper($cst);
+# print "Сгенерированное CST:\n", Dumper($cst);
 
 # Сериализация токенов в JSON
 my $tokens_json = to_json($tokens, { 
