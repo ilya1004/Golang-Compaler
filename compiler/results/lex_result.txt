@@ -9,251 +9,127 @@ import                         import          3          1          keyword:1
 ;                              semicolon       4          7          punctuation:0
 )                              r_paren         5          1          punctuation:3
 ;                              semicolon       5          2          punctuation:0
-const                          const           7          1          keyword:2
-WelcomeMessage                 id-1            7          7               
-=                              assignment      7          22         operator:0
-"Добро пожаловать в калькулятор на Go!" string          7          24         constant:1
-;                              semicolon       7          92         punctuation:0
-const                          const           8          1          keyword:2
-ErrorMessage                   id-2            8          7               
-=                              assignment      8          20         operator:0
-"Ошибка: неверный ввод!" string          8          22         constant:2
-;                              semicolon       8          64         punctuation:0
-func                           func            10         1          keyword:3
-calculate                      id-3            10         6               
-(                              l_paren         10         15         punctuation:1
-a                              id-4            10         16              
-,                              comma           10         17         punctuation:4
-b                              id-5            10         19              
-float64                        float64         10         21         keyword:4
-,                              comma           10         28         punctuation:4
-operation                      id-6            10         30              
-string                         string          10         40         keyword:5
-)                              r_paren         10         46         punctuation:3
-float64                        float64         10         48         keyword:4
-{                              l_brace         10         56         punctuation:5
-println                        id-7            11         2               
-(                              l_paren         11         9          punctuation:1
-"qweweqwe"                     string          11         10         constant:3
-)                              r_paren         11         20         punctuation:3
-;                              semicolon       11         21         punctuation:0
-println                        id-7            12         2               
-(                              l_paren         12         9          punctuation:1
-a                              id-4            12         10              
-)                              r_paren         12         11         punctuation:3
-;                              semicolon       12         12         punctuation:0
-println                        id-7            13         2               
-(                              l_paren         13         9          punctuation:1
-b                              id-5            13         10              
-)                              r_paren         13         11         punctuation:3
-;                              semicolon       13         12         punctuation:0
-switch                         switch          14         2          keyword:6
-operation                      id-6            14         9               
-{                              l_brace         14         19         punctuation:5
-case                           case            15         2          keyword:7
-"+"                            string          15         7          constant:4
-:                              colon           15         10         punctuation:6
-return                         return          16         3          keyword:8
-a                              id-4            16         10              
-+                              plus            16         12         operator:1
-b                              id-5            16         14              
-;                              semicolon       16         15         punctuation:0
-case                           case            17         2          keyword:7
-"-"                            string          17         7          constant:5
-:                              colon           17         10         punctuation:6
-return                         return          18         3          keyword:8
-a                              id-4            18         10              
--                              minus           18         12         operator:2
-b                              id-5            18         14              
-;                              semicolon       18         15         punctuation:0
-case                           case            19         2          keyword:7
-"*"                            string          19         7          constant:6
-:                              colon           19         10         punctuation:6
-return                         return          20         3          keyword:8
-a                              id-4            20         10              
-*                              multiply        20         12         operator:3
-b                              id-5            20         14              
-;                              semicolon       20         15         punctuation:0
-case                           case            21         2          keyword:7
-"/"                            string          21         7          constant:7
-:                              colon           21         10         punctuation:6
-if                             if              22         3          keyword:9
-b                              id-5            22         6               
-!=                             not_equal       22         8          operator:4
-0                              number          22         11         constant:8
-{                              l_brace         22         13         punctuation:5
-return                         return          23         4          keyword:8
-a                              id-4            23         11              
-/                              divide          23         13         operator:5
-b                              id-5            23         15              
-;                              semicolon       23         16         punctuation:0
-}                              r_brace         24         3          punctuation:7
-;                              semicolon       24         4          punctuation:0
-return                         return          26         3          keyword:8
-0                              number          26         10         constant:8
-;                              semicolon       26         11         punctuation:0
-default                        default         27         2          keyword:10
-:                              colon           27         9          punctuation:6
-return                         return          29         3          keyword:8
-0                              number          29         10         constant:8
-;                              semicolon       29         11         punctuation:0
-}                              r_brace         30         2          punctuation:7
-;                              semicolon       30         3          punctuation:0
-}                              r_brace         31         1          punctuation:7
-;                              semicolon       31         2          punctuation:0
-func                           func            33         1          keyword:3
-main                           id-0            33         6               
-(                              l_paren         33         10         punctuation:1
-)                              r_paren         33         11         punctuation:3
-{                              l_brace         33         13         punctuation:5
-var                            var             34         2          keyword:11
-num1                           id-8            34         6               
-float64                        float64         34         11         keyword:4
-;                              semicolon       34         18         punctuation:0
-var                            var             35         2          keyword:11
-num2                           id-9            35         6               
-float64                        float64         35         11         keyword:4
-;                              semicolon       35         18         punctuation:0
-var                            var             37         2          keyword:11
-operation                      id-6            37         6               
-string                         string          37         16         keyword:5
-;                              semicolon       37         22         punctuation:0
-fmt                            id-10           39         2               
-.                              dot             39         5          operator:6
-Println                        id-11           39         6               
-(                              l_paren         39         13         punctuation:1
-WelcomeMessage                 id-1            39         14              
-)                              r_paren         39         28         punctuation:3
-;                              semicolon       39         29         punctuation:0
-fmt                            id-10           40         2               
-.                              dot             40         5          operator:6
-Print                          id-12           40         6               
-(                              l_paren         40         11         punctuation:1
-"Введите первое число: " string          40         12         constant:9
-)                              r_paren         40         54         punctuation:3
-;                              semicolon       40         55         punctuation:0
-fmt                            id-10           41         2               
-.                              dot             41         5          operator:6
-Scan                           id-13           41         6               
-(                              l_paren         41         10         punctuation:1
-&                              bitwise_and     41         11         operator:7
-num1                           id-8            41         12              
-)                              r_paren         41         16         punctuation:3
-;                              semicolon       41         17         punctuation:0
-fmt                            id-10           42         2               
-.                              dot             42         5          operator:6
-Print                          id-12           42         6               
-(                              l_paren         42         11         punctuation:1
-"Введите второе число: " string          42         12         constant:10
-)                              r_paren         42         54         punctuation:3
-;                              semicolon       42         55         punctuation:0
-fmt                            id-10           43         2               
-.                              dot             43         5          operator:6
-Scan                           id-13           43         6               
-(                              l_paren         43         10         punctuation:1
-&                              bitwise_and     43         11         operator:7
-num2                           id-9            43         12              
-)                              r_paren         43         16         punctuation:3
-;                              semicolon       43         17         punctuation:0
-fmt                            id-10           44         2               
-.                              dot             44         5          operator:6
-Print                          id-12           44         6               
-(                              l_paren         44         11         punctuation:1
-"Введите операцию (+, -, *, /): " string          44         12         constant:11
-)                              r_paren         44         60         punctuation:3
-;                              semicolon       44         61         punctuation:0
-fmt                            id-10           45         2               
-.                              dot             45         5          operator:6
-Scan                           id-13           45         6               
-(                              l_paren         45         10         punctuation:1
-&                              bitwise_and     45         11         operator:7
-operation                      id-6            45         12              
-)                              r_paren         45         21         punctuation:3
-;                              semicolon       45         22         punctuation:0
-println                        id-7            46         2               
-(                              l_paren         46         9          punctuation:1
-"qweqwe"                       string          46         10         constant:12
-)                              r_paren         46         18         punctuation:3
-;                              semicolon       46         19         punctuation:0
-println                        id-7            48         2               
-(                              l_paren         48         9          punctuation:1
-operation                      id-6            48         10              
-)                              r_paren         48         19         punctuation:3
-;                              semicolon       48         20         punctuation:0
-println                        id-7            49         2               
-(                              l_paren         49         9          punctuation:1
-len                            id-14           49         10              
-(                              l_paren         49         13         punctuation:1
-operation                      id-6            49         14              
-)                              r_paren         49         23         punctuation:3
-)                              r_paren         49         24         punctuation:3
-;                              semicolon       49         25         punctuation:0
-if                             if              51         2          keyword:9
-operation                      id-6            51         5               
-==                             equal           51         15         operator:8
-"+"                            string          51         18         constant:4
-{                              l_brace         51         22         punctuation:5
-println                        id-7            52         3               
-(                              l_paren         52         10         punctuation:1
-"qweqwe"                       string          52         11         constant:12
-)                              r_paren         52         19         punctuation:3
-;                              semicolon       52         20         punctuation:0
-}                              r_brace         53         2          punctuation:7
-;                              semicolon       53         3          punctuation:0
-if                             if              55         2          keyword:9
-operation                      id-6            55         5               
-==                             equal           55         15         operator:8
-"+"                            string          55         18         constant:4
-||                             logical_or      55         22         operator:9
-operation                      id-6            55         25              
-==                             equal           55         35         operator:8
-"-"                            string          55         38         constant:5
-||                             logical_or      55         42         operator:9
-operation                      id-6            55         45              
-==                             equal           55         55         operator:8
-"*"                            string          55         58         constant:6
-||                             logical_or      55         62         operator:9
-operation                      id-6            55         65              
-==                             equal           55         75         operator:8
-"/"                            string          55         78         constant:7
-{                              l_brace         55         82         punctuation:5
-println                        id-7            59         3               
-(                              l_paren         59         10         punctuation:1
-operation                      id-6            59         11              
-)                              r_paren         59         20         punctuation:3
-;                              semicolon       59         21         punctuation:0
-result                         id-15           61         3               
-:=                             declaration     61         10         operator:10
-calculate                      id-3            61         13              
-(                              l_paren         61         22         punctuation:1
-num1                           id-8            61         23              
-,                              comma           61         27         punctuation:4
-num2                           id-9            61         29              
-,                              comma           61         33         punctuation:4
-operation                      id-6            61         35              
-)                              r_paren         61         44         punctuation:3
-;                              semicolon       61         45         punctuation:0
-fmt                            id-10           62         3               
-.                              dot             62         6          operator:6
-Printf                         id-16           62         7               
-(                              l_paren         62         13         punctuation:1
-"Результат: %.2f\n"   string          62         14         constant:13
-,                              comma           62         42         punctuation:4
-result                         id-15           62         44              
-)                              r_paren         62         50         punctuation:3
-;                              semicolon       62         51         punctuation:0
-}                              r_brace         63         2          punctuation:7
-else                           else            63         4          keyword:12
-{                              l_brace         63         9          punctuation:5
-fmt                            id-10           64         3               
-.                              dot             64         6          operator:6
-Println                        id-11           64         7               
-(                              l_paren         64         14         punctuation:1
-ErrorMessage                   id-2            64         15              
-)                              r_paren         64         27         punctuation:3
-;                              semicolon       64         28         punctuation:0
-}                              r_brace         65         2          punctuation:7
-;                              semicolon       65         3          punctuation:0
-}                              r_brace         66         1          punctuation:7
-;                              semicolon       66         2          punctuation:0
+type                           type            7          1          keyword:2
+Student                        id-1            7          6               
+struct                         struct          7          14         keyword:3
+{                              l_brace         7          21         punctuation:4
+Name                           id-2            8          2               
+string                         string          8          8          keyword:4
+;                              semicolon       8          14         punctuation:0
+Grade                          id-3            9          2               
+int                            int             9          8          keyword:5
+;                              semicolon       9          11         punctuation:0
+}                              r_brace         10         1          punctuation:5
+;                              semicolon       10         2          punctuation:0
+func                           func            12         1          keyword:6
+printStudentStatus             id-4            12         6               
+(                              l_paren         12         24         punctuation:1
+student                        id-5            12         25              
+Student                        id-1            12         33              
+)                              r_paren         12         40         punctuation:3
+{                              l_brace         12         42         punctuation:4
+if                             if              13         2          keyword:7
+student                        id-5            13         5               
+.                              dot             13         12         operator:0
+Grade                          id-3            13         13              
+>=                             greater_equal   13         19         operator:1
+50                             number          13         22         constant:1
+{                              l_brace         13         25         punctuation:4
+fmt                            id-6            14         3               
+.                              dot             14         6          operator:0
+Printf                         id-7            14         7               
+(                              l_paren         14         13         punctuation:1
+"Студент %s сдал экзамен с оценкой %d.\n" string          14         14         constant:2
+,                              comma           14         81         punctuation:6
+student                        id-5            14         83              
+.                              dot             14         90         operator:0
+Name                           id-2            14         91              
+,                              comma           14         95         punctuation:6
+student                        id-5            14         97              
+.                              dot             14         104        operator:0
+Grade                          id-3            14         105             
+)                              r_paren         14         110        punctuation:3
+;                              semicolon       14         111        punctuation:0
+}                              r_brace         15         2          punctuation:5
+else                           else            15         4          keyword:8
+{                              l_brace         15         9          punctuation:4
+fmt                            id-6            16         3               
+.                              dot             16         6          operator:0
+Printf                         id-7            16         7               
+(                              l_paren         16         13         punctuation:1
+"Студент %s не сдал экзамен с оценкой %d.\n" string          16         14         constant:3
+,                              comma           16         86         punctuation:6
+student                        id-5            16         88              
+.                              dot             16         95         operator:0
+Name                           id-2            16         96              
+,                              comma           16         100        punctuation:6
+student                        id-5            16         102             
+.                              dot             16         109        operator:0
+Grade                          id-3            16         110             
+)                              r_paren         16         115        punctuation:3
+;                              semicolon       16         116        punctuation:0
+}                              r_brace         17         2          punctuation:5
+;                              semicolon       17         3          punctuation:0
+}                              r_brace         18         1          punctuation:5
+;                              semicolon       18         2          punctuation:0
+func                           func            20         1          keyword:6
+main                           id-0            20         6               
+(                              l_paren         20         10         punctuation:1
+)                              r_paren         20         11         punctuation:3
+{                              l_brace         20         13         punctuation:4
+students                       id-8            21         2               
+:=                             declaration     21         11         operator:2
+[                              l_bracket       21         14         punctuation:7
+]                              r_bracket       21         15         punctuation:8
+Student                        id-1            21         16              
+{                              l_brace         21         23         punctuation:4
+{                              l_brace         22         3          punctuation:4
+Name                           id-2            22         4               
+:                              colon           22         8          punctuation:9
+"Иван"                     string          22         10         constant:4
+,                              comma           22         20         punctuation:6
+Grade                          id-3            22         22              
+:                              colon           22         27         punctuation:9
+75                             number          22         29         constant:5
+}                              r_brace         22         31         punctuation:5
+,                              comma           22         32         punctuation:6
+{                              l_brace         23         3          punctuation:4
+Name                           id-2            23         4               
+:                              colon           23         8          punctuation:9
+"Мария"                   string          23         10         constant:6
+,                              comma           23         22         punctuation:6
+Grade                          id-3            23         24              
+:                              colon           23         29         punctuation:9
+45                             number          23         31         constant:7
+}                              r_brace         23         33         punctuation:5
+,                              comma           23         34         punctuation:6
+{                              l_brace         24         3          punctuation:4
+Name                           id-2            24         4               
+:                              colon           24         8          punctuation:9
+"Анна"                     string          24         10         constant:8
+,                              comma           24         20         punctuation:6
+Grade                          id-3            24         22              
+:                              colon           24         27         punctuation:9
+90                             number          24         29         constant:9
+}                              r_brace         24         31         punctuation:5
+,                              comma           24         32         punctuation:6
+}                              r_brace         25         2          punctuation:5
+;                              semicolon       25         3          punctuation:0
+for                            for             27         2          keyword:9
+_                              id-9            27         6               
+,                              comma           27         7          punctuation:6
+student                        id-5            27         9               
+:=                             declaration     27         17         operator:2
+range                          range           27         20         keyword:10
+students                       id-8            27         26              
+{                              l_brace         27         35         punctuation:4
+printStudentStatus             id-4            28         3               
+(                              l_paren         28         21         punctuation:1
+student                        id-5            28         22              
+)                              r_paren         28         29         punctuation:3
+;                              semicolon       28         30         punctuation:0
+}                              r_brace         29         2          punctuation:5
+;                              semicolon       29         3          punctuation:0
+}                              r_brace         30         1          punctuation:5
+;                              semicolon       30         2          punctuation:0
 EOF                            EOF             0          0               

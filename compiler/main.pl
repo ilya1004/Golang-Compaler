@@ -7,12 +7,12 @@ use lib '../lib';
 use Lexer;
 use Parser;
 use SemanticAnalyzer;
-use Interpreter; # Добавляем модуль интерпретатора
+use Interpreter;
 
 our $index = 0;
 our %ids;
 
-my $filename = '../test-code/test-0/main.go';
+my $filename = '../test-code/test-3/main.go';
 
 open(my $fh, '<', $filename) or die "Не удалось открыть файл '$filename': $!";
 my $code = do { local $/; <$fh> };
@@ -117,24 +117,37 @@ if (@$errors) {
     close($semantic_fh);
     print "Результаты семантического анализа записаны в файл '$semantic_errors_filename'.\n";
 
+    print "\n\nВыполнение программы:";
     print "\n-----------------------------------------\n";
     # Вызов интерпретатора
-    my $interpreter = Interpreter->new($cst, $symbol_table, $imports);
-    # Загрузка тестового ввода (для примера)
 
-    $interpreter->{input_buffer} = ["10", "5", "+"];
+    # Проверка аргументов командной строки
+    my $debug_mode = 0;  # По умолчанию -release
+    my @input_values = ();
+
+    if (@ARGV && $ARGV[0] =~ /^-(debug|release)$/) {
+        my $mode = $1;
+        $debug_mode = 1 if $mode eq 'debug';
+        @input_values = @ARGV[1..$#ARGV];
+    } elsif (@ARGV) {
+        die "Invalid flag: $ARGV[0]. Use -debug or -release.\n";
+    }
+
+    # Создание интерпретатора
+    my $interpreter = Interpreter->new($cst, $symbol_table, $imports, $debug_mode);
+
+    # Установка входного буфера
+    $interpreter->{input_buffer} = [@input_values] if @input_values;
+
     
-    print "Результаты выполнения программы:\n";
     eval {
         $interpreter->interpret();
     };
-    print "\n";
     if ($@) {
         print "Ошибка выполнения: $@\n";
     }
+    print "\n-----------------------------------------\n";
 }
-
-
 
 open(my $main_fh,         '>', "$output_dir/lex_result.txt")       or die "Не удалось создать файл result.txt: $!";
 open(my $keywords_fh,     '>', "$output_dir/lex_keywords.txt")     or die "Не удалось создать файл keywords.txt: $!";

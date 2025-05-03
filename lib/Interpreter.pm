@@ -15,14 +15,15 @@ sub new {
         return_value => undef,  # Для возврата значений из функций
         input_buffer => [],     # Буфер для имитации fmt.Scan
         current_function => undef, # Текущая функция
-        debug_mode => $debug_mode // 0, # Режим отладки (по умолчанию выключен)
+        debug_mode => $debug_mode // 0, # Режим отладки
+        break_flag => 0,        # Флаг для break
     };
     bless $self, $class;
     $self->initialize();
     return $self;
 }
 
-# Инициализация: загрузка функций и глобальных констант
+# Инициализация: загрузка функций, констант и типов
 sub initialize {
     my ($self) = @_;
     if ($self->{debug_mode}) {
@@ -30,7 +31,7 @@ sub initialize {
     }
     my $global_scope = {};
     
-    # Загрузка глобальных констант из таблицы символов
+    # Загрузка глобальных констант
     my $global_symbols = $self->{symbol_table}{scopes}{'-Global-'};
     for my $const (keys %{$global_symbols->{constants}}) {
         $global_scope->{$const} = {
@@ -39,10 +40,18 @@ sub initialize {
         };
     }
     
-    # Загрузка функций из таблицы символов
+    # Загрузка функций
     while (my ($func_name, $func_data) = each %{$self->{symbol_table}{functions}}) {
         $self->{functions}{$func_name} = $func_data;
         $self->{functions}{$func_name}{node} = $self->find_function_node($func_name);
+    }
+    
+    # Загрузка типов (структур)
+    while (my ($type_name, $type_data) = each %{$self->{symbol_table}{types}}) {
+        $global_scope->{$type_name} = {
+            type => 'struct',
+            fields => $type_data->{fields},
+        };
     }
     
     push @{$self->{scopes}}, $global_scope;
@@ -67,20 +76,20 @@ sub interpret {
     my ($self) = @_;
     my $main_node = $self->find_function_node('main');
     $self->{current_function} = 'main';
-    push @{$self->{scopes}}, {}; # Новая область для main
+    push @{$self->{scopes}}, {};
     $self->execute_block($main_node->{body});
     pop @{$self->{scopes}};
     $self->{current_function} = undef;
 }
 
-# Выполнение блока операторов (например, тела функции)
+# Выполнение блока операторов
 sub execute_block {
     my ($self, $block) = @_;
     if ($self->{debug_mode}) {
         warn "execute_block\n";
     }
     for my $statement (@$block) {
-        last if defined $self->{return_value}; # Прерываем выполнение при return
+        last if defined $self->{return_value} || $self->{break_flag};
         $self->execute_statement($statement);
     }
 }
@@ -105,6 +114,14 @@ sub execute_statement {
         $self->handle_switch_statement($node);
     } elsif ($type eq 'ReturnStatement') {
         $self->handle_return_statement($node);
+    } elsif ($type eq 'ForLoop') {
+        $self->handle_for_loop($node);
+    } elsif ($type eq 'AssignmentExpression') {
+        $self->handle_assignment_expression($node);
+    } elsif ($type eq 'UnaryOperation') {
+        $self->handle_unary_operation($node);
+    } elsif ($type eq 'ControlStatement') {
+        $self->handle_control_statement($node);
     } else {
         die "Unsupported statement type: $type";
     }
@@ -118,9 +135,10 @@ sub handle_variable_declaration {
     }
     my $var_name = $node->{nodes}[1]{Text};
     my $var_type = $node->{nodes}[2]{Text};
+    my $value = $var_type =~ /^\[\]/ ? [] : $self->default_value($var_type);
     $self->current_scope()->{$var_name} = {
         type => $var_type,
-        value => $self->default_value($var_type),
+        value => $value,
     };
 }
 
@@ -131,18 +149,84 @@ sub handle_short_variable_declaration {
         warn "handle_short_variable_declaration\n";
     }
     my $var_name = $node->{nodes}[0]{Text};
-    my $value = $self->evaluate_expression($node->{nodes}[2]{value});
+    my $value_node = $node->{nodes}[2]{value} // $node->{nodes}[2];
+    my $value = $self->evaluate_expression($value_node);
     
-    # Получение типа из таблицы символов
     my $scope_name = $self->get_current_scope_name();
+    my $inner_scopes = $self->{symbol_table}{scopes}{$scope_name}{inner_scopes} || [];
+    my $var_type;
     
-    my $var_type = $self->{symbol_table}{scopes}{$scope_name}{variables}{$var_name}{type}
-        or die "Type for $var_name not found in symbol table at scope $scope_name";
+    # Проверяем внутренние области
+    for my $inner_scope (@$inner_scopes) {
+        my $inner_scope_name = $inner_scope->{name};
+        my $inner_variables = $self->{symbol_table}{scopes}{$inner_scope_name}{variables};
+        if (exists $inner_variables->{$var_name} && $inner_variables->{$var_name}{type} ne 'auto') {
+            $var_type = $inner_variables->{$var_name}{type};
+            last;
+        }
+    }
+    
+    # Если не найдено во внутренних областях, проверяем текущую область
+    $var_type //= $self->{symbol_table}{scopes}{$scope_name}{variables}{$var_name}{type}
+        // die "Type for $var_name not found in symbol table at scope $scope_name";
     
     $self->current_scope()->{$var_name} = {
         type => $var_type,
         value => $value,
     };
+}
+
+# Обработка присваивания
+sub handle_assignment_expression {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "handle_assignment_expression\n";
+    }
+    my $var_name = $node->{left}{value};
+    my $value = $self->evaluate_expression($node->{right});
+    my $var = $self->find_variable($var_name);
+    my $operator = $node->{operator}{value};
+    if ($operator eq '=') {
+        $var->{computed_value} = $value;
+    } elsif ($operator eq '+=') {
+        my $current_value = $var->{computed_value} // $var->{value} // 0;
+        $var->{computed_value} = $current_value + $value;
+    } elsif ($operator eq '-=') {
+        my $current_value = $var->{computed_value} // $var->{value} // 0;
+        $var->{computed_value} = $current_value - $value;
+    } else {
+        die "Unsupported assignment operator: $operator";
+    }
+}
+
+# Обработка унарной операции (например, i++)
+sub handle_unary_operation {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "handle_unary_operation: $node->{operator}{value}\n";
+    }
+    my $var_name = $node->{operand}{value};
+    my $var = $self->find_variable($var_name);
+    if ($node->{operator}{value} eq '++') {
+        $var->{value} += 1;
+    } elsif ($node->{operator}{value} eq '--') {
+        $var->{value} -= 1;
+    } else {
+        die "Unsupported unary operator: $node->{operator}{value}";
+    }
+}
+
+# Обработка оператора управления (break)
+sub handle_control_statement {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "handle_control_statement: $node->{control_type}\n";
+    }
+    if ($node->{control_type} eq 'break') {
+        $self->{break_flag} = 1;
+    } else {
+        die "Unsupported control statement: $node->{control_type}";
+    }
 }
 
 # Обработка условного оператора (if)
@@ -152,10 +236,63 @@ sub handle_if_statement {
         warn "handle_if_statement\n";
     }
     my $condition = $self->evaluate_expression($node->{condition});
+    if ($self->{debug_mode}) {
+        warn "Condition result: $condition\n";
+    }
     if ($condition) {
         $self->execute_block($node->{body});
     } elsif (@{$node->{else_body}}) {
         $self->execute_block($node->{else_body});
+    }
+}
+
+# Обработка цикла for
+sub handle_for_loop {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "handle_for_loop: $node->{loop_type}\n";
+    }
+    if ($node->{loop_type} eq 'standard') {
+        # Инициализация
+        if ($node->{init}) {
+            $self->execute_statement($node->{init});
+        }
+        while (1) {
+            # Проверка условия
+            my $condition = $node->{condition} ? $self->evaluate_expression($node->{condition}) : 1;
+            last unless $condition;
+            $self->{break_flag} = 0;
+            $self->execute_block($node->{body});
+            last if $self->{break_flag} || defined $self->{return_value};
+            # Итерация
+            if ($node->{iteration}) {
+                $self->execute_statement($node->{iteration});
+            }
+        }
+    } elsif ($node->{loop_type} eq 'infinite') {
+        while (1) {
+            $self->{break_flag} = 0;
+            $self->execute_block($node->{body});
+            last if $self->{break_flag} || defined $self->{return_value};
+        }
+    } elsif ($node->{loop_type} eq 'range') {
+        my $range_var = $self->evaluate_expression($node->{range});
+        my $index_var = $node->{index};
+        my $value_var = $node->{value};
+        my $new_scope = {};
+        for my $i (0..$#$range_var) {
+            if ($index_var && $index_var ne '_') {
+                $new_scope->{$index_var} = { type => 'int', value => $i };
+            }
+            if ($value_var) {
+                $new_scope->{$value_var} = { type => 'Student', value => $range_var->[$i] };
+            }
+            push @{$self->{scopes}}, $new_scope;
+            $self->execute_block($node->{body});
+            pop @{$self->{scopes}};
+        }
+    } else {
+        die "Unsupported for loop type: $node->{loop_type}";
     }
 }
 
@@ -166,9 +303,15 @@ sub handle_switch_statement {
         warn "handle_switch_statement\n";
     }
     my $switch_value = $self->evaluate_expression($node->{condition});
+    if ($self->{debug_mode}) {
+        warn "switch_value: $switch_value\n";
+    }
     for my $case (@{$node->{cases}}) {
         if ($case->{type} eq 'CaseStatement') {
-            my $case_value = $self->evaluate_expression($node->{value});
+            my $case_value = $self->evaluate_expression($case->{value});
+            if ($self->{debug_mode}) {
+                warn "case_value: $case_value\n";
+            }
             if ($switch_value eq $case_value) {
                 $self->execute_block($case->{body});
                 return;
@@ -201,14 +344,15 @@ sub handle_function_call {
 
     if ($package && $package eq 'fmt') {
         $self->handle_fmt_function($name, \@args, $node);
-        return undef; # Функции fmt не возвращают значений в данном контексте
+        return undef;
     } elsif (!defined $package && ($name eq 'print' || $name eq 'println' || $name eq 'len')) {
         return $self->handle_builtin_function($name, \@args, $node);
+    } elsif (!defined $package && $name eq 'append') {
+        return $self->handle_append_function(\@args);
     } else {
         my $func = $self->{functions}{$name} or die "Function $name not found";
         my $func_node = $func->{node};
         
-        # Создаем новую область видимости
         my $new_scope = {};
         for my $i (0..$#{$func->{params}}) {
             my $param_name = $func->{params}[$i]{name};
@@ -243,25 +387,38 @@ sub handle_fmt_function {
         print join(" ", @output), ($name eq 'Println' ? "\n" : "");
     } elsif ($name eq 'Printf') {
         my $format = shift @$args;
-        # Удаляем кавычки из формата, если это строковый литерал
         $format = $1 if $format =~ /^"(.*)"$/;
+        $format = $self->unescape_string($format);
         my @formatted_args = map { $self->format_value($_) } @$args;
         printf($format, @formatted_args);
     } elsif ($name eq 'Scan') {
         for my $i (0..$#$args) {
-            my $arg = $node->{args}[$i]; # Используем исходный узел для получения имени переменной
+            my $arg = $node->{args}[$i];
             my $input = $self->get_input($node, $i);
             if ($arg->{is_by_reference}) {
                 my $var_name = $arg->{value};
                 my $var = $self->find_variable($var_name);
                 $var->{value} = $self->convert_input($input, $var->{type});
-                # Выводим введенное значение сразу после приглашения
-                print "$input\n";
+                # print "$input\n";
             }
         }
     } else {
         die "Unsupported fmt function: $name";
     }
+}
+
+# Вспомогательная функция для обработки escape-последовательностей
+sub unescape_string {
+    my ($self, $string) = @_;
+    if ($self->{debug_mode}) {
+        warn "unescape_string: $string\n";
+    }
+    $string =~ s/\\n/\n/g;
+    $string =~ s/\\t/\t/g;
+    $string =~ s/\\r/\r/g;
+    $string =~ s/\\"/"/g;
+    $string =~ s/\\\\/\\/g;
+    return $string;
 }
 
 # Обработка встроенных функций Go
@@ -276,16 +433,29 @@ sub handle_builtin_function {
         return undef;
     } elsif ($name eq 'len') {
         my $arg = $args->[0];
-        # Проверяем, что аргумент является строкой
         my $arg_type = $self->get_expression_type($node->{args}[0]);
-        die "len: argument must be a string, got $arg_type" unless $arg_type eq 'string';
-        # Удаляем кавычки из строкового значения, если они есть
-        $arg = $1 if $arg =~ /^"(.*)"$/;
-        # Возвращаем длину строки
-        return length($arg);
+        if ($arg_type eq 'string') {
+            $arg = $1 if $arg =~ /^"(.*)"$/;
+            return length($arg);
+        } elsif ($arg_type =~ /^\[\]/) {
+            return scalar(@$arg);
+        }
+        die "len: argument must be a string or slice, got $arg_type";
     } else {
         die "Unsupported builtin function: $name";
     }
+}
+
+# Обработка функции append
+sub handle_append_function {
+    my ($self, $args) = @_;
+    if ($self->{debug_mode}) {
+        warn "handle_append_function\n";
+    }
+    my $slice = $args->[0];
+    my $value = $args->[1];
+    push @$slice, $value;
+    return $slice;
 }
 
 # Форматирование значения для вывода
@@ -294,8 +464,15 @@ sub format_value {
     if ($self->{debug_mode}) {
         warn "format_value\n";
     }
+    if (ref($value) eq 'ARRAY') {
+        return "[" . join(" ", @$value) . "]";
+    }
+    if (ref($value) eq 'HASH') {
+        my @fields = map { "$_: $value->{$_}" } keys %$value;
+        return "{" . join(", ", @fields) . "}";
+    }
     if (defined $value && $value =~ /^"(.*)"$/) {
-        return $1; # Удаляем кавычки из строкового литерала
+        return $self->unescape_string($1);
     }
     return defined $value ? $value : "";
 }
@@ -315,8 +492,32 @@ sub find_variable {
     if ($self->{debug_mode}) {
         warn "find_variable: $name\n";
     }
+    # Проверяем текущие области видимости, игнорируя переменные с типом 'auto'
     for my $scope (reverse @{$self->{scopes}}) {
-        return $scope->{$name} if exists $scope->{$name};
+        if (exists $scope->{$name} && $scope->{$name}{type} ne 'auto') {
+            return $scope->{$name};
+        }
+    }
+    # Проверяем переменные в таблице символов для текущей области
+    my $current_scope_name = $self->get_current_scope_name();
+    my $variables = $self->{symbol_table}{scopes}{$current_scope_name}{variables} || {};
+    if (exists $variables->{$name} && $variables->{$name}{type} ne 'auto') {
+        my $var_value = $variables->{$name}{value};
+        if (defined $var_value) {
+            return { type => $variables->{$name}{type}, value => $var_value };
+        }
+    }
+    # Ищем во вложенных областях
+    my $inner_scopes = $self->{symbol_table}{scopes}{$current_scope_name}{inner_scopes} || [];
+    for my $inner_scope (@$inner_scopes) {
+        my $inner_scope_name = $inner_scope->{name};
+        my $inner_variables = $self->{symbol_table}{scopes}{$inner_scope_name}{variables};
+        if (exists $inner_variables->{$name} && $inner_variables->{$name}{type} ne 'auto') {
+            my $var_value = $inner_variables->{$name}{value};
+            if (defined $var_value) {
+                return { type => $inner_variables->{$name}{type}, value => $var_value };
+            }
+        }
     }
     die "Variable $name not found";
 }
@@ -334,15 +535,24 @@ sub get_current_scope_name {
 sub evaluate_expression {
     my ($self, $node) = @_;
     if ($self->{debug_mode}) {
-        warn "evaluate_expression: $node->{type}\n";
+        warn "evaluate_expression: " . ($node->{type} // 'undef') . "\n";
     }
-    my $type = $node->{type};
+    my $type = $node->{type} // die "Expression type is undefined";
 
-    if ($type eq 'IntLiteral' || $type eq 'StringLiteral') {
+    if ($type eq 'IntLiteral') {
         return $node->{value};
+    } elsif ($type eq 'StringLiteral') {
+        my $value = $node->{value};
+        $value =~ s/^"(.*)"$/$1/;
+        return $value;
     } elsif ($type eq 'Identifier') {
         my $var = $self->find_variable($node->{value});
-        return $var->{value} // die "Variable $node->{value} is not initialized";
+        if (ref($var->{value}) eq 'HASH' && exists $var->{value}{type} && $var->{value}{type} eq 'Expression' && !exists $var->{computed_value}) {
+            my $computed_value = $self->evaluate_expression($var->{value}{value});
+            $var->{computed_value} = $computed_value;
+            return $computed_value;
+        }
+        return $var->{computed_value} // $var->{value} // die "Variable $node->{value} is not initialized";
     } elsif ($type eq 'BinaryOperation' || $type eq 'RelationalExpression' || $type eq 'LogicalExpression') {
         my $left = $self->evaluate_expression($node->{left});
         my $right = $self->evaluate_expression($node->{right});
@@ -357,9 +567,55 @@ sub evaluate_expression {
         }
     } elsif ($type eq 'FunctionCall') {
         return $self->handle_function_call($node);
+    } elsif ($type eq 'FieldAccess') {
+        return $self->evaluate_field_access($node);
+    } elsif ($type eq 'StructInitialization') {
+        return $self->evaluate_struct_initialization($node);
+    } elsif ($type eq 'Array') {
+        return $self->evaluate_array($node);
     } else {
         die "Unsupported expression type: $type";
     }
+}
+
+# Обработка доступа к полям структуры
+sub evaluate_field_access {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "evaluate_field_access: $node->{object}{value}.$node->{field}{value}\n";
+    }
+    my $object = $self->find_variable($node->{object}{value});
+    my $field_name = $node->{field}{value};
+    return $object->{value}{$field_name} // die "Field $field_name not found in $node->{object}{value}";
+}
+
+# Обработка инициализации структуры
+sub evaluate_struct_initialization {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "evaluate_struct_initialization\n";
+    }
+    my $struct_name = $node->{struct_name};
+    my $struct_def = $self->{scopes}[0]->{$struct_name} // die "Struct $struct_name not found";
+    my $instance = {};
+    
+    for my $field (@{$node->{fields}}) {
+        my $field_name = $field->{name};
+        my $field_value = $self->evaluate_expression($field->{value});
+        $instance->{$field_name} = $field_value;
+    }
+    
+    return $instance;
+}
+
+# Обработка инициализации массива
+sub evaluate_array {
+    my ($self, $node) = @_;
+    if ($self->{debug_mode}) {
+        warn "evaluate_array\n";
+    }
+    my @elements = map { $self->evaluate_expression($_) } @{$node->{elements}};
+    return \@elements;
 }
 
 # Арифметические операции
@@ -368,7 +624,6 @@ sub evaluate_binary_operation {
     if ($self->{debug_mode}) {
         warn "evaluate_binary_operation: $op\n";
     }
-    my $result_type = $self->get_expression_type($node);
     if ($op eq '+') { return $left + $right; }
     if ($op eq '-') { return $left - $right; }
     if ($op eq '*') { return $left * $right; }
@@ -387,6 +642,8 @@ sub evaluate_relational_operation {
     }
     if ($op eq '==') { return $left eq $right ? 1 : 0; }
     if ($op eq '!=') { return $left ne $right ? 1 : 0; }
+    if ($op eq '<=') { return $left <= $right ? 1 : 0; }
+    if ($op eq '>=') { return $left >= $right ? 1 : 0; }
     die "Unsupported relational operator: $op";
 }
 
@@ -404,14 +661,13 @@ sub evaluate_logical_operation {
     die "Unsupported logical operator: $op";
 }
 
-# Получение типа выражения из таблицы символов
+# Получение типа выражения
 sub get_expression_type {
     my ($self, $node) = @_;
     if ($self->{debug_mode}) {
         warn "get_expression_type: $node->{type}\n";
     }
     if ($node->{type} eq 'BinaryOperation') {
-        # Для бинарных операций предполагаем тип левого операнда
         return $self->get_expression_type($node->{left});
     } elsif ($node->{type} eq 'StringLiteral') {
         return 'string';
@@ -421,11 +677,21 @@ sub get_expression_type {
         return 'bool';
     } elsif ($node->{type} eq 'Identifier') {
         return $self->find_variable($node->{value})->{type};
+    } elsif ($node->{type} eq 'FunctionCall') {
+        return $self->{symbol_table}{functions}{$node->{name}}{return_types}[0] // 'void';
+    } elsif ($node->{type} eq 'FieldAccess') {
+        my $object = $self->find_variable($node->{object}{value});
+        my $struct_def = $self->{scopes}[0]->{$object->{type}} // die "Struct $object->{type} not found";
+        return $struct_def->{fields}{$node->{field}{value}} // die "Field $node->{field}{value} not found";
+    } elsif ($node->{type} eq 'StructInitialization') {
+        return $node->{struct_name} // 'Student';
+    } elsif ($node->{type} eq 'Array') {
+        return "[]$node->{array_type}";
     }
     die "Cannot determine type for expression: $node->{type}";
 }
 
-# Получение значения по умолчанию для типа
+# Получение значения по умолчанию
 sub default_value {
     my ($self, $type) = @_;
     if ($self->{debug_mode}) {
@@ -437,14 +703,14 @@ sub default_value {
     return undef;
 }
 
-# Конвертация входных данных в нужный тип
+# Конвертация входных данных
 sub convert_input {
     my ($self, $input, $type) = @_;
     if ($self->{debug_mode}) {
         warn "convert_input: $type\n";
     }
     if ($type eq 'float64') {
-        return 0.0 + $input; # Преобразование в число
+        return 0.0 + $input;
     } elsif ($type eq 'string') {
         return $input;
     } elsif ($type eq 'int') {
@@ -462,7 +728,6 @@ sub get_input {
     if (@{$self->{input_buffer}}) {
         return shift @{$self->{input_buffer}};
     }
-    # Если буфер пуст, запрашиваем ввод без лишнего приглашения
     my $input = <STDIN>;
     chomp $input;
     return $input;
