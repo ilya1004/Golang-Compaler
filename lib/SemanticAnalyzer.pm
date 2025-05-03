@@ -329,7 +329,7 @@ sub check_declaration {
             return;
         }
 
-        # Проверяем, есть ли тип (например, 'auto') или выражение
+        # Проверяем, есть ли тип (например, 'float64', 'auto') или выражение
         my $has_type = ($i < @$nodes && $nodes->[$i]{Name} eq 'Type' && exists $nodes->[$i]{Text});
         my $declared_type = $has_type ? $nodes->[$i] : undef;
         my $declared_type_value = $declared_type ? $declared_type->{Text} : undef;
@@ -382,6 +382,18 @@ sub check_declaration {
 
             if ($right_type eq 'unknown' || ($right_type eq 'auto' && $declared_type_value ne 'auto')) {
                 $self->add_error("Неизвестный или неподдерживаемый тип в правой части декларации var", $expression->{Pos} || $node->{Pos} || 0);
+                return;
+            }
+
+            # Проверяем совместимость типов, если тип явно указан
+            if ($has_type && $declared_type_value ne 'auto' && $declared_type_value ne $right_type) {
+                for my $identifier (@identifiers) {
+                    my $var_name = $identifier->{Text};
+                    $self->add_error(
+                        "Несовместимый тип в декларации переменной '$var_name': ожидался $declared_type_value, получен $right_type",
+                        $expression->{Pos} || $node->{Pos} || 0
+                    );
+                }
                 return;
             }
 
@@ -1193,8 +1205,13 @@ sub check_variable_usage {
     my ($self, $var_name, $pos) = @_;
     my $type = $self->get_variable_type($var_name, $pos);
     if ($type eq 'unknown') {
-        $self->add_error("Переменная '$var_name' используется до её декларации", $pos);
+        my $message = "Переменная '$var_name' используется до её декларации";
+        for my $error (@{$self->{errors}}) {
+            if ($error->{message} eq $message && $error->{pos} == $pos) {
+                return;
+            }
+        }
+        $self->add_error($message, $pos);
     }
 }
-
 1;

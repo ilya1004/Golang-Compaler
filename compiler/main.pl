@@ -7,6 +7,7 @@ use lib '../lib';
 use Lexer;
 use Parser;
 use SemanticAnalyzer;
+use Interpreter; # Добавляем модуль интерпретатора
 
 our $index = 0;
 our %ids;
@@ -25,20 +26,10 @@ unless(-d $output_dir) {
 my $lexer = Lexer->new($code);
 my $tokens = $lexer->lex_analyze();
 
-# print "Tokens: ", Dumper($tokens);
-# print "\n-----------------------------------------\n";
-
 my $parser = Parser->new($tokens);
 my $cst = $parser->parse();
 my $symbol_table = $parser->get_symbol_table();
 my $imports = $parser->get_imports();
-
-# print "Распознанные токены:\n";
-# foreach my $token (@$tokens) {
-#     print "Name: $token->{Name}, Text: '$token->{Text}', Line: $token->{Line}, Column: $token->{Column}\n";
-# }
-
-# print "Сгенерированное CST:\n", Dumper($cst);
 
 # Сериализация токенов в JSON
 my $tokens_json = to_json($tokens, { 
@@ -103,22 +94,47 @@ print "Результаты семантического анализа:\n";
 if (@$errors) {
     print "Найдены семантические ошибки:\n";
     foreach my $error (@$errors) {
-        # Попробуем получить строку и столбец из токена по позиции
         my $token = $tokens->[$error->{pos}] || {};
         my $line = $token->{Line} || 'неизвестно';
         my $column = $token->{Column} || 'неизвестно';
         print "Ошибка: $error->{message} (позиция: $error->{pos}, строка: $line, столбец: $column)\n";
     }
+
+    # Сохранение результатов семантического анализа в файл
+    my $semantic_errors_filename = "$output_dir/res_semantic_errors.json";
+    open(my $semantic_fh, '>', $semantic_errors_filename) or die "Не удалось открыть файл '$semantic_errors_filename' для записи: $!";
+    print $semantic_fh to_json($errors, { pretty => 1, canonical => 1 });
+    close($semantic_fh);
+    print "Результаты семантического анализа записаны в файл '$semantic_errors_filename'.\n";
+
 } else {
     print "Семантический анализ прошел успешно, ошибок не найдено.\n";
+
+    # Сохранение результатов семантического анализа в файл
+    my $semantic_errors_filename = "$output_dir/res_semantic_errors.json";
+    open(my $semantic_fh, '>', $semantic_errors_filename) or die "Не удалось открыть файл '$semantic_errors_filename' для записи: $!";
+    print $semantic_fh to_json($errors, { pretty => 1, canonical => 1 });
+    close($semantic_fh);
+    print "Результаты семантического анализа записаны в файл '$semantic_errors_filename'.\n";
+
+    print "\n-----------------------------------------\n";
+    # Вызов интерпретатора
+    my $interpreter = Interpreter->new($cst, $symbol_table, $imports);
+    # Загрузка тестового ввода (для примера)
+
+    $interpreter->{input_buffer} = ["10", "5", "+"];
+    
+    print "Результаты выполнения программы:\n";
+    eval {
+        $interpreter->interpret();
+    };
+    print "\n";
+    if ($@) {
+        print "Ошибка выполнения: $@\n";
+    }
 }
 
-# Сохранение результатов семантического анализа в файл
-my $semantic_errors_filename = "$output_dir/res_semantic_errors.json";
-open(my $semantic_fh, '>', $semantic_errors_filename) or die "Не удалось открыть файл '$semantic_errors_filename' для записи: $!";
-print $semantic_fh to_json($errors, { pretty => 1, canonical => 1 });
-close($semantic_fh);
-print "Результаты семантического анализа записаны в файл '$semantic_errors_filename'.\n";
+
 
 open(my $main_fh,         '>', "$output_dir/lex_result.txt")       or die "Не удалось создать файл result.txt: $!";
 open(my $keywords_fh,     '>', "$output_dir/lex_keywords.txt")     or die "Не удалось создать файл keywords.txt: $!";
@@ -133,7 +149,7 @@ my $separator = "===============================================================
 print $main_fh $header, $separator;
 
 my (%unique_keywords, %unique_operators, %unique_identifiers, %unique_constants, %unique_punctuations);
-my ($id_kw, $id_op, $id_var, $id_const, $id_punct) = (0, 0, 0, 0, 0, 0);
+my ($id_kw, $id_op, $id_var, $id_const, $id_punct) = (0, 0, 0, 0, 0);
 
 foreach my $token (@{$lexer->{KeywordsTokenList}}) {
     $unique_keywords{$token->{Text}} = $id_kw++ unless exists $unique_keywords{$token->{Text}};

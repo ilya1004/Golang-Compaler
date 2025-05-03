@@ -28,21 +28,10 @@ func calculate(a, b float64, operation string) float64 {
 }
 
 func main() {
-	// var num1, num2 float64
 	var num1 float64
 	var num2 float64
 
 	var operation string
-
-	var flag bool = false
-
-	qwe := num1 + num2
-	fmt.Println(qwe)
-	flag1 := true
-	flag = true
-
-	fmt.Print(flag)
-	fmt.Print(flag1)
 
 	fmt.Println(WelcomeMessage)
 	fmt.Print("Введите первое число: ")
