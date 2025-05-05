@@ -75,984 +75,1688 @@
       "Class" : "keyword",
       "Column" : 1,
       "Line" : 7,
-      "Name" : "type",
+      "Name" : "const",
       "Pos" : 33,
-      "Text" : "type"
+      "Text" : "const"
    },
    {
       "Class" : "identifier",
-      "Column" : 6,
+      "Column" : 7,
       "Line" : 7,
       "Name" : "id-1",
-      "Pos" : 38,
-      "Text" : "Student"
+      "Pos" : 39,
+      "Text" : "WelcomeMessage"
    },
    {
-      "Class" : "keyword",
-      "Column" : 14,
+      "Class" : "operator",
+      "Column" : 22,
       "Line" : 7,
-      "Name" : "struct",
-      "Pos" : 46,
-      "Text" : "struct"
+      "Name" : "assignment",
+      "Pos" : 54,
+      "Text" : "="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 24,
+      "Line" : 7,
+      "Name" : "string",
+      "Pos" : 56,
+      "Text" : "\"Добро пожаловать в калькулятор на Go!\""
    },
    {
       "Class" : "punctuation",
-      "Column" : 21,
+      "Column" : 92,
       "Line" : 7,
-      "Name" : "l_brace",
-      "Pos" : 53,
-      "Text" : "{"
+      "Name" : "semicolon",
+      "Pos" : 124,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 1,
+      "Line" : 8,
+      "Name" : "const",
+      "Pos" : 125,
+      "Text" : "const"
    },
    {
       "Class" : "identifier",
-      "Column" : 2,
+      "Column" : 7,
       "Line" : 8,
       "Name" : "id-2",
-      "Pos" : 56,
-      "Text" : "Name"
+      "Pos" : 131,
+      "Text" : "ErrorMessage"
    },
    {
-      "Class" : "keyword",
-      "Column" : 8,
+      "Class" : "operator",
+      "Column" : 20,
+      "Line" : 8,
+      "Name" : "assignment",
+      "Pos" : 144,
+      "Text" : "="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 22,
       "Line" : 8,
       "Name" : "string",
-      "Pos" : 62,
-      "Text" : "string"
+      "Pos" : 146,
+      "Text" : "\"Ошибка: неверный ввод!\""
    },
    {
       "Class" : "punctuation",
-      "Column" : 14,
+      "Column" : 64,
       "Line" : 8,
       "Name" : "semicolon",
-      "Pos" : 68,
-      "Text" : ";"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 2,
-      "Line" : 9,
-      "Name" : "id-3",
-      "Pos" : 70,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "keyword",
-      "Column" : 8,
-      "Line" : 9,
-      "Name" : "int",
-      "Pos" : 76,
-      "Text" : "int"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 11,
-      "Line" : 9,
-      "Name" : "semicolon",
-      "Pos" : 79,
-      "Text" : ";"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 1,
-      "Line" : 10,
-      "Name" : "r_brace",
-      "Pos" : 80,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 2,
-      "Line" : 10,
-      "Name" : "semicolon",
-      "Pos" : 81,
+      "Pos" : 188,
       "Text" : ";"
    },
    {
       "Class" : "keyword",
       "Column" : 1,
-      "Line" : 12,
+      "Line" : 10,
       "Name" : "func",
-      "Pos" : 83,
+      "Pos" : 190,
       "Text" : "func"
    },
    {
       "Class" : "identifier",
       "Column" : 6,
-      "Line" : 12,
-      "Name" : "id-4",
-      "Pos" : 88,
-      "Text" : "printStudentStatus"
+      "Line" : 10,
+      "Name" : "id-3",
+      "Pos" : 195,
+      "Text" : "calculate"
    },
    {
       "Class" : "punctuation",
-      "Column" : 24,
-      "Line" : 12,
+      "Column" : 15,
+      "Line" : 10,
       "Name" : "l_paren",
-      "Pos" : 106,
+      "Pos" : 204,
       "Text" : "("
    },
    {
       "Class" : "identifier",
-      "Column" : 25,
-      "Line" : 12,
-      "Name" : "id-5",
-      "Pos" : 107,
-      "Text" : "student"
+      "Column" : 16,
+      "Line" : 10,
+      "Name" : "id-4",
+      "Pos" : 205,
+      "Text" : "a"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 17,
+      "Line" : 10,
+      "Name" : "comma",
+      "Pos" : 206,
+      "Text" : ","
    },
    {
       "Class" : "identifier",
-      "Column" : 33,
-      "Line" : 12,
-      "Name" : "id-1",
-      "Pos" : 115,
-      "Text" : "Student"
+      "Column" : 19,
+      "Line" : 10,
+      "Name" : "id-5",
+      "Pos" : 208,
+      "Text" : "b"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 21,
+      "Line" : 10,
+      "Name" : "float64",
+      "Pos" : 210,
+      "Text" : "float64"
    },
    {
       "Class" : "punctuation",
+      "Column" : 28,
+      "Line" : 10,
+      "Name" : "comma",
+      "Pos" : 217,
+      "Text" : ","
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 30,
+      "Line" : 10,
+      "Name" : "id-6",
+      "Pos" : 219,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "keyword",
       "Column" : 40,
-      "Line" : 12,
+      "Line" : 10,
+      "Name" : "string",
+      "Pos" : 229,
+      "Text" : "string"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 46,
+      "Line" : 10,
       "Name" : "r_paren",
-      "Pos" : 122,
+      "Pos" : 235,
       "Text" : ")"
    },
    {
+      "Class" : "keyword",
+      "Column" : 48,
+      "Line" : 10,
+      "Name" : "float64",
+      "Pos" : 237,
+      "Text" : "float64"
+   },
+   {
       "Class" : "punctuation",
-      "Column" : 42,
-      "Line" : 12,
+      "Column" : 56,
+      "Line" : 10,
       "Name" : "l_brace",
-      "Pos" : 124,
+      "Pos" : 245,
       "Text" : "{"
    },
    {
       "Class" : "keyword",
       "Column" : 2,
-      "Line" : 13,
-      "Name" : "if",
-      "Pos" : 127,
-      "Text" : "if"
+      "Line" : 11,
+      "Name" : "switch",
+      "Pos" : 248,
+      "Text" : "switch"
    },
    {
       "Class" : "identifier",
-      "Column" : 5,
+      "Column" : 9,
+      "Line" : 11,
+      "Name" : "id-6",
+      "Pos" : 255,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 19,
+      "Line" : 11,
+      "Name" : "l_brace",
+      "Pos" : 265,
+      "Text" : "{"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 12,
+      "Name" : "case",
+      "Pos" : 268,
+      "Text" : "case"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 7,
+      "Line" : 12,
+      "Name" : "string",
+      "Pos" : 273,
+      "Text" : "\"+\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 12,
+      "Name" : "colon",
+      "Pos" : 276,
+      "Text" : ":"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
       "Line" : 13,
-      "Name" : "id-5",
-      "Pos" : 130,
-      "Text" : "student"
+      "Name" : "return",
+      "Pos" : 280,
+      "Text" : "return"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 10,
+      "Line" : 13,
+      "Name" : "id-4",
+      "Pos" : 287,
+      "Text" : "a"
    },
    {
       "Class" : "operator",
       "Column" : 12,
       "Line" : 13,
-      "Name" : "dot",
-      "Pos" : 137,
-      "Text" : "."
+      "Name" : "plus",
+      "Pos" : 289,
+      "Text" : "+"
    },
    {
       "Class" : "identifier",
-      "Column" : 13,
-      "Line" : 13,
-      "Name" : "id-3",
-      "Pos" : 138,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 19,
-      "Line" : 13,
-      "Name" : "greater_equal",
-      "Pos" : 144,
-      "Text" : ">="
-   },
-   {
-      "Class" : "constant",
-      "Column" : 22,
-      "Line" : 13,
-      "Name" : "number",
-      "Pos" : 147,
-      "Text" : "50"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 25,
-      "Line" : 13,
-      "Name" : "l_brace",
-      "Pos" : 150,
-      "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 3,
-      "Line" : 14,
-      "Name" : "id-6",
-      "Pos" : 154,
-      "Text" : "fmt"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 6,
-      "Line" : 14,
-      "Name" : "dot",
-      "Pos" : 157,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 7,
-      "Line" : 14,
-      "Name" : "id-7",
-      "Pos" : 158,
-      "Text" : "Printf"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 13,
-      "Line" : 14,
-      "Name" : "l_paren",
-      "Pos" : 164,
-      "Text" : "("
-   },
-   {
-      "Class" : "constant",
       "Column" : 14,
-      "Line" : 14,
-      "Name" : "string",
-      "Pos" : 165,
-      "Text" : "\"Студент %s сдал экзамен с оценкой %d.\\n\""
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 81,
-      "Line" : 14,
-      "Name" : "comma",
-      "Pos" : 232,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 83,
-      "Line" : 14,
+      "Line" : 13,
       "Name" : "id-5",
-      "Pos" : 234,
-      "Text" : "student"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 90,
-      "Line" : 14,
-      "Name" : "dot",
-      "Pos" : 241,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 91,
-      "Line" : 14,
-      "Name" : "id-2",
-      "Pos" : 242,
-      "Text" : "Name"
+      "Pos" : 291,
+      "Text" : "b"
    },
    {
       "Class" : "punctuation",
-      "Column" : 95,
-      "Line" : 14,
-      "Name" : "comma",
-      "Pos" : 246,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 97,
-      "Line" : 14,
-      "Name" : "id-5",
-      "Pos" : 248,
-      "Text" : "student"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 104,
-      "Line" : 14,
-      "Name" : "dot",
-      "Pos" : 255,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 105,
-      "Line" : 14,
-      "Name" : "id-3",
-      "Pos" : 256,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 110,
-      "Line" : 14,
-      "Name" : "r_paren",
-      "Pos" : 261,
-      "Text" : ")"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 111,
-      "Line" : 14,
+      "Column" : 15,
+      "Line" : 13,
       "Name" : "semicolon",
-      "Pos" : 262,
+      "Pos" : 292,
       "Text" : ";"
    },
    {
-      "Class" : "punctuation",
+      "Class" : "keyword",
       "Column" : 2,
+      "Line" : 14,
+      "Name" : "case",
+      "Pos" : 294,
+      "Text" : "case"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 7,
+      "Line" : 14,
+      "Name" : "string",
+      "Pos" : 299,
+      "Text" : "\"-\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 14,
+      "Name" : "colon",
+      "Pos" : 302,
+      "Text" : ":"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
       "Line" : 15,
-      "Name" : "r_brace",
-      "Pos" : 264,
-      "Text" : "}"
+      "Name" : "return",
+      "Pos" : 306,
+      "Text" : "return"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 10,
+      "Line" : 15,
+      "Name" : "id-4",
+      "Pos" : 313,
+      "Text" : "a"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 12,
+      "Line" : 15,
+      "Name" : "minus",
+      "Pos" : 315,
+      "Text" : "-"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 14,
+      "Line" : 15,
+      "Name" : "id-5",
+      "Pos" : 317,
+      "Text" : "b"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 15,
+      "Line" : 15,
+      "Name" : "semicolon",
+      "Pos" : 318,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 16,
+      "Name" : "case",
+      "Pos" : 320,
+      "Text" : "case"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 7,
+      "Line" : 16,
+      "Name" : "string",
+      "Pos" : 325,
+      "Text" : "\"*\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 16,
+      "Name" : "colon",
+      "Pos" : 328,
+      "Text" : ":"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
+      "Line" : 17,
+      "Name" : "return",
+      "Pos" : 332,
+      "Text" : "return"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 10,
+      "Line" : 17,
+      "Name" : "id-4",
+      "Pos" : 339,
+      "Text" : "a"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 12,
+      "Line" : 17,
+      "Name" : "multiply",
+      "Pos" : 341,
+      "Text" : "*"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 14,
+      "Line" : 17,
+      "Name" : "id-5",
+      "Pos" : 343,
+      "Text" : "b"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 15,
+      "Line" : 17,
+      "Name" : "semicolon",
+      "Pos" : 344,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 18,
+      "Name" : "case",
+      "Pos" : 346,
+      "Text" : "case"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 7,
+      "Line" : 18,
+      "Name" : "string",
+      "Pos" : 351,
+      "Text" : "\"/\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 18,
+      "Name" : "colon",
+      "Pos" : 354,
+      "Text" : ":"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
+      "Line" : 19,
+      "Name" : "if",
+      "Pos" : 358,
+      "Text" : "if"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 19,
+      "Name" : "id-5",
+      "Pos" : 361,
+      "Text" : "b"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 8,
+      "Line" : 19,
+      "Name" : "not_equal",
+      "Pos" : 363,
+      "Text" : "!="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 11,
+      "Line" : 19,
+      "Name" : "number",
+      "Pos" : 366,
+      "Text" : "0"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 13,
+      "Line" : 19,
+      "Name" : "l_brace",
+      "Pos" : 368,
+      "Text" : "{"
    },
    {
       "Class" : "keyword",
       "Column" : 4,
-      "Line" : 15,
-      "Name" : "else",
-      "Pos" : 266,
-      "Text" : "else"
+      "Line" : 20,
+      "Name" : "return",
+      "Pos" : 373,
+      "Text" : "return"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 11,
+      "Line" : 20,
+      "Name" : "id-4",
+      "Pos" : 380,
+      "Text" : "a"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 13,
+      "Line" : 20,
+      "Name" : "divide",
+      "Pos" : 382,
+      "Text" : "/"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 15,
+      "Line" : 20,
+      "Name" : "id-5",
+      "Pos" : 384,
+      "Text" : "b"
    },
    {
       "Class" : "punctuation",
-      "Column" : 9,
-      "Line" : 15,
-      "Name" : "l_brace",
-      "Pos" : 271,
-      "Text" : "{"
+      "Column" : 16,
+      "Line" : 20,
+      "Name" : "semicolon",
+      "Pos" : 385,
+      "Text" : ";"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 3,
+      "Line" : 21,
+      "Name" : "r_brace",
+      "Pos" : 388,
+      "Text" : "}"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 4,
+      "Line" : 21,
+      "Name" : "semicolon",
+      "Pos" : 389,
+      "Text" : ";"
    },
    {
       "Class" : "identifier",
       "Column" : 3,
-      "Line" : 16,
-      "Name" : "id-6",
-      "Pos" : 275,
+      "Line" : 22,
+      "Name" : "id-7",
+      "Pos" : 392,
       "Text" : "fmt"
    },
    {
       "Class" : "operator",
       "Column" : 6,
-      "Line" : 16,
+      "Line" : 22,
       "Name" : "dot",
-      "Pos" : 278,
+      "Pos" : 395,
       "Text" : "."
    },
    {
       "Class" : "identifier",
       "Column" : 7,
-      "Line" : 16,
-      "Name" : "id-7",
-      "Pos" : 279,
-      "Text" : "Printf"
+      "Line" : 22,
+      "Name" : "id-8",
+      "Pos" : 396,
+      "Text" : "Println"
    },
    {
       "Class" : "punctuation",
-      "Column" : 13,
-      "Line" : 16,
+      "Column" : 14,
+      "Line" : 22,
       "Name" : "l_paren",
-      "Pos" : 285,
+      "Pos" : 403,
       "Text" : "("
    },
    {
-      "Class" : "constant",
-      "Column" : 14,
-      "Line" : 16,
-      "Name" : "string",
-      "Pos" : 286,
-      "Text" : "\"Студент %s не сдал экзамен с оценкой %d.\\n\""
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 86,
-      "Line" : 16,
-      "Name" : "comma",
-      "Pos" : 358,
-      "Text" : ","
-   },
-   {
       "Class" : "identifier",
-      "Column" : 88,
-      "Line" : 16,
-      "Name" : "id-5",
-      "Pos" : 360,
-      "Text" : "student"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 95,
-      "Line" : 16,
-      "Name" : "dot",
-      "Pos" : 367,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 96,
-      "Line" : 16,
+      "Column" : 15,
+      "Line" : 22,
       "Name" : "id-2",
-      "Pos" : 368,
-      "Text" : "Name"
+      "Pos" : 404,
+      "Text" : "ErrorMessage"
    },
    {
       "Class" : "punctuation",
-      "Column" : 100,
-      "Line" : 16,
-      "Name" : "comma",
-      "Pos" : 372,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 102,
-      "Line" : 16,
-      "Name" : "id-5",
-      "Pos" : 374,
-      "Text" : "student"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 109,
-      "Line" : 16,
-      "Name" : "dot",
-      "Pos" : 381,
-      "Text" : "."
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 110,
-      "Line" : 16,
-      "Name" : "id-3",
-      "Pos" : 382,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 115,
-      "Line" : 16,
+      "Column" : 27,
+      "Line" : 22,
       "Name" : "r_paren",
-      "Pos" : 387,
+      "Pos" : 416,
       "Text" : ")"
    },
    {
       "Class" : "punctuation",
-      "Column" : 116,
-      "Line" : 16,
+      "Column" : 28,
+      "Line" : 22,
       "Name" : "semicolon",
-      "Pos" : 388,
+      "Pos" : 417,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
+      "Line" : 23,
+      "Name" : "return",
+      "Pos" : 420,
+      "Text" : "return"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 10,
+      "Line" : 23,
+      "Name" : "number",
+      "Pos" : 427,
+      "Text" : "0"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 11,
+      "Line" : 23,
+      "Name" : "semicolon",
+      "Pos" : 428,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 24,
+      "Name" : "default",
+      "Pos" : 430,
+      "Text" : "default"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 9,
+      "Line" : 24,
+      "Name" : "colon",
+      "Pos" : 437,
+      "Text" : ":"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 3,
+      "Line" : 25,
+      "Name" : "id-7",
+      "Pos" : 441,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 6,
+      "Line" : 25,
+      "Name" : "dot",
+      "Pos" : 444,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 7,
+      "Line" : 25,
+      "Name" : "id-8",
+      "Pos" : 445,
+      "Text" : "Println"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 14,
+      "Line" : 25,
+      "Name" : "l_paren",
+      "Pos" : 452,
+      "Text" : "("
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 15,
+      "Line" : 25,
+      "Name" : "id-2",
+      "Pos" : 453,
+      "Text" : "ErrorMessage"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 27,
+      "Line" : 25,
+      "Name" : "r_paren",
+      "Pos" : 465,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 28,
+      "Line" : 25,
+      "Name" : "semicolon",
+      "Pos" : 466,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 3,
+      "Line" : 26,
+      "Name" : "return",
+      "Pos" : 469,
+      "Text" : "return"
+   },
+   {
+      "Class" : "constant",
+      "Column" : 10,
+      "Line" : 26,
+      "Name" : "number",
+      "Pos" : 476,
+      "Text" : "0"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 11,
+      "Line" : 26,
+      "Name" : "semicolon",
+      "Pos" : 477,
       "Text" : ";"
    },
    {
       "Class" : "punctuation",
       "Column" : 2,
-      "Line" : 17,
+      "Line" : 27,
       "Name" : "r_brace",
-      "Pos" : 390,
+      "Pos" : 479,
       "Text" : "}"
    },
    {
       "Class" : "punctuation",
       "Column" : 3,
-      "Line" : 17,
+      "Line" : 27,
       "Name" : "semicolon",
-      "Pos" : 391,
+      "Pos" : 480,
       "Text" : ";"
    },
    {
       "Class" : "punctuation",
       "Column" : 1,
-      "Line" : 18,
+      "Line" : 28,
       "Name" : "r_brace",
-      "Pos" : 392,
+      "Pos" : 481,
       "Text" : "}"
    },
    {
       "Class" : "punctuation",
       "Column" : 2,
-      "Line" : 18,
+      "Line" : 28,
       "Name" : "semicolon",
-      "Pos" : 393,
+      "Pos" : 482,
       "Text" : ";"
    },
    {
       "Class" : "keyword",
       "Column" : 1,
-      "Line" : 20,
+      "Line" : 30,
       "Name" : "func",
-      "Pos" : 395,
+      "Pos" : 484,
       "Text" : "func"
    },
    {
       "Class" : "identifier",
       "Column" : 6,
-      "Line" : 20,
+      "Line" : 30,
       "Name" : "id-0",
-      "Pos" : 400,
+      "Pos" : 489,
       "Text" : "main"
    },
    {
       "Class" : "punctuation",
       "Column" : 10,
-      "Line" : 20,
+      "Line" : 30,
       "Name" : "l_paren",
-      "Pos" : 404,
+      "Pos" : 493,
       "Text" : "("
    },
    {
       "Class" : "punctuation",
       "Column" : 11,
-      "Line" : 20,
+      "Line" : 30,
       "Name" : "r_paren",
-      "Pos" : 405,
+      "Pos" : 494,
       "Text" : ")"
    },
    {
       "Class" : "punctuation",
       "Column" : 13,
-      "Line" : 20,
+      "Line" : 30,
       "Name" : "l_brace",
-      "Pos" : 407,
-      "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 2,
-      "Line" : 21,
-      "Name" : "id-8",
-      "Pos" : 410,
-      "Text" : "students"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 11,
-      "Line" : 21,
-      "Name" : "declaration",
-      "Pos" : 419,
-      "Text" : ":="
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 14,
-      "Line" : 21,
-      "Name" : "l_bracket",
-      "Pos" : 422,
-      "Text" : "["
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 15,
-      "Line" : 21,
-      "Name" : "r_bracket",
-      "Pos" : 423,
-      "Text" : "]"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 16,
-      "Line" : 21,
-      "Name" : "id-1",
-      "Pos" : 424,
-      "Text" : "Student"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 23,
-      "Line" : 21,
-      "Name" : "l_brace",
-      "Pos" : 431,
-      "Text" : "{"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 3,
-      "Line" : 22,
-      "Name" : "l_brace",
-      "Pos" : 435,
-      "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 4,
-      "Line" : 22,
-      "Name" : "id-2",
-      "Pos" : 436,
-      "Text" : "Name"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 8,
-      "Line" : 22,
-      "Name" : "colon",
-      "Pos" : 440,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 10,
-      "Line" : 22,
-      "Name" : "string",
-      "Pos" : 442,
-      "Text" : "\"Иван\""
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 20,
-      "Line" : 22,
-      "Name" : "comma",
-      "Pos" : 452,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 22,
-      "Line" : 22,
-      "Name" : "id-3",
-      "Pos" : 454,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 27,
-      "Line" : 22,
-      "Name" : "colon",
-      "Pos" : 459,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 29,
-      "Line" : 22,
-      "Name" : "number",
-      "Pos" : 461,
-      "Text" : "75"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 31,
-      "Line" : 22,
-      "Name" : "r_brace",
-      "Pos" : 463,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 32,
-      "Line" : 22,
-      "Name" : "comma",
-      "Pos" : 464,
-      "Text" : ","
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 3,
-      "Line" : 23,
-      "Name" : "l_brace",
-      "Pos" : 468,
-      "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 4,
-      "Line" : 23,
-      "Name" : "id-2",
-      "Pos" : 469,
-      "Text" : "Name"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 8,
-      "Line" : 23,
-      "Name" : "colon",
-      "Pos" : 473,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 10,
-      "Line" : 23,
-      "Name" : "string",
-      "Pos" : 475,
-      "Text" : "\"Мария\""
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 22,
-      "Line" : 23,
-      "Name" : "comma",
-      "Pos" : 487,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 24,
-      "Line" : 23,
-      "Name" : "id-3",
-      "Pos" : 489,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 29,
-      "Line" : 23,
-      "Name" : "colon",
-      "Pos" : 494,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 31,
-      "Line" : 23,
-      "Name" : "number",
       "Pos" : 496,
-      "Text" : "45"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 33,
-      "Line" : 23,
-      "Name" : "r_brace",
-      "Pos" : 498,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 34,
-      "Line" : 23,
-      "Name" : "comma",
-      "Pos" : 499,
-      "Text" : ","
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 3,
-      "Line" : 24,
-      "Name" : "l_brace",
-      "Pos" : 503,
       "Text" : "{"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 4,
-      "Line" : 24,
-      "Name" : "id-2",
-      "Pos" : 504,
-      "Text" : "Name"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 8,
-      "Line" : 24,
-      "Name" : "colon",
-      "Pos" : 508,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 10,
-      "Line" : 24,
-      "Name" : "string",
-      "Pos" : 510,
-      "Text" : "\"Анна\""
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 20,
-      "Line" : 24,
-      "Name" : "comma",
-      "Pos" : 520,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 22,
-      "Line" : 24,
-      "Name" : "id-3",
-      "Pos" : 522,
-      "Text" : "Grade"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 27,
-      "Line" : 24,
-      "Name" : "colon",
-      "Pos" : 527,
-      "Text" : ":"
-   },
-   {
-      "Class" : "constant",
-      "Column" : 29,
-      "Line" : 24,
-      "Name" : "number",
-      "Pos" : 529,
-      "Text" : "90"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 31,
-      "Line" : 24,
-      "Name" : "r_brace",
-      "Pos" : 531,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 32,
-      "Line" : 24,
-      "Name" : "comma",
-      "Pos" : 532,
-      "Text" : ","
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 2,
-      "Line" : 25,
-      "Name" : "r_brace",
-      "Pos" : 535,
-      "Text" : "}"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 3,
-      "Line" : 25,
-      "Name" : "semicolon",
-      "Pos" : 536,
-      "Text" : ";"
    },
    {
       "Class" : "keyword",
       "Column" : 2,
-      "Line" : 27,
-      "Name" : "for",
-      "Pos" : 539,
-      "Text" : "for"
+      "Line" : 31,
+      "Name" : "var",
+      "Pos" : 499,
+      "Text" : "var"
    },
    {
       "Class" : "identifier",
       "Column" : 6,
-      "Line" : 27,
+      "Line" : 31,
       "Name" : "id-9",
-      "Pos" : 543,
-      "Text" : "_"
-   },
-   {
-      "Class" : "punctuation",
-      "Column" : 7,
-      "Line" : 27,
-      "Name" : "comma",
-      "Pos" : 544,
-      "Text" : ","
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 9,
-      "Line" : 27,
-      "Name" : "id-5",
-      "Pos" : 546,
-      "Text" : "student"
-   },
-   {
-      "Class" : "operator",
-      "Column" : 17,
-      "Line" : 27,
-      "Name" : "declaration",
-      "Pos" : 554,
-      "Text" : ":="
+      "Pos" : 503,
+      "Text" : "num1"
    },
    {
       "Class" : "keyword",
-      "Column" : 20,
-      "Line" : 27,
-      "Name" : "range",
-      "Pos" : 557,
-      "Text" : "range"
-   },
-   {
-      "Class" : "identifier",
-      "Column" : 26,
-      "Line" : 27,
-      "Name" : "id-8",
-      "Pos" : 563,
-      "Text" : "students"
+      "Column" : 11,
+      "Line" : 31,
+      "Name" : "float64",
+      "Pos" : 508,
+      "Text" : "float64"
    },
    {
       "Class" : "punctuation",
+      "Column" : 18,
+      "Line" : 31,
+      "Name" : "semicolon",
+      "Pos" : 515,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 32,
+      "Name" : "var",
+      "Pos" : 517,
+      "Text" : "var"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 32,
+      "Name" : "id-10",
+      "Pos" : 521,
+      "Text" : "num2"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 11,
+      "Line" : 32,
+      "Name" : "float64",
+      "Pos" : 526,
+      "Text" : "float64"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 18,
+      "Line" : 32,
+      "Name" : "semicolon",
+      "Pos" : 533,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 34,
+      "Name" : "var",
+      "Pos" : 536,
+      "Text" : "var"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 34,
+      "Name" : "id-6",
+      "Pos" : 540,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 16,
+      "Line" : 34,
+      "Name" : "string",
+      "Pos" : 550,
+      "Text" : "string"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 22,
+      "Line" : 34,
+      "Name" : "semicolon",
+      "Pos" : 556,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 36,
+      "Name" : "id-7",
+      "Pos" : 559,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 36,
+      "Name" : "dot",
+      "Pos" : 562,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 36,
+      "Name" : "id-8",
+      "Pos" : 563,
+      "Text" : "Println"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 13,
+      "Line" : 36,
+      "Name" : "l_paren",
+      "Pos" : 570,
+      "Text" : "("
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 14,
+      "Line" : 36,
+      "Name" : "id-1",
+      "Pos" : 571,
+      "Text" : "WelcomeMessage"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 28,
+      "Line" : 36,
+      "Name" : "r_paren",
+      "Pos" : 585,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 29,
+      "Line" : 36,
+      "Name" : "semicolon",
+      "Pos" : 586,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 37,
+      "Name" : "id-7",
+      "Pos" : 588,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 37,
+      "Name" : "dot",
+      "Pos" : 591,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 37,
+      "Name" : "id-11",
+      "Pos" : 592,
+      "Text" : "Print"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 11,
+      "Line" : 37,
+      "Name" : "l_paren",
+      "Pos" : 597,
+      "Text" : "("
+   },
+   {
+      "Class" : "constant",
+      "Column" : 12,
+      "Line" : 37,
+      "Name" : "string",
+      "Pos" : 598,
+      "Text" : "\"Введите первое число: \""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 54,
+      "Line" : 37,
+      "Name" : "r_paren",
+      "Pos" : 640,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 55,
+      "Line" : 37,
+      "Name" : "semicolon",
+      "Pos" : 641,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 38,
+      "Name" : "id-7",
+      "Pos" : 643,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 38,
+      "Name" : "dot",
+      "Pos" : 646,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 38,
+      "Name" : "id-12",
+      "Pos" : 647,
+      "Text" : "Scan"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 38,
+      "Name" : "l_paren",
+      "Pos" : 651,
+      "Text" : "("
+   },
+   {
+      "Class" : "operator",
+      "Column" : 11,
+      "Line" : 38,
+      "Name" : "bitwise_and",
+      "Pos" : 652,
+      "Text" : "&"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 12,
+      "Line" : 38,
+      "Name" : "id-9",
+      "Pos" : 653,
+      "Text" : "num1"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 16,
+      "Line" : 38,
+      "Name" : "r_paren",
+      "Pos" : 657,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 17,
+      "Line" : 38,
+      "Name" : "semicolon",
+      "Pos" : 658,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 39,
+      "Name" : "id-7",
+      "Pos" : 660,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 39,
+      "Name" : "dot",
+      "Pos" : 663,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 39,
+      "Name" : "id-11",
+      "Pos" : 664,
+      "Text" : "Print"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 11,
+      "Line" : 39,
+      "Name" : "l_paren",
+      "Pos" : 669,
+      "Text" : "("
+   },
+   {
+      "Class" : "constant",
+      "Column" : 12,
+      "Line" : 39,
+      "Name" : "string",
+      "Pos" : 670,
+      "Text" : "\"Введите второе число: \""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 54,
+      "Line" : 39,
+      "Name" : "r_paren",
+      "Pos" : 712,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 55,
+      "Line" : 39,
+      "Name" : "semicolon",
+      "Pos" : 713,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 40,
+      "Name" : "id-7",
+      "Pos" : 715,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 40,
+      "Name" : "dot",
+      "Pos" : 718,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 40,
+      "Name" : "id-12",
+      "Pos" : 719,
+      "Text" : "Scan"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 40,
+      "Name" : "l_paren",
+      "Pos" : 723,
+      "Text" : "("
+   },
+   {
+      "Class" : "operator",
+      "Column" : 11,
+      "Line" : 40,
+      "Name" : "bitwise_and",
+      "Pos" : 724,
+      "Text" : "&"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 12,
+      "Line" : 40,
+      "Name" : "id-10",
+      "Pos" : 725,
+      "Text" : "num2"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 16,
+      "Line" : 40,
+      "Name" : "r_paren",
+      "Pos" : 729,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 17,
+      "Line" : 40,
+      "Name" : "semicolon",
+      "Pos" : 730,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 41,
+      "Name" : "id-7",
+      "Pos" : 732,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 41,
+      "Name" : "dot",
+      "Pos" : 735,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 41,
+      "Name" : "id-11",
+      "Pos" : 736,
+      "Text" : "Print"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 11,
+      "Line" : 41,
+      "Name" : "l_paren",
+      "Pos" : 741,
+      "Text" : "("
+   },
+   {
+      "Class" : "constant",
+      "Column" : 12,
+      "Line" : 41,
+      "Name" : "string",
+      "Pos" : 742,
+      "Text" : "\"Введите операцию (+, -, *, /): \""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 60,
+      "Line" : 41,
+      "Name" : "r_paren",
+      "Pos" : 790,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 61,
+      "Line" : 41,
+      "Name" : "semicolon",
+      "Pos" : 791,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 2,
+      "Line" : 42,
+      "Name" : "id-7",
+      "Pos" : 793,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 5,
+      "Line" : 42,
+      "Name" : "dot",
+      "Pos" : 796,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 6,
+      "Line" : 42,
+      "Name" : "id-12",
+      "Pos" : 797,
+      "Text" : "Scan"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 10,
+      "Line" : 42,
+      "Name" : "l_paren",
+      "Pos" : 801,
+      "Text" : "("
+   },
+   {
+      "Class" : "operator",
+      "Column" : 11,
+      "Line" : 42,
+      "Name" : "bitwise_and",
+      "Pos" : 802,
+      "Text" : "&"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 12,
+      "Line" : 42,
+      "Name" : "id-6",
+      "Pos" : 803,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 21,
+      "Line" : 42,
+      "Name" : "r_paren",
+      "Pos" : 812,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 22,
+      "Line" : 42,
+      "Name" : "semicolon",
+      "Pos" : 813,
+      "Text" : ";"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 2,
+      "Line" : 44,
+      "Name" : "if",
+      "Pos" : 816,
+      "Text" : "if"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 5,
+      "Line" : 44,
+      "Name" : "id-6",
+      "Pos" : 819,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 15,
+      "Line" : 44,
+      "Name" : "equal",
+      "Pos" : 829,
+      "Text" : "=="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 18,
+      "Line" : 44,
+      "Name" : "string",
+      "Pos" : 832,
+      "Text" : "\"+\""
+   },
+   {
+      "Class" : "operator",
+      "Column" : 22,
+      "Line" : 44,
+      "Name" : "logical_or",
+      "Pos" : 836,
+      "Text" : "||"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 25,
+      "Line" : 44,
+      "Name" : "id-6",
+      "Pos" : 839,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "operator",
       "Column" : 35,
-      "Line" : 27,
+      "Line" : 44,
+      "Name" : "equal",
+      "Pos" : 849,
+      "Text" : "=="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 38,
+      "Line" : 44,
+      "Name" : "string",
+      "Pos" : 852,
+      "Text" : "\"-\""
+   },
+   {
+      "Class" : "operator",
+      "Column" : 42,
+      "Line" : 44,
+      "Name" : "logical_or",
+      "Pos" : 856,
+      "Text" : "||"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 45,
+      "Line" : 44,
+      "Name" : "id-6",
+      "Pos" : 859,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 55,
+      "Line" : 44,
+      "Name" : "equal",
+      "Pos" : 869,
+      "Text" : "=="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 58,
+      "Line" : 44,
+      "Name" : "string",
+      "Pos" : 872,
+      "Text" : "\"*\""
+   },
+   {
+      "Class" : "operator",
+      "Column" : 62,
+      "Line" : 44,
+      "Name" : "logical_or",
+      "Pos" : 876,
+      "Text" : "||"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 65,
+      "Line" : 44,
+      "Name" : "id-6",
+      "Pos" : 879,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 75,
+      "Line" : 44,
+      "Name" : "equal",
+      "Pos" : 889,
+      "Text" : "=="
+   },
+   {
+      "Class" : "constant",
+      "Column" : 78,
+      "Line" : 44,
+      "Name" : "string",
+      "Pos" : 892,
+      "Text" : "\"/\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 82,
+      "Line" : 44,
       "Name" : "l_brace",
-      "Pos" : 572,
+      "Pos" : 896,
       "Text" : "{"
    },
    {
       "Class" : "identifier",
       "Column" : 3,
-      "Line" : 28,
-      "Name" : "id-4",
-      "Pos" : 576,
-      "Text" : "printStudentStatus"
+      "Line" : 45,
+      "Name" : "id-13",
+      "Pos" : 900,
+      "Text" : "result"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 10,
+      "Line" : 45,
+      "Name" : "declaration",
+      "Pos" : 907,
+      "Text" : ":="
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 13,
+      "Line" : 45,
+      "Name" : "id-3",
+      "Pos" : 910,
+      "Text" : "calculate"
    },
    {
       "Class" : "punctuation",
-      "Column" : 21,
-      "Line" : 28,
+      "Column" : 22,
+      "Line" : 45,
       "Name" : "l_paren",
-      "Pos" : 594,
+      "Pos" : 919,
       "Text" : "("
    },
    {
       "Class" : "identifier",
-      "Column" : 22,
-      "Line" : 28,
-      "Name" : "id-5",
-      "Pos" : 595,
-      "Text" : "student"
+      "Column" : 23,
+      "Line" : 45,
+      "Name" : "id-9",
+      "Pos" : 920,
+      "Text" : "num1"
    },
    {
       "Class" : "punctuation",
+      "Column" : 27,
+      "Line" : 45,
+      "Name" : "comma",
+      "Pos" : 924,
+      "Text" : ","
+   },
+   {
+      "Class" : "identifier",
       "Column" : 29,
-      "Line" : 28,
+      "Line" : 45,
+      "Name" : "id-10",
+      "Pos" : 926,
+      "Text" : "num2"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 33,
+      "Line" : 45,
+      "Name" : "comma",
+      "Pos" : 930,
+      "Text" : ","
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 35,
+      "Line" : 45,
+      "Name" : "id-6",
+      "Pos" : 932,
+      "Text" : "operation"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 44,
+      "Line" : 45,
       "Name" : "r_paren",
-      "Pos" : 602,
+      "Pos" : 941,
       "Text" : ")"
    },
    {
       "Class" : "punctuation",
-      "Column" : 30,
-      "Line" : 28,
+      "Column" : 45,
+      "Line" : 45,
       "Name" : "semicolon",
-      "Pos" : 603,
+      "Pos" : 942,
+      "Text" : ";"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 3,
+      "Line" : 46,
+      "Name" : "id-7",
+      "Pos" : 945,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 6,
+      "Line" : 46,
+      "Name" : "dot",
+      "Pos" : 948,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 7,
+      "Line" : 46,
+      "Name" : "id-14",
+      "Pos" : 949,
+      "Text" : "Printf"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 13,
+      "Line" : 46,
+      "Name" : "l_paren",
+      "Pos" : 955,
+      "Text" : "("
+   },
+   {
+      "Class" : "constant",
+      "Column" : 14,
+      "Line" : 46,
+      "Name" : "string",
+      "Pos" : 956,
+      "Text" : "\"Результат: %.2f\\n\""
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 42,
+      "Line" : 46,
+      "Name" : "comma",
+      "Pos" : 984,
+      "Text" : ","
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 44,
+      "Line" : 46,
+      "Name" : "id-13",
+      "Pos" : 986,
+      "Text" : "result"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 50,
+      "Line" : 46,
+      "Name" : "r_paren",
+      "Pos" : 992,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 51,
+      "Line" : 46,
+      "Name" : "semicolon",
+      "Pos" : 993,
       "Text" : ";"
    },
    {
       "Class" : "punctuation",
       "Column" : 2,
-      "Line" : 29,
+      "Line" : 47,
       "Name" : "r_brace",
-      "Pos" : 605,
+      "Pos" : 995,
+      "Text" : "}"
+   },
+   {
+      "Class" : "keyword",
+      "Column" : 4,
+      "Line" : 47,
+      "Name" : "else",
+      "Pos" : 997,
+      "Text" : "else"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 9,
+      "Line" : 47,
+      "Name" : "l_brace",
+      "Pos" : 1002,
+      "Text" : "{"
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 3,
+      "Line" : 48,
+      "Name" : "id-7",
+      "Pos" : 1006,
+      "Text" : "fmt"
+   },
+   {
+      "Class" : "operator",
+      "Column" : 6,
+      "Line" : 48,
+      "Name" : "dot",
+      "Pos" : 1009,
+      "Text" : "."
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 7,
+      "Line" : 48,
+      "Name" : "id-8",
+      "Pos" : 1010,
+      "Text" : "Println"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 14,
+      "Line" : 48,
+      "Name" : "l_paren",
+      "Pos" : 1017,
+      "Text" : "("
+   },
+   {
+      "Class" : "identifier",
+      "Column" : 15,
+      "Line" : 48,
+      "Name" : "id-2",
+      "Pos" : 1018,
+      "Text" : "ErrorMessage"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 27,
+      "Line" : 48,
+      "Name" : "r_paren",
+      "Pos" : 1030,
+      "Text" : ")"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 28,
+      "Line" : 48,
+      "Name" : "semicolon",
+      "Pos" : 1031,
+      "Text" : ";"
+   },
+   {
+      "Class" : "punctuation",
+      "Column" : 2,
+      "Line" : 49,
+      "Name" : "r_brace",
+      "Pos" : 1033,
       "Text" : "}"
    },
    {
       "Class" : "punctuation",
       "Column" : 3,
-      "Line" : 29,
+      "Line" : 49,
       "Name" : "semicolon",
-      "Pos" : 606,
+      "Pos" : 1034,
       "Text" : ";"
    },
    {
       "Class" : "punctuation",
       "Column" : 1,
-      "Line" : 30,
+      "Line" : 50,
       "Name" : "r_brace",
-      "Pos" : 607,
+      "Pos" : 1035,
       "Text" : "}"
    },
    {
       "Class" : "punctuation",
       "Column" : 2,
-      "Line" : 30,
+      "Line" : 50,
       "Name" : "semicolon",
-      "Pos" : 608,
+      "Pos" : 1036,
       "Text" : ";"
    },
    {

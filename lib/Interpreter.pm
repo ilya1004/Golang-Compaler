@@ -399,7 +399,6 @@ sub handle_fmt_function {
                 my $var_name = $arg->{value};
                 my $var = $self->find_variable($var_name);
                 $var->{value} = $self->convert_input($input, $var->{type});
-                # print "$input\n";
             }
         }
     } else {
@@ -707,16 +706,26 @@ sub default_value {
 sub convert_input {
     my ($self, $input, $type) = @_;
     if ($self->{debug_mode}) {
-        warn "convert_input: $type\n";
+        warn "convert_input: type=$type, input=" . (defined $input ? $input : 'undef') . "\n";
     }
+
+    die "Input is undefined" unless defined $input;
+    die "Type is undefined" unless defined $type;
+
     if ($type eq 'float64') {
-        return 0.0 + $input;
+        if ($input =~ /^-?\d*\.?\d+$/ || $input =~ /^-?\d+$/) {
+            return 0.0 + $input;
+        }
+        die "Invalid input for float64: '$input' is not a number";
     } elsif ($type eq 'string') {
         return $input;
     } elsif ($type eq 'int') {
-        return int($input);
+        if ($input =~ /^-?\d+$/) {
+            return int($input);
+        }
+        die "Invalid input for int: '$input' is not an integer";
     }
-    die "Unsupported type for input conversion: $type";
+    die "Unsupported type for input conversion: '$type'";
 }
 
 # Получение ввода для fmt.Scan

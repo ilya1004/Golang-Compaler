@@ -1,122 +1,108 @@
 {
    "functions" : {
-      "main" : {
-         "params" : [],
-         "pos" : 400,
-         "return_types" : []
-      },
-      "printStudentStatus" : {
+      "calculate" : {
          "params" : [
             {
-               "name" : "student",
+               "name" : "a",
                "param_pos" : 0,
-               "type" : "Student"
+               "type" : "float64"
+            },
+            {
+               "name" : "b",
+               "param_pos" : 1,
+               "type" : "float64"
+            },
+            {
+               "name" : "operation",
+               "param_pos" : 2,
+               "type" : "string"
             }
          ],
-         "pos" : 88,
+         "pos" : 195,
+         "return_types" : [
+            "float64"
+         ]
+      },
+      "main" : {
+         "params" : [],
+         "pos" : 489,
          "return_types" : []
       }
    },
    "scopes" : {
       "-Global-" : {
-         "constants" : {},
+         "constants" : {
+            "ErrorMessage" : {
+               "pos" : 19,
+               "type" : "auto",
+               "value" : "\"Ошибка: неверный ввод!\""
+            },
+            "WelcomeMessage" : {
+               "pos" : 14,
+               "type" : "auto",
+               "value" : "\"Добро пожаловать в калькулятор на Go!\""
+            }
+         },
          "variables" : {}
       },
-      "main" : {
+      "calculate" : {
          "variables" : {
-            "students" : {
-               "pos" : 102,
-               "type" : "[]Student",
-               "value" : {
-                  "array_type" : "Student",
-                  "elements" : [
-                     {
-                        "fields" : [
-                           {
-                              "name" : "Name",
-                              "value" : {
-                                 "Pos" : 74,
-                                 "type" : "StringLiteral",
-                                 "value" : "\"Иван\""
-                              }
-                           },
-                           {
-                              "name" : "Grade",
-                              "value" : {
-                                 "Pos" : 78,
-                                 "type" : "IntLiteral",
-                                 "value" : "75"
-                              }
-                           }
-                        ],
-                        "struct_name" : null,
-                        "type" : "StructInitialization"
-                     },
-                     {
-                        "fields" : [
-                           {
-                              "name" : "Name",
-                              "value" : {
-                                 "Pos" : 84,
-                                 "type" : "StringLiteral",
-                                 "value" : "\"Мария\""
-                              }
-                           },
-                           {
-                              "name" : "Grade",
-                              "value" : {
-                                 "Pos" : 88,
-                                 "type" : "IntLiteral",
-                                 "value" : "45"
-                              }
-                           }
-                        ],
-                        "struct_name" : null,
-                        "type" : "StructInitialization"
-                     },
-                     {
-                        "fields" : [
-                           {
-                              "name" : "Name",
-                              "value" : {
-                                 "Pos" : 94,
-                                 "type" : "StringLiteral",
-                                 "value" : "\"Анна\""
-                              }
-                           },
-                           {
-                              "name" : "Grade",
-                              "value" : {
-                                 "Pos" : 98,
-                                 "type" : "IntLiteral",
-                                 "value" : "90"
-                              }
-                           }
-                        ],
-                        "struct_name" : null,
-                        "type" : "StructInitialization"
-                     }
-                  ],
-                  "type" : "Array"
-               }
+            "a" : {
+               "pos" : 22,
+               "type" : "float64"
+            },
+            "b" : {
+               "pos" : 23,
+               "type" : "float64"
+            },
+            "operation" : {
+               "pos" : 24,
+               "type" : "string"
             }
          }
       },
-      "printStudentStatus" : {
+      "main" : {
          "variables" : {
-            "student" : {
-               "pos" : 24,
-               "type" : "Student"
+            "num1" : {
+               "pos" : 96,
+               "type" : "float64"
+            },
+            "num2" : {
+               "pos" : 100,
+               "type" : "float64"
+            },
+            "operation" : {
+               "pos" : 104,
+               "type" : "string"
+            },
+            "result" : {
+               "pos" : 163,
+               "type" : "auto",
+               "value" : {
+                  "args" : [
+                     {
+                        "Pos" : 157,
+                        "type" : "Identifier",
+                        "value" : "num1"
+                     },
+                     {
+                        "Pos" : 159,
+                        "type" : "Identifier",
+                        "value" : "num2"
+                     },
+                     {
+                        "Pos" : 161,
+                        "type" : "Identifier",
+                        "value" : "operation"
+                     }
+                  ],
+                  "name" : "calculate",
+                  "package" : null,
+                  "type" : "FunctionCall"
+               }
             }
          }
       }
    },
-   "types" : {
-      "Student" : {
-         "fields" : {
-            "Grade" : "int",
-            "Name" : "string"
-         }
-      }
-   }
+   "types" : {}
 }

@@ -12,7 +12,7 @@ use Interpreter;
 our $index = 0;
 our %ids;
 
-my $filename = '../test-code/test-3/main.go';
+my $filename = '../test-code/test-1/main.go';
 
 open(my $fh, '<', $filename) or die "Не удалось открыть файл '$filename': $!";
 my $code = do { local $/; <$fh> };
@@ -139,7 +139,7 @@ if (@$errors) {
     # Установка входного буфера
     $interpreter->{input_buffer} = [@input_values] if @input_values;
 
-    
+
     eval {
         $interpreter->interpret();
     };
